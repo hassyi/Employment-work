@@ -29,73 +29,9 @@ void Camera::Uninit()
 
 void Camera::Update()
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
 
 	m_CameraCount++;
 	m_Radian = XM_PI * 0.01f;
-
-	//ƒJƒƒ‰‰ñ“]
-	if (Input::GetKeyPress('Q'))
-	{
-		m_S += m_Radian;
-		SetRotY(GetRot().y - m_Radian);
-		m_FrameCoutnt[0] = 20.0f;
-	}
-	else if (m_FrameCoutnt[0] > 0)
-	{
-		m_Radian = XM_PI * (m_FrameCoutnt[0] * 0.0002f);
-		m_S += m_Radian;
-		SetRotY(GetRot().y - m_Radian);
-		m_FrameCoutnt[0]--;
-	}
-	m_Radian = XM_PI * 0.01f;
-
-	if (Input::GetKeyPress('E'))
-	{
-		m_S -= m_Radian;
-		SetRotY(GetRot().y + m_Radian);
-		m_FrameCoutnt[1] = 20.0f;
-	}
-	else if (m_FrameCoutnt[1] > 0)
-	{
-		m_Radian = XM_PI * (m_FrameCoutnt[1] * 0.0002f);
-		m_S -= m_Radian;
-		SetRotY(GetRot().y + m_Radian);
-		m_FrameCoutnt[1]--;
-	}
-	m_Radian = XM_PI * 0.01f;
-
-	if (GetPos().y <= (m_R - 3.0f) + player->GetPos().y)
-	{
-		if (Input::GetKeyPress('U'))
-		{
-			m_F -= m_Radian;
-			m_FrameCoutnt[2] = 20.0f;
-		}
-		else if (m_FrameCoutnt[2] > 0)
-		{
-			m_Radian = XM_PI * (m_FrameCoutnt[2] * 0.0002f);
-			m_F -= m_Radian;
-			m_FrameCoutnt[2]--;
-		}
-	}
-	m_Radian = XM_PI * 0.01f;
-
-	if (GetPos().y >= (-m_R + 3.0f) + player->GetPos().y)
-	{
-		if (Input::GetKeyPress('J'))
-		{
-			m_F += m_Radian;
-			m_FrameCoutnt[3] = 20.0f;
-		}
-		else if (m_FrameCoutnt[3] > 0)
-		{
-			m_Radian = XM_PI * (m_FrameCoutnt[3] * 0.0002f);
-			m_F += m_Radian;
-			m_FrameCoutnt[3]--;
-		}
-	}
 
 	//ƒJƒƒ‰Ø‚è‘Ö‚¦(0:ƒL[‰ñ“] 1:ƒ}ƒEƒX‰ñ“])
 	if (Input::GetKeyTrigger(VK_TAB))
@@ -119,6 +55,7 @@ void Camera::Draw()
 	switch (mouse)
 	{
 	case 0:
+		SetKeyCamera();
 		SetTarget(player->GetPos());
 
 		SetPosX((m_R * sinf(m_F) * cosf(m_S)) + GetTarget().x);
@@ -248,5 +185,73 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	{
 		SetCursorPos(m_CenterCamX, m_CenterCamY);
 		m_CameraCount = 0;
+	}
+}
+
+void Camera::SetKeyCamera()
+{
+	Scene* scene = Manager::GetScene();
+	Player* player = scene->GetGameObject<Player>();
+
+	//ƒJƒƒ‰‰ñ“]
+	if (Input::GetKeyPress('Q'))
+	{
+		m_S += m_Radian;
+		SetRotY(GetRot().y - m_Radian);
+		m_FrameCoutnt[0] = 20.0f;
+	}
+	else if (m_FrameCoutnt[0] > 0)
+	{
+		m_Radian = XM_PI * (m_FrameCoutnt[0] * 0.0002f);
+		m_S += m_Radian;
+		SetRotY(GetRot().y - m_Radian);
+		m_FrameCoutnt[0]--;
+	}
+	m_Radian = XM_PI * 0.01f;
+
+	if (Input::GetKeyPress('E'))
+	{
+		m_S -= m_Radian;
+		SetRotY(GetRot().y + m_Radian);
+		m_FrameCoutnt[1] = 20.0f;
+	}
+	else if (m_FrameCoutnt[1] > 0)
+	{
+		m_Radian = XM_PI * (m_FrameCoutnt[1] * 0.0002f);
+		m_S -= m_Radian;
+		SetRotY(GetRot().y + m_Radian);
+		m_FrameCoutnt[1]--;
+	}
+	m_Radian = XM_PI * 0.01f;
+
+	if (GetPos().y <= (m_R - 3.0f) + player->GetPos().y)
+	{
+		if (Input::GetKeyPress('U'))
+		{
+			m_F -= m_Radian;
+			m_FrameCoutnt[2] = 20.0f;
+		}
+		else if (m_FrameCoutnt[2] > 0)
+		{
+			m_Radian = XM_PI * (m_FrameCoutnt[2] * 0.0002f);
+			m_F -= m_Radian;
+			m_FrameCoutnt[2]--;
+		}
+	}
+	m_Radian = XM_PI * 0.01f;
+
+	if (GetPos().y >= (-m_R + 3.0f) + player->GetPos().y)
+	{
+		if (Input::GetKeyPress('J'))
+		{
+			m_F += m_Radian;
+			m_FrameCoutnt[3] = 20.0f;
+		}
+		else if (m_FrameCoutnt[3] > 0)
+		{
+			m_Radian = XM_PI * (m_FrameCoutnt[3] * 0.0002f);
+			m_F += m_Radian;
+			m_FrameCoutnt[3]--;
+		}
 	}
 }

@@ -35,6 +35,7 @@ public:
 	void Draw()override;
 
 	void SetMouseCamera(XMFLOAT3 pos);
+	void SetKeyCamera();
 
 	XMMATRIX GetViewMatrix()
 	{
