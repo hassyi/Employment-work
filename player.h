@@ -6,6 +6,7 @@
 class Player : public GameObject {
 private:
 	Component* m_Component{};
+	Component* m_ChildModel{};
 
 	float m_Rot = 0.0f;
 	XMFLOAT3 m_dir;

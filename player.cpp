@@ -16,7 +16,7 @@
 void Player::Init()
 {
 	SetPos(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
 	SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	m_Component = new AnimationModel(this);
@@ -36,7 +36,8 @@ void Player::Init()
 	m_SE = new Audio(this);
 	m_SE->Load("asset\\audio\\shot.wav");
 
-	m_Scale = { 0.01f,0.01f,0.01f };
+	m_ChildModel = new ModelRenderer(this);
+	((ModelRenderer*)m_ChildModel)->Load("asset\\model\\box.obj");
 
 }
 
@@ -44,6 +45,9 @@ void Player::Uninit()
 {
 	m_SE->Uninit();
 	delete m_SE;
+
+	m_Component->Uninit();
+	delete m_Component;
 
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
@@ -71,7 +75,7 @@ void Player::Update()
 	SetPosX(GetPos().x + Move().x * dt);
 	SetPosZ(GetPos().z + Move().z * dt);
 
-	//ÉWÉÉÉìÉv
+	//„Ç∏„É£„É≥„Éó
 	if (Input::GetKeyPress(VK_SPACE)) 
 	{
 		if (!m_JampFlag) 
@@ -84,7 +88,7 @@ void Player::Update()
 
 	SetVelX(GetVel().x * 50.0f * dt);
 	SetVelZ(GetVel().z * 50.0f * dt);
-	SetVelY(GetVel().y + m_Gravity * dt);		//èdóÕâ¡ë¨ìx
+	SetVelY(GetVel().y + m_Gravity * dt);		//ÈáçÂäõÂä†ÈÄüÂ∫¶
 	if (m_IsGravity)
 	{
 		m_Gravity = -30.0f;
@@ -149,14 +153,14 @@ void Player::Draw()
 											m_AnimetionBlendRatio);
 	m_AnimationFrame++;
 
-	//ì¸óÕÉåÉCÉAÉEÉgê›íË
+	//ÂÖ•Âäõ„É¨„Ç§„Ç¢„Ç¶„ÉàË®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ÉVÉFÅ[É_Å[ê›íË
+	//„Ç∑„Çß„Éº„ÉÄ„ÉºË®≠ÂÆö
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ÉèÅ[ÉãÉhÉ}ÉgÉäÉNÉXê›íË
+	//„ÉØ„Éº„É´„Éâ„Éû„Éà„É™„ÇØ„ÇπË®≠ÂÆö
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 	rot = XMMatrixRotationRollPitchYaw(GetRot().x, GetRot().y, GetRot().z);
@@ -165,6 +169,23 @@ void Player::Draw()
 	Renderer::SetWorldMatrix(world);
 
 	m_Component->Draw();
+
+	//Â≠ê„É¢„Éá„É´ÊèèÁîª
+	std::unordered_map<std::string, BONE> bone;
+	bone = ((AnimationModel*)m_Component)->GetBone();
+	bone.find("mixamorig:RightHand");
+	
+	XMMATRIX childScale, childRot, childTrans, childWorld, boneMatrix;
+	rot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
+	childScale = XMMatrixScaling(1.0f / GetScale().x, 1.0f / GetScale().y, 1.0f / GetScale().z);
+	childTrans = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+	childWorld = childTrans * childScale * world;
+	//Â≠ê„ÅÆ„ÉØ„Éº„É´„Éâ = Â≠ê„ÅÆ„É≠„Éº„Ç´„É´ * Ë¶™„ÅÆ„ÉØ„Éº„É´„Éâ
+	//childWorld = childTrans * childScale  * ÊåáÂÆö„Åó„ÅüÈÉ®‰Ωç„ÅÆ„Éû„Éà„É™„ÇØ„Çπ * world;
+
+	Renderer::SetWorldMatrix(childWorld);
+
+	//m_ChildModel->Draw();
 }
 
 XMFLOAT3 Player::Move()
@@ -215,10 +236,10 @@ void Player::PlayerCollision()
 	Scene* scene = Manager::GetScene();
 	Collision collision;
 
-	//ÉÅÉbÉVÉÖÉtÉBÅ[ÉãÉhçÇÇ≥éÊìæ
+	//„É°„ÉÉ„Ç∑„É•„Éï„Ç£„Éº„É´„ÉâÈ´ò„ÅïÂèñÂæó
 	MeshField* meshField = scene->GetGameObject<MeshField>();
 
-	//ínñ ÇÃçÇÇ≥
+	//Âú∞Èù¢„ÅÆÈ´ò„Åï
 	m_GroundHeight = meshField->GetHeight(GetPos());
 
 	auto cylinderList = scene->GetGameObjects<Cylinder>();
@@ -244,13 +265,13 @@ void Player::PlayerCollision()
 
 	float posY = GetPos().y - GetScale().y;
 
-	if (std::get<0>(collision.CollisionBB(GetPos(), GetScale())))
+	if (std::get<0>(collision.CollisionOBB(GetPos(), GetScale())))
 	{
-		std::list <Box*> BoxList = std::get<1>(collision.CollisionBB(GetPos(), GetScale()));
+		std::list<Box*> BoxList = std::get<1>(collision.CollisionOBB(GetPos(), GetScale()));
 		for (auto box : BoxList)
 		{
 			float boxposy = box->GetPos().y + box->GetScale().y;
-			if (posY >= boxposy + (box->GetScale().y - 1.0f))
+			if (posY >= boxposy)
 			{
 				m_GroundHeight = boxposy + box->GetScale().y;
 				m_Gravity = 0.0f;
@@ -266,6 +287,7 @@ void Player::PlayerCollision()
 		}
 
 	}
+
 }
 
 void Player::PredationAttack()

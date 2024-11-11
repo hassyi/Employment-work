@@ -18,5 +18,6 @@ public:
 	bool GetCylinderHeight() { return m_collisionHeight; }
 
 	std::tuple<bool, std::list<Box*>> CollisionBB(XMFLOAT3 pos, XMFLOAT3 scl);
+	std::tuple<bool, std::list<Box*>> CollisionOBB(XMFLOAT3 pos, XMFLOAT3 scl);
 
 };

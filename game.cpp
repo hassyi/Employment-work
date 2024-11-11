@@ -20,20 +20,21 @@ void Game::Init()
 	//AddGameObject<Enemy>(1)->SetPos(XMFLOAT3(10.0f, 0.0f, 20.0f));
 	//AddGameObject<Enemy>(1)->SetPos(XMFLOAT3(-10.0f, 0.0f, 20.0f));
 
-	{
-		Cylinder* cylinder = AddGameObject<Cylinder>(1);
-		cylinder->SetPos(XMFLOAT3(10.0f, 0.0f, -20.0f));
-		cylinder->SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
-	}
-	{
-		Cylinder* cylinder = AddGameObject<Cylinder>(1);
-		cylinder->SetPos(XMFLOAT3(-10.0f, 0.0f, -20.0f));
-		cylinder->SetScale(XMFLOAT3(3.0f, 3.0f, 3.0f));
-	}
+	//{
+	//	Cylinder* cylinder = AddGameObject<Cylinder>(1);
+	//	cylinder->SetPos(XMFLOAT3(10.0f, 0.0f, -20.0f));
+	//	cylinder->SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
+	//}
+	//{
+	//	Cylinder* cylinder = AddGameObject<Cylinder>(1);
+	//	cylinder->SetPos(XMFLOAT3(-10.0f, 0.0f, -20.0f));
+	//	cylinder->SetScale(XMFLOAT3(3.0f, 3.0f, 3.0f));
+	//}
 	{
 		Box* box = AddGameObject<Box>(1);
-		box->SetPos(XMFLOAT3(20.0f, 0.0f, -20.0f));
-		box->SetScale(XMFLOAT3(3.0f, 3.0f, 3.0f));
+		box->SetPos(XMFLOAT3(0.0f, 0.0f, 10.0f));
+		box->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+		box->SetRot(XMFLOAT3(0.0f, 1.0f, 0.0f));
 	}
 	AddGameObject<Sky>(1);
 	//AddGameObject<PartrcleEmitter>(1)->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
