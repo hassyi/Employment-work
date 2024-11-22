@@ -2,6 +2,7 @@
 #include "collision.h"
 #include "scene.h"
 #include "manager.h"
+#include "game.h"
 
 
 //箱の当たり判定
@@ -119,11 +120,10 @@ bool Collision::CollisionCylinderHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, float heig
 //回転を考慮しないボックスの当たり判定
 std::tuple<bool, std::list<Box*>> Collision::CollisionBB(XMFLOAT3 pos, XMFLOAT3 scl)
 {
-	Scene* scene = Manager::GetScene();
 	int objSize = 0;
 	std::tuple <bool, std::list<Box*>> collision;		//tuple後で調べる
 
-	std::list <Box*> gameobjectlist = scene->GetGameObjectList<Box>();
+	std::list <Box*> gameobjectlist = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Box>();
 	std::list <Box*> objectlist;
 
 	for (auto obj : gameobjectlist)
@@ -160,11 +160,10 @@ std::tuple<bool, std::list<Box*>> Collision::CollisionBB(XMFLOAT3 pos, XMFLOAT3 
 //回転を考慮したボックスの当たり判定
 std::tuple<bool, std::list<Box*>> Collision::CollisionOBB(XMFLOAT3 pos, XMFLOAT3 scl)
 {
-	Scene* scene = Manager::GetScene();
 	int objSize = 0;
 	std::tuple<bool, std::list<Box*>> collision;
 
-	std::list<Box*> gameObjectList = scene->GetGameObjectList<Box>();
+	std::list<Box*> gameObjectList = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Box>();
 	std::list<Box*> objectList;
 
 	for (auto obj : gameObjectList)

@@ -1,19 +1,28 @@
 #pragma once
+#include "main.h"
+#include <string>
+#include <iostream>
+#include <list>
 
 class Component
 {
 private:
 
 	class GameObject* m_GameObject = nullptr;
+protected:
+	int m_ComponentNum = 0;
 
 public:
-	Component() = delete;		//delete‚ğ“ü‚ê‚é‚±‚Æ‚Åˆø”‚È‚µ‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğÁ‚¹‚é
-	Component(GameObject* object) { m_GameObject = object; }
+	Component() = default;		//deleteã‚’å…¥ã‚Œã‚‹ã“ã¨ã§å¼•æ•°ãªã—ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’æ¶ˆã›ã‚‹
+	//Component(GameObject* object) { m_GameObject = object; }
 	virtual ~Component(){}
 
-	virtual void Init() {};		//‰¼‘zŠÖ”
+	virtual void Init() {};		//ä»®æƒ³é–¢æ•°
 	virtual void Uninit() {};
 	virtual void Update() {};
 	virtual void Draw() {};
+
+	void SetComponentNum(int num) { m_ComponentNum = num; }
+	int GetComponentNum() { return m_ComponentNum; }
 
 };

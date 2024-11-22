@@ -12,17 +12,19 @@
 #include "audio.h"
 #include "predation.h"
 #include "meshField.h"
+#include "transform3DComponent.h"
+#include "game.h"
 
 void Player::Init()
 {
-	SetPos(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
-	SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
 	m_Component = new AnimationModel(this);
 	((AnimationModel*)m_Component)->Load("asset\\model\\Vampire A Lusth.fbx");
 	((AnimationModel*)m_Component)->LoadAnimation("asset\\model\\Idle.fbx", "Idle");
 	((AnimationModel*)m_Component)->LoadAnimation("asset\\model\\Running.fbx", "Run");
+
+	AddComponent<Transform3DComponent>();
+	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
+	SetScale(GetComponent<Transform3DComponent>()->GetScale());
 
 	m_AnimationName1 = "Idle";
 	m_AnimationName2 = "Idle";
@@ -33,21 +35,27 @@ void Player::Init()
 	Renderer::CreatePixelShader(&m_PixelShader,
 		"shader\\unlitTexturePS.cso");
 
-	m_SE = new Audio(this);
-	m_SE->Load("asset\\audio\\shot.wav");
+	//m_SE = new Audio(this);
+	//m_SE->Load("asset\\audio\\shot.wav");
 
-	m_ChildModel = new ModelRenderer(this);
-	((ModelRenderer*)m_ChildModel)->Load("asset\\model\\box.obj");
+	//m_ChildModel = new ModelRenderer(this);
+	//((ModelRenderer*)m_ChildModel)->Load("asset\\model\\box.obj");
 
 }
 
 void Player::Uninit()
 {
-	m_SE->Uninit();
-	delete m_SE;
+	//m_SE->Uninit();
+	//delete m_SE;
 
 	m_Component->Uninit();
 	delete m_Component;
+
+	for (auto component : m_ComponentList)
+	{
+		component->Uninit();
+		delete component;
+	}
 
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
@@ -56,80 +64,33 @@ void Player::Uninit()
 
 void Player::Update()
 {
-	Scene* scene = Manager::GetScene();
-	Predation* predation = scene->GetGameObject<Predation>();
-
-	float dt = 1.0f / 60.0f;
-	m_GroundHeight = 0;
-
-	SetOldPos(GetPos());
 	m_AnimationName = "Idle";
+	
+	PlayerControl();
 
-	if (Input::GetKeyPress(VK_LSHIFT) || predation->GetBuff()) {
-		m_move = 2.0f;
-	}
-	else {
-		m_move = 1.0f;
-	}
+	SetPos(GetComponent<Transform3DComponent>()->GetPos());
+	SetRot(GetComponent<Transform3DComponent>()->GetRot());
+	SetVel(GetComponent<Transform3DComponent>()->GetVel());
 
-	SetPosX(GetPos().x + Move().x * dt);
-	SetPosZ(GetPos().z + Move().z * dt);
+	GetComponent<Transform3DComponent>()->SetOldPos(GetComponent<Transform3DComponent>()->GetPos());
+	SetOldPos(GetComponent<Transform3DComponent>()->GetOldPos());
 
-	//ジャンプ
-	if (Input::GetKeyPress(VK_SPACE)) 
-	{
-		if (!m_JampFlag) 
-		{
-			SetVelY(20.0f);
-			m_JampFlag = true;
-		}
-	}
-
-
-	SetVelX(GetVel().x * 50.0f * dt);
-	SetVelZ(GetVel().z * 50.0f * dt);
-	SetVelY(GetVel().y + m_Gravity * dt);		//重力加速度
-	if (m_IsGravity)
-	{
-		m_Gravity = -30.0f;
-
-	}
-	if (!m_IsGravity)
-	{
-		SetPosY(GetOldPos().y);
-		SetVelY(0.0f);
-		m_Gravity = 0.0f;
-		m_JampFlag = false;
-	}
-
-	SetPosY(GetPos().y + GetVel().y * dt);
 
 	PlayerCollision();
 
-	if (GetPos().y < m_GroundHeight) 
-	{
-		SetPosY(m_GroundHeight);
-		SetVelY(0.0f);
-		m_JampFlag = false;
-		m_IsGravity = false;
-	}
-	else
-	{
-		m_IsGravity = true;
-	}
 
 
 	if (Input::GetKeyTrigger('F')) {
 		m_dir.x = cosf(GetRot().y - (XM_PI / 2));
 		m_dir.y = 0.0f;
 		m_dir.z = sinf(GetRot().y + (XM_PI / 2));
-		Bullet* bullet = scene->AddGameObject<Bullet>(1);
+		Bullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Bullet>(1);
 		bullet->SetPos(GetPos());
-		m_SE->Play();
+		//m_SE->Play();
 	}
 	if (Input::GetKeyTrigger(VK_RETURN)) 
 	{
-		Manager::SetScene<Result>();
+		Scene::GetInstance()->ChangeScene(new Result);
 	}
 	PredationAttack();
 
@@ -171,94 +132,149 @@ void Player::Draw()
 	m_Component->Draw();
 
 	//子モデル描画
-	std::unordered_map<std::string, BONE> bone;
-	bone = ((AnimationModel*)m_Component)->GetBone();
-	bone.find("mixamorig:RightHand");
-	
-	XMMATRIX childScale, childRot, childTrans, childWorld, boneMatrix;
-	rot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
-	childScale = XMMatrixScaling(1.0f / GetScale().x, 1.0f / GetScale().y, 1.0f / GetScale().z);
-	childTrans = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
-	childWorld = childTrans * childScale * world;
+	//std::unordered_map<std::string, BONE> bone;
+	//bone = ((AnimationModel*)m_Component)->GetBone();
+	//bone.find("mixamorig:RightHand");
+	//
+	//XMMATRIX childScale, childRot, childTrans, childWorld, boneMatrix;
+	//rot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
+	//childScale = XMMatrixScaling(1.0f / GetScale().x, 1.0f / GetScale().y, 1.0f / GetScale().z);
+	//childTrans = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+	//childWorld = childTrans * childScale * world;
 	//子のワールド = 子のローカル * 親のワールド
 	//childWorld = childTrans * childScale  * 指定した部位のマトリクス * world;
 
-	Renderer::SetWorldMatrix(childWorld);
+	//Renderer::SetWorldMatrix(childWorld);
 
 	//m_ChildModel->Draw();
 }
 
-XMFLOAT3 Player::Move()
+void Player::PlayerControl()
 {
-	Scene* scene = Manager::GetScene();
-	Camera* camera = scene->GetGameObject<Camera>();
+	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
+	Predation* predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
 
-	SetVelX(GetVel().x);
-	SetVelZ(GetVel().z);
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 oldPos = GetComponent<Transform3DComponent>()->GetOldPos();
+	XMFLOAT3 vel = GetComponent<Transform3DComponent>()->GetVel();
+	float dt = 30.0f * (1.0f / 60.0f);
+	float dt1 = 1.0f / 60.0f;
 
+	if (Input::GetKeyPress(VK_LSHIFT) || predation->GetBuff()) {
+		m_move = 2.0f;
+	}
+	else {
+		m_move = 1.0f;
+	}
 
-	if (Input::GetKeyPress('W')) 
+	if (Input::GetKeyPress('W'))
 	{
-		SetVelX(GetVel().x + m_move * sinf(camera->GetRot().y));
-		SetVelZ(GetVel().z + m_move * cosf(camera->GetRot().y));
+		vel.x += m_move * sinf(camera->GetRot().y);
+		vel.z += m_move * cosf(camera->GetRot().y);
 		m_Rot = 0.0f;
 		m_AnimationName = "Run";
 	}
-	if (Input::GetKeyPress('A')) 
+	if (Input::GetKeyPress('A'))
 	{
-		SetVelX(GetVel().x - m_move * cosf(camera->GetRot().y));
-		SetVelZ(GetVel().z + m_move * sinf(camera->GetRot().y));
+		vel.x -= m_move * cosf(camera->GetRot().y);
+		vel.z += m_move * sinf(camera->GetRot().y);
 		m_Rot = -3.14f / 2.0f;
 		m_AnimationName = "Run";
 	}
-	if (Input::GetKeyPress('S')) 
+	if (Input::GetKeyPress('S'))
 	{
-		SetVelX(GetVel().x - m_move * sinf(camera->GetRot().y));
-		SetVelZ(GetVel().z - m_move * cosf(camera->GetRot().y));
+		vel.x -= m_move * sinf(camera->GetRot().y);
+		vel.z -= m_move * cosf(camera->GetRot().y);
 		m_Rot = 3.14f;
 		m_AnimationName = "Run";
 	}
-	if (Input::GetKeyPress('D')) 
+	if (Input::GetKeyPress('D'))
 	{
-		SetVelX(GetVel().x + m_move * cosf(camera->GetRot().y));
-		SetVelZ(GetVel().z - m_move * sinf(camera->GetRot().y));
+		vel.x += m_move * cosf(camera->GetRot().y);
+		vel.z -= m_move * sinf(camera->GetRot().y);
 		m_Rot = 3.14f / 2.0f;
 		m_AnimationName = "Run";
 	}
 
-	SetRotY(m_Rot + camera->GetRot().y);
+		//ジャンプ
+	if (Input::GetKeyPress(VK_SPACE))
+	{
+		if (!m_JampFlag)
+		{
+			vel.y = 20.0f;
+			m_JampFlag = true;
+		}
+	}
 
-	return GetVel();
+
+	if (m_IsGravity)
+	{
+		m_Gravity = -30.0f;
+
+	}
+	if (!m_IsGravity)
+	{
+		pos.y = oldPos.y;
+		vel.y = 0.0f;
+		m_Gravity = 0.0f;
+		m_JampFlag = false;
+	}
+
+	vel.x *= dt;
+	vel.z *= dt;
+	vel.y += m_Gravity * dt1;
+
+	if (pos.y < m_GroundHeight)
+	{
+		pos.y = m_GroundHeight;
+		vel.y = 0.0f;
+		m_JampFlag = false;
+		m_IsGravity = false;
+	}
+	else
+	{
+		m_IsGravity = true;
+	}
+
+
+	GetComponent<Transform3DComponent>()->SetVel(vel);
+	GetComponent<Transform3DComponent>()->SetRotY(m_Rot + camera->GetRot().y);
+	GetComponent<Transform3DComponent>()->SetPosX(pos.x + vel.x * dt);
+	GetComponent<Transform3DComponent>()->SetPosZ(pos.z + vel.z * dt);
+	GetComponent<Transform3DComponent>()->SetPosY(pos.y + vel.y * dt1);
 }
 
 void Player::PlayerCollision()
 {
-	Scene* scene = Manager::GetScene();
 	Collision collision;
-
 	//メッシュフィールド高さ取得
-	MeshField* meshField = scene->GetGameObject<MeshField>();
+	MeshField* meshField = Scene::GetInstance()->GetScene<Game>()->GetGameObject<MeshField>();
+
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 oldPos = GetComponent<Transform3DComponent>()->GetOldPos();
+	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
+	XMFLOAT3 vel = GetComponent<Transform3DComponent>()->GetVel();
 
 	//地面の高さ
-	m_GroundHeight = meshField->GetHeight(GetPos());
+	m_GroundHeight = meshField->GetHeight(pos);
 
-	auto cylinderList = scene->GetGameObjects<Cylinder>();
+	auto cylinderList = Scene::GetInstance()->GetScene<Game>()->GetGameObjects<Cylinder>();
 
 	for (auto cylinder : cylinderList) {
 		XMFLOAT3 cylinderPos = cylinder->GetPos();
 		XMFLOAT3 cylinderScale = cylinder->GetScale();
 
-		if (collision.CollisionCylinder(GetPos(), cylinderPos, cylinderScale.x)) 
+		if (collision.CollisionCylinder(pos, cylinderPos, cylinderScale.x))
 		{
-			if (collision.CollisionCylinderHeight(GetPos(), cylinderPos, cylinderScale.y)) {
+			if (collision.CollisionCylinderHeight(pos, cylinderPos, cylinderScale.y)) {
 				m_GroundHeight = cylinderPos.y + cylinderScale.y;
 			}
 			else 
 			{
-				SetPosX(GetOldPos().x);
-				SetPosZ(GetOldPos().z);
-				SetVelX(0.0f);
-				SetVelZ(0.0f);
+				pos.x = oldPos.x;
+				pos.z = oldPos.z;
+				vel.x = 0.0f;
+				vel.z = 0.0f;
 			}
 		}
 	}
@@ -288,12 +304,13 @@ void Player::PlayerCollision()
 
 	}
 
+	GetComponent<Transform3DComponent>()->SetPos(pos);
+	GetComponent<Transform3DComponent>()->SetVel(vel);
 }
 
 void Player::PredationAttack()
 {
-	Scene* scene = Manager::GetScene();
-	Predation* predation = scene->GetGameObject<Predation>();
+	Predation* predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
 
 	XMFLOAT3 predationPos;
 	predationPos.x = GetPos().x + (GetScale().x * 2.0f) * cosf(GetRot().y - (XM_PI / 2));

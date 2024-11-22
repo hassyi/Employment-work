@@ -1,11 +1,12 @@
 #pragma once
 #include "gameObject.h"
 #include "component.h"
+#include "animationModel.h"
 #include <string>
 
 class Player : public GameObject {
 private:
-	Component* m_Component{};
+	AnimationModel* m_Component{};
 	Component* m_ChildModel{};
 
 	float m_Rot = 0.0f;
@@ -40,7 +41,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	XMFLOAT3 Move();
+	void PlayerControl();
 	void PlayerCollision();
 	void PredationAttack();
 

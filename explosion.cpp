@@ -2,6 +2,8 @@
 #include "scene.h"
 #include "camera.h"
 #include "explosion.h"
+#include "transform2DComponent.h"
+#include "game.h"
 
 void Explosion::Init()
 {
@@ -27,43 +29,23 @@ void Explosion::Init()
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	//í∏ì_ÉoÉbÉtÉ@ê∂ê¨
-	D3D11_BUFFER_DESC bd{};
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	AddComponent<Transform2DComponent>()->AddTextureData(L"asset\\texture\\explosion.png");
+	GetComponent<Transform2DComponent>()->SetVertex(vertex);
+	GetComponent<Transform2DComponent>()->SetBillBoard(true);
 
-	D3D11_SUBRESOURCE_DATA sd{};
-	ZeroMemory(&sd, sizeof(sd));
-	sd.pSysMem = vertex;
-
-	Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
-
-
-	//ÉeÉNÉXÉ`ÉÉì«Ç›çûÇ›
-	TexMetadata metadata;
-	ScratchImage image;
-	LoadFromWICFile(L"asset\\texture\\explosion.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(Renderer::GetDevice(), image.GetImages(), image.GetImageCount(), metadata, &m_Texture);
-	assert(m_Texture);
-
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		"shader\\unlitTextureVS.cso");
-
-	Renderer::CreatePixelShader(&m_PixelShader,
-		"shader\\unlitTexturePS.cso");
+	for (auto component : m_ComponentList)
+	{
+		component->Init();
+	}
 }
 
 void Explosion::Uninit()
 {
-	m_VertexBuffer->Release();
-	m_Texture->Release();
-
-	m_VertexLayout->Release();
-	m_VertexShader->Release();
-	m_PixelShader->Release();
+	for (auto component : m_ComponentList)
+	{
+		component->Uninit();
+		delete component;
+	}
 }
 
 void Explosion::Update()
@@ -79,11 +61,11 @@ void Explosion::Update()
 
 void Explosion::Draw()
 {
-	//ÉeÉNÉXÉ`ÉÉç¿ïWéZèo
+	//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Â∫ßÊ®ôÁÆóÂá∫
 	float x = m_Count % 4 * (1.0f / 4);
 	float y = m_Count / 4 * (1.0f / 4);
 
-	//í∏ì_ÉfÅ[É^èëÇ´ä∑Ç¶
+	//È†ÇÁÇπ„Éá„Éº„ÇøÊõ∏„ÅçÊèõ„Åà
 	D3D11_MAPPED_SUBRESOURCE msr;
 	Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
@@ -110,50 +92,49 @@ void Explosion::Draw()
 
 	Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
 
-	//ì¸óÕÉåÉCÉAÉEÉgê›íË
+	//ÂÖ•Âäõ„É¨„Ç§„Ç¢„Ç¶„ÉàË®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ÉVÉFÅ[É_Å[ê›íË
+	//„Ç∑„Çß„Éº„ÉÄ„ÉºË®≠ÂÆö
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ÉJÉÅÉâÇÃÉrÉÖÅ[É}ÉgÉäÉNÉXéÊìæ
-	Scene* scene = Manager::GetScene();
-	Camera* camera = scene->GetGameObject<Camera>();
+	//„Ç´„É°„É©„ÅÆ„Éì„É•„Éº„Éû„Éà„É™„ÇØ„ÇπÂèñÂæó
+	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
 	XMMATRIX view = camera->GetViewMatrix();
 
-	//ÉrÉÖÅ[ÇÃãtçsóÒ
+	//„Éì„É•„Éº„ÅÆÈÄÜË°åÂàó
 	XMMATRIX invView;
-	invView = XMMatrixInverse(nullptr, view);	//ãtçsóÒ
+	invView = XMMatrixInverse(nullptr, view);	//ÈÄÜË°åÂàó
 	invView.r[3].m128_f32[0] = 0.0f;
 	invView.r[3].m128_f32[1] = 0.0f;
 	invView.r[3].m128_f32[2] = 0.0f;
 
-	//ÉèÅ[ÉãÉhÉ}ÉgÉäÉNÉXê›íË
+	//„ÉØ„Éº„É´„Éâ„Éû„Éà„É™„ÇØ„ÇπË®≠ÂÆö
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 	trans = XMMatrixTranslation(GetPos().x, GetPos().y, GetPos().z);
 	world = scale * invView * trans;
 	Renderer::SetWorldMatrix(world);
 
-	//í∏ì_ÉoÉbÉtÉ@ê›íË
+	//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°Ë®≠ÂÆö
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//É}ÉeÉäÉAÉãê›íË
+	//„Éû„ÉÜ„É™„Ç¢„É´Ë®≠ÂÆö
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ÉeÉNÉXÉ`ÉÉê›íË
+	//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-	//ÉvÉäÉ~ÉeÉBÉuÉgÉ|ÉçÉWê›íË
+	//„Éó„É™„Éü„ÉÜ„Ç£„Éñ„Éà„Éù„É≠„Ç∏Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//É|ÉäÉSÉìê›íË
+	//„Éù„É™„Ç¥„É≥Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->Draw(4, 0);
 }

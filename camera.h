@@ -37,6 +37,12 @@ public:
 	void SetMouseCamera(XMFLOAT3 pos);
 	void SetKeyCamera();
 
+	void SetTarget(XMFLOAT3 target) { m_Target = target; }
+	void SetTargetX(float targetx) { m_Target.x = targetx; }
+	void SetTargetY(float targety) { m_Target.y = targety; }
+	void SetTargetZ(float targetz) { m_Target.z = targetz; }
+
+	XMFLOAT3 GetTarget() const { return m_Target; }
 	XMMATRIX GetViewMatrix()
 	{
 		return XMLoadFloat4x4(&m_ViewMatrix);

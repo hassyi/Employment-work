@@ -496,6 +496,7 @@ void AnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 	worldMatrix *= matrix;
 	worldMatrix *= bone->AnimationMatrix;
 
+	bone->WorldMatrix = worldMatrix;
 	bone->Matrix = worldMatrix;
 	bone->Matrix *= bone->OffsetMatrix;
 

@@ -2,6 +2,7 @@
 #include "modelRenderer.h"
 #include "manager.h"
 #include "camera.h"
+#include "game.h"
 
 void Tree::Init()
 {
@@ -27,7 +28,7 @@ void Tree::Init()
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	//’¸“_ƒoƒbƒtƒ@¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	D3D11_BUFFER_DESC bd{};
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -42,7 +43,7 @@ void Tree::Init()
 	Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
 
 
-	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Ý
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	TexMetadata metadata;
 	ScratchImage image;
 	LoadFromWICFile(L"asset\\texture\\tree.png", WIC_FLAGS_NONE, &metadata, image);
@@ -74,57 +75,56 @@ void Tree::Update()
 void Tree::Draw()
 {
 
-	////’¸“_ƒf[ƒ^‘‚«Š·‚¦
+	////é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿æ›¸ãæ›ãˆ
 	//D3D11_MAPPED_SUBRESOURCE msr;
 	//Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	//VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
 	//Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
 
-	//“ü—ÍƒŒƒCƒAƒEƒgÝ’è
+	//å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆè¨­å®š
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ƒVƒF[ƒ_[Ý’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®š
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ƒJƒƒ‰‚Ìƒrƒ…[ƒ}ƒgƒŠƒNƒXŽæ“¾
-	Scene* scene = Manager::GetScene();
-	Camera* camera = scene->GetGameObject<Camera>();
+	//ã‚«ãƒ¡ãƒ©ã®ãƒ“ãƒ¥ãƒ¼ãƒžãƒˆãƒªã‚¯ã‚¹å–å¾—
+	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
 	XMMATRIX view = camera->GetViewMatrix();
 
-	//ƒrƒ…[‚Ì‹ts—ñ
+	//ãƒ“ãƒ¥ãƒ¼ã®é€†è¡Œåˆ—
 	XMMATRIX invView;
-	invView = XMMatrixInverse(nullptr, view);	//‹ts—ñ
+	invView = XMMatrixInverse(nullptr, view);	//é€†è¡Œåˆ—
 	invView.r[3].m128_f32[0] = 0.0f;
 	invView.r[3].m128_f32[1] = 0.0f;
 	invView.r[3].m128_f32[2] = 0.0f;
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒXÝ’è
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒžãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 	trans = XMMatrixTranslation(GetPos().x, GetPos().y, GetPos().z);
 	world = scale * invView * trans;
 	Renderer::SetWorldMatrix(world);
 
-	//’¸“_ƒoƒbƒtƒ@Ý’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//ƒ}ƒeƒŠƒAƒ‹Ý’è
+	//ãƒžãƒ†ãƒªã‚¢ãƒ«è¨­å®š
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ƒeƒNƒXƒ`ƒƒÝ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-	//ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWÝ’è
+	//ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//ƒ|ƒŠƒSƒ“Ý’è
+	//ãƒãƒªã‚´ãƒ³è¨­å®š
 	Renderer::GetDeviceContext()->Draw(4, 0);
 }

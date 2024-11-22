@@ -1,8 +1,7 @@
 #pragma once
 #include "main.h"
 #include "renderer.h"
-
-class Camera;
+#include <list>
 
 typedef enum
 {
@@ -15,23 +14,25 @@ typedef enum
 
 }ObjectType;
 
+class Component;
+
 class GameObject {
 private:
 	XMFLOAT3 m_Pos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 m_oldPos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 m_Scale = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 m_Rot = { 0.0f,0.0f,0.0f };
-	XMFLOAT3 m_Target = { 0.0f,0.0f,0.0f };
-	XMFLOAT3 m_CameraRot = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 m_Vel = { 0.0f,0.0f,0.0f };
 
+protected:
+	std::list<Component*> m_ComponentList;
 	bool m_Destroy = false;
 
 
 
-	ObjectType m_Type = NONE;
-
 public:
+	GameObject(){}
+	~GameObject() {};
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
@@ -53,26 +54,19 @@ public:
 	void SetRotX(float rotx) { m_Rot.x = rotx; }
 	void SetRotY(float roty) { m_Rot.y = roty; }
 	void SetRotZ(float rotz) { m_Rot.z = rotz; }
-	void SetTarget(XMFLOAT3 target) { m_Target = target; }
-	void SetTargetX(float targetx) { m_Target.x = targetx; }
-	void SetTargetY(float targety) { m_Target.y = targety; }
-	void SetTargetZ(float targetz) { m_Target.z = targetz; }
 	void SetVel(XMFLOAT3 vel) { m_Vel = vel; }
-	void SetVelX(float velx) { m_Vel.x = velx; }					
+	void SetVelX(float velx) { m_Vel.x = velx; }
 	void SetVelY(float vely) { m_Vel.y = vely; }
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 	void SetDestroy() { m_Destroy = true; }
-	void SetObjType(ObjectType type) { m_Type = type; }
 
 	XMFLOAT3 GetPos() const{	return m_Pos;	}
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
 	XMFLOAT3 GetScale() const{	return m_Scale;	}
 	XMFLOAT3 GetRot() const{	return m_Rot;	}
-	XMFLOAT3 GetTarget() const{	return m_Target;	}
-	XMFLOAT3 GetVel() { return m_Vel; }
-	ObjectType GetObjType() { return m_Type; }
+	XMFLOAT3 GetVel() const{ return m_Vel; }
 
-	//Á‚·E”j‰ó
+	//æ¶ˆã™ãƒ»ç ´å£Š
 	bool Destroy()
 	{
 		if (m_Destroy)
@@ -87,9 +81,33 @@ public:
 		}
 	}
 
+	template <class T>
+	T* AddComponent()
+	{
+		T* component = new T;
+		component->AcceptGameObject(this);
+		m_ComponentList.push_back(component);
+		component->Init();
+
+		return component;
+	}
+
+	template <class T>
+	T* GetComponent()
+	{
+		for (auto component : m_ComponentList)
+		{
+			T* ret = dynamic_cast<T*>(component);
+			if (ret != nullptr) {
+				return ret;
+			}
+		}
+		return nullptr;
+	}
+
 	XMFLOAT3 GetForward()
 	{
-		//ƒIƒCƒ‰[Ši‚©‚ç‰ñ“]s—ñ‚ğ¶¬
+		//ã‚ªã‚¤ãƒ©ãƒ¼æ ¼ã‹ã‚‰å›è»¢è¡Œåˆ—ã‚’ç”Ÿæˆ
 		XMMATRIX rotationMatrix;
 		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 
@@ -99,7 +117,7 @@ public:
 	}
 	XMFLOAT3 GetRight()
 	{
-		//ƒIƒCƒ‰[Ši‚©‚ç‰ñ“]s—ñ‚ğ¶¬
+		//ã‚ªã‚¤ãƒ©ãƒ¼æ ¼ã‹ã‚‰å›è»¢è¡Œåˆ—ã‚’ç”Ÿæˆ
 		XMMATRIX rotationMatrix;
 		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 
@@ -109,7 +127,7 @@ public:
 	}
 	XMFLOAT3 GetTop()
 	{
-		//ƒIƒCƒ‰[Ši‚©‚ç‰ñ“]s—ñ‚ğ¶¬
+		//ã‚ªã‚¤ãƒ©ãƒ¼æ ¼ã‹ã‚‰å›è»¢è¡Œåˆ—ã‚’ç”Ÿæˆ
 		XMMATRIX rotationMatrix;
 		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 

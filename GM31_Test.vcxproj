@@ -150,6 +150,7 @@
     <ClCompile Include="animationModel.cpp" />
     <ClCompile Include="audio.cpp" />
     <ClCompile Include="box.cpp" />
+    <ClCompile Include="boxColiderComponent.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -170,20 +171,25 @@
     <ClCompile Include="predation.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
-    <ClCompile Include="Resultpolygon2D.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="sky.cpp" />
+    <ClCompile Include="texture2D.cpp" />
+    <ClCompile Include="textureComponent.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
-    <ClCompile Include="Titlepolygon2D.cpp" />
+    <ClCompile Include="transform2DComponent.cpp" />
+    <ClCompile Include="transform3DAnimaitonComponent.cpp" />
+    <ClCompile Include="transform3DComponent.cpp" />
     <ClCompile Include="tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animationModel.h" />
     <ClInclude Include="audio.h" />
     <ClInclude Include="box.h" />
+    <ClInclude Include="boxColiderComponent.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="colider.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="cylinder.h" />
@@ -192,6 +198,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameObject.h" />
+    <ClInclude Include="gameObjectComponent.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
@@ -204,14 +211,22 @@
     <ClInclude Include="predation.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
-    <ClInclude Include="Resultpolygon2D.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="sceneState.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="sky.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="texture2D.h" />
+    <ClInclude Include="textureComponent.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
-    <ClInclude Include="Titlepolygon2D.h" />
+    <ClInclude Include="transform.h" />
+    <ClInclude Include="transform2DComponent.h" />
+    <ClInclude Include="transform3DComponent.h" />
+    <ClInclude Include="transform3DAnimaitonComponent.h" />
     <ClInclude Include="tree.h" />
+    <ClInclude Include="UI.h" />
+    <ClInclude Include="uiComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">

@@ -8,9 +8,6 @@
 #include "result.h"
 #include "modelRenderer.h"
 
-//Staticƒƒ“ƒo•Ï”‚ÍéŒ¾‚ª•K—v
-Scene* Manager::m_Scene{};
-Scene* Manager::m_NextScene{};
 
 void Manager::Init()
 {
@@ -18,14 +15,13 @@ void Manager::Init()
 	Input::Init();
 	Audio::InitMaster();
 
-	m_Scene = new Game;
-	m_Scene->Init();
+	Scene::GetInstance()->InitScene(new Game);
+
 }
 
 void Manager::Uninit()
 {
-	m_Scene->Uninit();
-	delete m_Scene;
+	Scene::GetInstance()->Uninit();
 
 	ModelRenderer::UnloadAll();
 
@@ -37,27 +33,14 @@ void Manager::Uninit()
 void Manager::Update()
 {
 	Input::Update();
-	m_Scene->Update();
+	Scene::GetInstance()->Update();
 
 }
 
 void Manager::Draw()
 {
 	Renderer::Begin();
-	m_Scene->Draw();
+	Scene::GetInstance()->Draw();
 
 	Renderer::End();
-
-	if (m_NextScene != nullptr) {
-		m_Scene->Uninit();
-		delete m_Scene;
-
-		ModelRenderer::UnloadAll();
-
-		m_Scene = m_NextScene;
-		m_Scene->Init();
-
-		m_NextScene = nullptr;
-	}
-
 }

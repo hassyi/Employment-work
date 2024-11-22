@@ -9,27 +9,28 @@
 #pragma comment (lib, "assimp-vc143-mt.lib")
 
 #include "component.h"
+#include "gameObjectComponent.h"
 
-
-//•ÏŒ`Œã’¸“_\‘¢‘Ì
+//å¤‰å½¢å¾Œé ‚ç‚¹æ§‹é€ ä½“
 struct DEFORM_VERTEX
 {
 	aiVector3D Position;
 	aiVector3D Normal;
 	int				BoneNum;
-	std::string		BoneName[4];//–{—ˆ‚Íƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX‚ÅŠÇ—‚·‚é‚×‚«
+	std::string		BoneName[4];//æœ¬æ¥ã¯ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã§ç®¡ç†ã™ã‚‹ã¹ã
 	float			BoneWeight[4];
 };
 
-//ƒ{[ƒ“\‘¢‘Ì
+//ãƒœãƒ¼ãƒ³æ§‹é€ ä½“
 struct BONE
 {
 	aiMatrix4x4 Matrix;
 	aiMatrix4x4 AnimationMatrix;
 	aiMatrix4x4 OffsetMatrix;
+	aiMatrix4x4 WorldMatrix;
 };
 
-class AnimationModel : public Component
+class AnimationModel : public GameObjectComponet
 {
 private:
 	const aiScene* m_AiScene = nullptr;
@@ -40,11 +41,11 @@ private:
 
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> m_Texture;
 
-	std::vector<DEFORM_VERTEX>* m_DeformVertex;//•ÏŒ`Œã’¸“_ƒf[ƒ^
-	std::unordered_map<std::string, BONE> m_Bone;//ƒ{[ƒ“ƒf[ƒ^i–¼‘O‚ÅQÆj
+	std::vector<DEFORM_VERTEX>* m_DeformVertex;//å¤‰å½¢å¾Œé ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
+	std::unordered_map<std::string, BONE> m_Bone;//ãƒœãƒ¼ãƒ³ãƒ‡ãƒ¼ã‚¿ï¼ˆåå‰ã§å‚ç…§ï¼‰
 
 public:
-	using Component::Component;
+	using GameObjectComponet::GameObjectComponet;
 
 	void Load( const char *FileName );
 	void Uninit() override;
@@ -53,4 +54,5 @@ public:
 	void CreateBone(aiNode* node);
 	void Update(const char* AnimationName1, int Frame1, const char* AnimationName2, int Frame2, float BlendRatio);
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
+	std::unordered_map<std::string, BONE> GetBone() const { return m_Bone; }
 };

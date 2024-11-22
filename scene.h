@@ -1,114 +1,48 @@
 #pragma once
-#include <list>
-#include <vector>
-#include "gameObject.h"
-#include "polygon2D.h"
-#include "camera.h"
-#include "field.h"
-#include "player.h"
-#include "enemy.h"
-#include "bullet.h"
-#include "sky.h"
-#include "explosion.h"
-#include "cylinder.h"
-#include "box.h"
-
-#define LAYER_MAX (3)
+#include "sceneState.h"
 
 class Scene
 {
-protected:
-	std::list<GameObject*> m_GameObject[LAYER_MAX];
+private:
+	explicit Scene(SceneState* state) : m_State(state){}
+	Scene() = default;
+	virtual ~Scene() { delete m_State; }
+	SceneState* m_State;
 
 
 public:
-	virtual ~Scene() {}
-	virtual void Init() {}
+	void Init() { m_State->Init(); }
+	void Uninit() { m_State->Uninit(); }
+	void Update() { m_State->Update(); }
+	void Draw() { m_State->Draw(); }
 
-	virtual void Uninit() {
-		for (int i = 0; i < LAYER_MAX; i++) {
-			for (GameObject* object : m_GameObject[i]) {
-				object->Uninit();
-				delete object;
-			}
-			m_GameObject[i].clear();
-		}
+	void InitScene(SceneState* state)
+	{
+		m_State = state;
+		Init();
 	}
-	virtual void Update() {
-		for (int i = 0; i < LAYER_MAX; i++) {
-			for (GameObject* object : m_GameObject[i]) {
-				object->Update();
-			}
-			m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });	//ラムダ式
-		}
-	}
-	virtual void Draw() {
-
-		for (int i = 0; i < LAYER_MAX; i++) {
-			//m_GameObject[i].sort();
-			for (GameObject* object : m_GameObject[i]) {
-				object->Draw();
-			}
-		}
+	void ChangeScene(SceneState* state)
+	{
+		delete m_State;
+		m_State = state;
+		Init();
 	}
 
-	//listの追加
-	template <typename T>	//テンプレート関数
-	T* AddGameObject(int Layer) {
-		T* gameObject = new T();
-		gameObject->Init();
-		m_GameObject[Layer].push_back(gameObject);
-
-		return gameObject;
+	static Scene* GetInstance()
+	{
+		static Scene* scene = new Scene;
+		return scene;
 	}
 
-	//指定したGameObjectの取得
-	template <typename T>
-	T* GetGameObject() {
-		for (int i = 0; i < 3; i++) {
-			for (GameObject* object : m_GameObject[i]) {
-				T* ret = dynamic_cast<T*>(object);
-				if (ret != nullptr) {
-					return ret;
-				}
-			}
+	template <class T>
+	T* GetScene()
+	{
+		T* scene = static_cast<T*> (m_State);
+		if (scene != nullptr) {
+			return scene;
 		}
 		return nullptr;
 	}
 
-	//指定したGameObjectの取得
-	template <typename T>
-	std::vector<T*> GetGameObjects() {
-		std::vector<T*> objectList;
 
-		for (int i = 0; i < 3; i++) {
-			for (GameObject* object : m_GameObject[i]) {
-				T* ret = dynamic_cast<T*>(object);
-				if (ret != nullptr) {
-					objectList.push_back(ret);
-				}
-			}
-		}
-		return objectList;
-	}
-
-	template <typename T>
-	std::list<T*> GetGameObjectList() {
-		std::list<T*> objectList;
-
-		for (int i = 0; i < 3; i++) {
-			for (GameObject* object : m_GameObject[i]) {
-				T* ret = dynamic_cast<T*>(object);
-				if (ret != nullptr) {
-					objectList.push_back(ret);
-				}
-			}
-		}
-		return objectList;
-	}
-
-
-	std::list<GameObject*> GetGameObjectList(int object) {
-		return m_GameObject[object];
-	}
 };

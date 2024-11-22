@@ -4,20 +4,18 @@
 class Manager
 {
 private:
-	static Scene* m_Scene;
-	static Scene* m_NextScene;
+	static Manager m_manager;
 
 public:
+
+	static Manager GetInstance() {
+		static Manager manager;
+		return manager;
+	}
+
 	static void Init();
 	static void Uninit();
 	static void Update();
 	static void Draw();
-
-	static Scene* GetScene() {	return m_Scene; }
-
-	template <typename T>
-	static void SetScene() {
-		m_NextScene = new T();
-	}
 
 };

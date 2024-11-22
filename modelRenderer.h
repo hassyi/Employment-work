@@ -2,7 +2,7 @@
 
 
 
-// ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+// ãƒãƒ†ãƒªã‚¢ãƒ«æ§‹é€ ä½“
 struct MODEL_MATERIAL
 {
 	char						Name[256];
@@ -13,7 +13,7 @@ struct MODEL_MATERIAL
 };
 
 
-// •`‰æƒTƒuƒZƒbƒg\‘¢‘Ì
+// æç”»ã‚µãƒ–ã‚»ãƒƒãƒˆæ§‹é€ ä½“
 struct SUBSET
 {
 	unsigned int	StartIndex;
@@ -22,7 +22,7 @@ struct SUBSET
 };
 
 
-// ƒ‚ƒfƒ‹\‘¢‘Ì
+// ãƒ¢ãƒ‡ãƒ«æ§‹é€ ä½“
 struct MODEL_OBJ
 {
 	VERTEX_3D		*VertexArray;
@@ -48,9 +48,10 @@ struct MODEL
 #include "component.h"
 #include <string>
 #include <unordered_map>
+#include "gameObjectComponent.h"
 
 
-class ModelRenderer : public Component
+class ModelRenderer : public GameObjectComponet
 {
 private:
 
@@ -68,7 +69,7 @@ public:
 	static void UnloadAll();
 
 
-	using Component::Component;
+	using GameObjectComponet::GameObjectComponet;
 
 	void Load( const char *FileName );
 

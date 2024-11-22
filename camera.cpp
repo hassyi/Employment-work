@@ -2,7 +2,7 @@
 #include "camera.h"
 #include "input.h"
 #include "player.h"
-#include "scene.h"
+#include "game.h"
 
 void Camera::Init()
 {
@@ -33,7 +33,7 @@ void Camera::Update()
 	m_CameraCount++;
 	m_Radian = XM_PI * 0.01f;
 
-	//ƒJƒƒ‰Ø‚è‘Ö‚¦(0:ƒL[‰ñ“] 1:ƒ}ƒEƒX‰ñ“])
+	//ã‚«ãƒ¡ãƒ©åˆ‡ã‚Šæ›¿ãˆ(0:ã‚­ãƒ¼å›è»¢ 1:ãƒã‚¦ã‚¹å›è»¢)
 	if (Input::GetKeyTrigger(VK_TAB))
 	{
 		if (mouse == 0) {
@@ -49,8 +49,7 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 
 	switch (mouse)
 	{
@@ -71,7 +70,7 @@ void Camera::Draw()
 	}
 
 
-	//ƒrƒ…[ƒ}ƒgƒŠƒNƒXİ’è
+	//ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	XMFLOAT3 up{ 0.0f,1.0f,0.0f };
 	XMFLOAT3 camerapos = GetPos();
 	XMFLOAT3 cameratarget = GetTarget();
@@ -81,7 +80,7 @@ void Camera::Draw()
 
 	XMStoreFloat4x4(&m_ViewMatrix, viewMatrix);
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒNƒXİ’è
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	XMMATRIX projectionMatrix;
 	projectionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 1000.0f);
 
@@ -90,14 +89,13 @@ void Camera::Draw()
 
 void Camera::SetMouseCamera(XMFLOAT3 pos)
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 
 	m_OldmousePos = m_MousePos;
 
 	m_MousePos = XMFLOAT2(GetMousePosX(), GetMousePosY());
 
-	//’†‰›‚©‚ç‰E‚É‚¢‚éê‡
+	//ä¸­å¤®ã‹ã‚‰å³ã«ã„ã‚‹å ´åˆ
 	if (m_OldmousePos.x > m_CenterCamX)
 	{
 		if (m_MousePos.x > m_OldmousePos.x + 15.0f)
@@ -115,7 +113,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 		}
 		m_Radian = XM_PI * 0.01f;
 	}
-	//’†‰›‚©‚ç¶‚É‚¢‚éê‡
+	//ä¸­å¤®ã‹ã‚‰å·¦ã«ã„ã‚‹å ´åˆ
 	if (m_OldmousePos.x < m_CenterCamX)
 	{
 		if (m_MousePos.x < m_OldmousePos.x - 15.0f)
@@ -133,7 +131,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 		}
 		m_Radian = XM_PI * 0.01f;
 	}
-	//’†‰›‚©‚ç‰º‚É‚¢‚éê‡
+	//ä¸­å¤®ã‹ã‚‰ä¸‹ã«ã„ã‚‹å ´åˆ
 	if (m_OldmousePos.y > m_CenterCamY)
 	{
 		if (GetPos().y <= (m_R - 3.0f) + player->GetPos().y)
@@ -152,7 +150,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 		}
 		m_Radian = XM_PI * 0.01f;
 	}
-	//’†‰›‚©‚çã‚É‚¢‚éê‡
+	//ä¸­å¤®ã‹ã‚‰ä¸Šã«ã„ã‚‹å ´åˆ
 	if (m_OldmousePos.y < m_CenterCamY)
 	{
 		if (GetPos().y >= (-m_R + 3.0f) + player->GetPos().y)
@@ -180,7 +178,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	SetPosY((m_R * cosf(m_F)) + GetTarget().y);
 	SetPosZ((m_R * sinf(m_F) * sinf(m_S)) + GetTarget().z);
 
-	//ƒJ[ƒ\ƒ‹‚ğ’†S‚É–ß‚·
+	//ã‚«ãƒ¼ã‚½ãƒ«ã‚’ä¸­å¿ƒã«æˆ»ã™
 	if (m_CameraCount > 5)
 	{
 		SetCursorPos(m_CenterCamX, m_CenterCamY);
@@ -190,10 +188,9 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 
 void Camera::SetKeyCamera()
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 
-	//ƒJƒƒ‰‰ñ“]
+	//ã‚«ãƒ¡ãƒ©å›è»¢
 	if (Input::GetKeyPress('Q'))
 	{
 		m_S += m_Radian;

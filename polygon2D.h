@@ -1,7 +1,8 @@
 #pragma once
 #include "gameObject.h"
+#include "UI.h"
 
-class Polygon2D : public GameObject
+class Polygon2D : public UI
 {
 private:
 	ID3D11Buffer*				m_VertexBuffer = NULL;

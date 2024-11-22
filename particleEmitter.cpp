@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "particleEmitter.h"
+#include "game.h"
 
 void PartrcleEmitter::Init()
 {
@@ -27,7 +28,7 @@ void PartrcleEmitter::Init()
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	//’¸“_ƒoƒbƒtƒ@¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	D3D11_BUFFER_DESC bd{};
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -42,7 +43,7 @@ void PartrcleEmitter::Init()
 	Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
 
 
-	//ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	TexMetadata metadata;
 	ScratchImage image;
 	LoadFromWICFile(L"asset\\texture\\particle.png", WIC_FLAGS_NONE, &metadata, image);
@@ -68,7 +69,7 @@ void PartrcleEmitter::Uninit()
 
 void PartrcleEmitter::Update()
 {
-	//ƒp[ƒeƒBƒNƒ‹”­Ë
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç™ºå°„
 	for (int i = 0; i < PARTICLE_MAX; i++) {
 		if (!m_Particle[i].Enable) {
 			m_Particle[i].Enable = true;
@@ -85,7 +86,7 @@ void PartrcleEmitter::Update()
 	}
 	for (int i = 0; i < PARTICLE_MAX; i++) {
 		if (m_Particle[i].Enable) {
-			//d—Í
+			//é‡åŠ›
 			m_Particle[i].Vel.y += -0.01f;
 
 			m_Particle[i].Pos.x += m_Particle[i].Vel.x;
@@ -105,63 +106,62 @@ void PartrcleEmitter::Update()
 void PartrcleEmitter::Draw()
 {
 
-	//“ü—ÍƒŒƒCƒAƒEƒgİ’è
+	//å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆè¨­å®š
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ƒVƒF[ƒ_[İ’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®š
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ƒJƒƒ‰‚Ìƒrƒ…[ƒ}ƒgƒŠƒNƒXæ“¾
-	Scene* scene = Manager::GetScene();
-	Camera* camera = scene->GetGameObject<Camera>();
+	//ã‚«ãƒ¡ãƒ©ã®ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªã‚¯ã‚¹å–å¾—
+	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();;
 	XMMATRIX view = camera->GetViewMatrix();
 
-	//ƒrƒ…[‚Ì‹ts—ñ
+	//ãƒ“ãƒ¥ãƒ¼ã®é€†è¡Œåˆ—
 	XMMATRIX invView;
-	invView = XMMatrixInverse(nullptr, view);	//‹ts—ñ
+	invView = XMMatrixInverse(nullptr, view);	//é€†è¡Œåˆ—
 	invView.r[3].m128_f32[0] = 0.0f;
 	invView.r[3].m128_f32[1] = 0.0f;
 	invView.r[3].m128_f32[2] = 0.0f;
 
 
-	//’¸“_ƒoƒbƒtƒ@İ’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//ƒ}ƒeƒŠƒAƒ‹İ’è
+	//ãƒãƒ†ãƒªã‚¢ãƒ«è¨­å®š
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ƒeƒNƒXƒ`ƒƒİ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-	//ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWİ’è
+	//ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//Zƒoƒbƒtƒ@–³Œø
+	//Zãƒãƒƒãƒ•ã‚¡ç„¡åŠ¹
 	Renderer::SetDepthEnable(false);
 
 	for (int i = 0; i < PARTICLE_MAX; i++)
 	{
 		if (m_Particle[i].Enable) 
 		{
-			//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒXİ’è
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 			XMMATRIX world, scale, rot, trans;
 			scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 			trans = XMMatrixTranslation(m_Particle[i].Pos.x, m_Particle[i].Pos.y, m_Particle[i].Pos.z);
 			world = scale * invView * trans;
 			Renderer::SetWorldMatrix(world);
 
-			//ƒ|ƒŠƒSƒ“İ’è
+			//ãƒãƒªã‚´ãƒ³è¨­å®š
 			Renderer::GetDeviceContext()->Draw(4, 0);
 		}
 	}
-	//Zƒoƒbƒtƒ@—LŒø
+	//Zãƒãƒƒãƒ•ã‚¡æœ‰åŠ¹
 	Renderer::SetDepthEnable(true);
 
 }

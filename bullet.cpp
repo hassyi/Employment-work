@@ -1,20 +1,20 @@
 #include "bullet.h"
 #include "modelRenderer.h"
-#include "scene.h"
 #include "manager.h"
 #include "player.h"
 #include "explosion.h"
 #include "collision.h"
-
+#include "transform3DComponent.h"
+#include "game.h"
+#include "enemy.h"
 
 void Bullet::Init()
 {
-	SetPos(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
-	SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
 	m_Component = new ModelRenderer(this);
 	((ModelRenderer*)m_Component)->Load("asset\\model\\bullet.obj");
+
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\bullet.obj");
+	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
 		"shader\\unlitTextureVS.cso");
@@ -28,29 +28,39 @@ void Bullet::Uninit()
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
 	m_PixelShader->Release();
+
+	for (auto component : m_ComponentList)
+	{
+		component->Uninit();
+		delete component;
+	}
 }
 
 void Bullet::Update()
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 	XMFLOAT3 dir = player->GetDir();
 	Collision collision;
-	SetPosX(GetPos().x + dir.x);
-	SetPosZ(GetPos().z + dir.z);
+
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+
+	pos.x += dir.x;
+	pos.z += dir.z;
+
 	++m_frame;
 
 	if (m_frame >= 60){
-		Explosion* explosion = scene->AddGameObject<Explosion>(1);
-		explosion->SetPos(GetPos());
+		Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Explosion>();
+		explosion->SetPos(pos);
 		SetDestroy();
 		return;
 	}
 
-	//“G‚Æ‚ÌÕ“Ë”»’è
-	std::vector<Enemy*> enemyList = scene->GetGameObjects<Enemy>();
+	//æ•µã¨ã®è¡çªåˆ¤å®š
+	std::vector<Enemy*> enemyList = Scene::GetInstance()->GetScene<Game>()->GetGameObjects<Enemy>();;
 
-	for (Enemy* enemy : enemyList) {
+	for (Enemy* enemy : enemyList) 
+	{
 		XMFLOAT3 enemyPos = enemy->GetPos();
 		XMFLOAT3 enemyScale = enemy->GetScale();
 		//XMFLOAT3 direction;
@@ -68,31 +78,21 @@ void Bullet::Update()
 		//	enemy->SetDestroy();
 		//}
 
-		if (collision.CollisionBS(GetPos(), enemyPos, 2.0f)) {
-			Explosion* explosion = scene->AddGameObject<Explosion>(1);
-			explosion->SetPos(GetPos());
+		if (collision.CollisionBS(pos, enemyPos, 2.0f)) {
+			Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Explosion>();
+			explosion->SetPos(pos);
 			SetDestroy();
 			enemy->SetDestroy();
 		}
 	}
+
+	GetComponent<Transform3DComponent>()->SetPos(pos);
 }
 
 void Bullet::Draw()
 {
-	//“ü—ÍƒŒƒCƒAƒEƒgİ’è
-	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
-
-	//ƒVƒF[ƒ_[İ’è
-	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
-	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
-
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒXİ’è
-	XMMATRIX world, scale, rot, trans;
-	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
-	rot = XMMatrixRotationRollPitchYaw(GetRot().x, GetRot().y, GetRot().z);
-	trans = XMMatrixTranslation(GetPos().x, GetPos().y, GetPos().z);
-	world = scale * rot * trans;
-	Renderer::SetWorldMatrix(world);
-
-	m_Component->Draw();
+	for (auto component : m_ComponentList)
+	{
+		component->Draw();
+	}
 }
