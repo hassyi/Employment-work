@@ -4,10 +4,16 @@
 #include "animationModel.h"
 #include <string>
 
+class Predation;
+class BuffParticle;
+
 class Player : public GameObject {
 private:
 	AnimationModel* m_Component{};
 	Component* m_ChildModel{};
+
+	Predation* m_Predation{};
+	BuffParticle* m_BuffParticle{};
 
 	float m_Rot = 0.0f;
 	XMFLOAT3 m_dir;
@@ -44,6 +50,7 @@ public:
 	void PlayerControl();
 	void PlayerCollision();
 	void PredationAttack();
+	void PlayerBuff();
 
 	XMFLOAT3 GetDir() { return m_dir; }
 	//void Attack();

@@ -151,11 +151,14 @@
     <ClCompile Include="audio.cpp" />
     <ClCompile Include="box.cpp" />
     <ClCompile Include="boxColiderComponent.cpp" />
+    <ClCompile Include="buffParticle.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="cylinder.cpp" />
+    <ClCompile Include="cylinderColiderComponent.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemyBullet.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
@@ -173,6 +176,7 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="sky.cpp" />
+    <ClCompile Include="sphereColiderComponent.cpp" />
     <ClCompile Include="texture2D.cpp" />
     <ClCompile Include="textureComponent.cpp" />
     <ClCompile Include="time.cpp" />
@@ -187,13 +191,16 @@
     <ClInclude Include="audio.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="boxColiderComponent.h" />
+    <ClInclude Include="buffParticle.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="colider.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="cylinder.h" />
+    <ClInclude Include="cylinderColiderComponent.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemyBullet.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
@@ -215,6 +222,7 @@
     <ClInclude Include="sceneState.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="sky.h" />
+    <ClInclude Include="sphereColiderComponent.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture2D.h" />
     <ClInclude Include="textureComponent.h" />

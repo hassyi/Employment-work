@@ -65,10 +65,7 @@ void Explosion::Draw()
 	float x = m_Count % 4 * (1.0f / 4);
 	float y = m_Count / 4 * (1.0f / 4);
 
-	//頂点データ書き換え
-	D3D11_MAPPED_SUBRESOURCE msr;
-	Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
+	VERTEX_3D vertex[4];
 
 	vertex[0].Position = XMFLOAT3(-1.0f, 1.0f, 0.0f);
 	vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -90,51 +87,9 @@ void Explosion::Draw()
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(x + 0.25f, y + 0.25f);
 
-	Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
-
-	//入力レイアウト設定
-	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
-
-	//シェーダー設定
-	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
-	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
-
-	//カメラのビューマトリクス取得
-	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
-	XMMATRIX view = camera->GetViewMatrix();
-
-	//ビューの逆行列
-	XMMATRIX invView;
-	invView = XMMatrixInverse(nullptr, view);	//逆行列
-	invView.r[3].m128_f32[0] = 0.0f;
-	invView.r[3].m128_f32[1] = 0.0f;
-	invView.r[3].m128_f32[2] = 0.0f;
-
-	//ワールドマトリクス設定
-	XMMATRIX world, scale, rot, trans;
-	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
-	trans = XMMatrixTranslation(GetPos().x, GetPos().y, GetPos().z);
-	world = scale * invView * trans;
-	Renderer::SetWorldMatrix(world);
-
-	//頂点バッファ設定
-	UINT stride = sizeof(VERTEX_3D);
-	UINT offset = 0;
-	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
-
-	//マテリアル設定
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.TextureEnable = true;
-	Renderer::SetMaterial(material);
-
-	//テクスチャ設定
-	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
-
-	//プリミティブトポロジ設定
-	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	//ポリゴン設定
-	Renderer::GetDeviceContext()->Draw(4, 0);
+	for (auto component : m_ComponentList)
+	{
+		GetComponent<Transform2DComponent>()->SetVertex(vertex);
+		component->Draw();
+	}
 }

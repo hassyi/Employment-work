@@ -11,6 +11,8 @@ private:
 	ID3D11InputLayout* m_VertexLayout;
 
 	int m_life = 0;
+	int m_CreateBulletFrame = 0;
+	float m_GroundHeight = 0.0f;
 
 public:
 
@@ -18,5 +20,7 @@ public:
 	void Uninit()override;
 	void Update()override;
 	void Draw()override;
+
+	void EnemyCollision();
 
 };

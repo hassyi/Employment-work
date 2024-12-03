@@ -5,8 +5,11 @@
 class Transform3DAnimationComponent : public Transform
 {
 private:
+
 	AnimationModel* m_Model = nullptr;
 	const char* m_ModelData = "none";
+	const char* m_AnimationData = "none";
+	const char* m_AnimationName = "none";
 
 	float m_Rotation = 0.0f;
 
@@ -21,10 +24,18 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	void AddModelData(const char* data)
+	void AddModelData(const char* data, GameObject* gameobj)
 	{
+		m_Model = new AnimationModel(gameobj);
 		m_ModelData = data;
 		m_Model->Load(m_ModelData);
+	}
+
+	void AddAnimationData(const char* data, const char* name)
+	{
+		m_AnimationData = data;
+		m_AnimationName = name;
+		m_Model->LoadAnimation(m_AnimationData, m_AnimationName);
 	}
 
 	void SetTransform(XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rot)

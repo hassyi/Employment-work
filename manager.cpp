@@ -9,6 +9,7 @@
 #include "modelRenderer.h"
 
 
+Scene* Scene::m_Scene{};
 void Manager::Init()
 {
 	Renderer::Init();

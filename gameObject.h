@@ -2,17 +2,22 @@
 #include "main.h"
 #include "renderer.h"
 #include <list>
+#include "colider.h"
+#include "sceneState.h"
 
 typedef enum
 {
 	NONE = 0,
-	PLAYER,
-	ENEMY,
 	BOX,
 	CYLINDER,
+	BULLET,
+	BULLET_ENEMY,
+	PLAYER,
+	ENEMY,
 
+	MAX
 
-}ObjectType;
+}OBJ_TYPE;
 
 class Component;
 
@@ -25,9 +30,11 @@ private:
 	XMFLOAT3 m_Vel = { 0.0f,0.0f,0.0f };
 
 protected:
+	SceneState* m_SceneState = nullptr;
 	std::list<Component*> m_ComponentList;
 	bool m_Destroy = false;
 
+	OBJ_TYPE m_ObjType = OBJ_TYPE::NONE;
 
 
 public:
@@ -59,12 +66,16 @@ public:
 	void SetVelY(float vely) { m_Vel.y = vely; }
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 	void SetDestroy() { m_Destroy = true; }
+	void SetScene(SceneState* scene) { m_SceneState = scene; }
 
 	XMFLOAT3 GetPos() const{	return m_Pos;	}
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
 	XMFLOAT3 GetScale() const{	return m_Scale;	}
 	XMFLOAT3 GetRot() const{	return m_Rot;	}
 	XMFLOAT3 GetVel() const{ return m_Vel; }
+	SceneState* GetScene() { return m_SceneState; }
+	std::list<Component*> GetComponentList() { return m_ComponentList; }
+	OBJ_TYPE GetObjectType() { return m_ObjType; }
 
 	//消す・破壊
 	bool Destroy()
@@ -81,12 +92,18 @@ public:
 		}
 	}
 
+	Colider* GetColider()
+	{
+		Colider* colider = GetComponent<Colider>();
+		return colider;
+	}
+
 	template <class T>
 	T* AddComponent()
 	{
 		T* component = new T;
-		component->AcceptGameObject(this);
 		m_ComponentList.push_back(component);
+		component->AcceptGameObject(this);
 		component->Init();
 
 		return component;

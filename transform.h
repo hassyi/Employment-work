@@ -50,9 +50,9 @@ public:
 	void SetVelY(float vely) { m_Vel.y = vely; }
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 
-	XMFLOAT3 GetPos() { return m_Pos; }
-	XMFLOAT3 GetScale() { return m_Scale; }
-	XMFLOAT3 GetRot() { return m_Rot; }
-	XMFLOAT3 GetVel() { return m_Vel; }
+	XMFLOAT3 GetPos() const{ return m_Pos; }
+	XMFLOAT3 GetScale() const { return m_Scale; }
+	XMFLOAT3 GetRot() const { return m_Rot; }
+	XMFLOAT3 GetVel() const { return m_Vel; }
 
 };

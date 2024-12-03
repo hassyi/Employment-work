@@ -14,7 +14,7 @@ protected:
 
 public:
 	Component() = default;		//deleteを入れることで引数なしのコンストラクタを消せる
-	//Component(GameObject* object) { m_GameObject = object; }
+	Component(GameObject* object) { m_GameObject = object; }
 	virtual ~Component(){}
 
 	virtual void Init() {};		//仮想関数

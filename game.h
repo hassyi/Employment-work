@@ -25,9 +25,10 @@ public:
 	//listの追加
 	template <typename T>	//テンプレート関数
 	T* AddGameObject(int Layer) {
-		T* gameObject = new T();
-		gameObject->Init();
+		T* gameObject = new T;
 		m_GameObject[Layer].push_back(gameObject);
+		gameObject->SetScene(this);
+		gameObject->Init();
 
 		return gameObject;
 	}
@@ -78,8 +79,8 @@ public:
 	}
 
 
-	std::list<GameObject*> GetGameObjectList(int object) {
-		return m_GameObject[object];
+	std::list<GameObject*> GetGameObjectList() {
+		return m_GameObject[1];
 	}
 
 	template <class T>

@@ -8,8 +8,8 @@
 #include "assimp/matrix4x4.h"
 #pragma comment (lib, "assimp-vc143-mt.lib")
 
-#include "component.h"
 #include "gameObjectComponent.h"
+
 
 //変形後頂点構造体
 struct DEFORM_VERTEX
@@ -52,7 +52,7 @@ public:
 	void Draw() override;
 	void LoadAnimation(const char* FileName, const char* Name);
 	void CreateBone(aiNode* node);
-	void Update(const char* AnimationName1, int Frame1, const char* AnimationName2, int Frame2, float BlendRatio);
+	void UpdateAnimation(const char* AnimationName1, int Frame1, const char* AnimationName2, int Frame2, float BlendRatio);
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
 	std::unordered_map<std::string, BONE> GetBone() const { return m_Bone; }
 };

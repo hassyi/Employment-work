@@ -2,9 +2,8 @@
 
 void Transform3DAnimationComponent::Init()
 {
-	m_Model = new AnimationModel;
 
-	if (m_ModelData != "none") m_Model->Load(m_ModelData);
+	if (m_ModelData == "none") return;
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
 		"shader\\unlitTextureVS.cso");
@@ -41,9 +40,9 @@ void Transform3DAnimationComponent::Draw()
 
 	//ワールドマトリクス設定
 	XMMATRIX world, scale, rot, trans;
-	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
-	rot = XMMatrixRotationRollPitchYaw(GetRot().x, GetRot().y, GetRot().z);
-	trans = XMMatrixTranslation(GetPos().x, GetPos().y, GetPos().z);
+	scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 	world = scale * rot * trans;
 	Renderer::SetWorldMatrix(world);
 

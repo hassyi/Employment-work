@@ -23,6 +23,8 @@
 #include "time.h"
 #include "meshField.h"
 #include "transform3DComponent.h"
+#include "transform2DComponent.h"
+#include "buffParticle.h"
 
 void Game::Init()
 {
@@ -30,29 +32,45 @@ void Game::Init()
 	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
 	AddGameObject<Player>(1);
-	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 0.0f, 20.0f));
-	//AddGameObject<Enemy>(1)->SetPos(XMFLOAT3(10.0f, 0.0f, 20.0f));
-	//AddGameObject<Enemy>(1)->SetPos(XMFLOAT3(-10.0f, 0.0f, 20.0f));
+	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 0.0f));
+	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
+	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, -10.0f));
 
 	//{
-	//	Cylinder* cylinder = AddGameObject<Cylinder>(1);
-	//	cylinder->SetPos(XMFLOAT3(10.0f, 0.0f, -20.0f));
-	//	cylinder->SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
-	//}
-	//{
-	//	Cylinder* cylinder = AddGameObject<Cylinder>(1);
-	//	cylinder->SetPos(XMFLOAT3(-10.0f, 0.0f, -20.0f));
-	//	cylinder->SetScale(XMFLOAT3(3.0f, 3.0f, 3.0f));
+	//	AddGameObject<Cylinder>(1);
+	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
+	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	//}
 	{
 		Box* box = AddGameObject<Box>(1);
 		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 0.0f, 10.0f));
 		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 1.0f, 0.0f));
+		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	}
+	{
+		Box* box = AddGameObject<Box>(1);
+		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 0.0f, -10.0f));
+		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
 	AddGameObject<Sky>(1);
-	//AddGameObject<PartrcleEmitter>(1)->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
-	//AddGameObject<Tree>(1)->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
+	//AddGameObject<PartrcleEmitter>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
+	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
+	AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
+
+	MeshField* meshField = GetGameObject<MeshField>();
+	for (int i = 0; i < 10; i++)
+	{
+		Tree* tree = AddGameObject<Tree>(1);
+
+		XMFLOAT3 pos;
+		pos.x = (float)rand() / RAND_MAX * 100.0f - 50.0f;
+		pos.z = (float)rand() / RAND_MAX * 100.0f - 50.0f;
+		pos.y = meshField->GetHeight(pos);
+
+		tree->GetComponent<Transform2DComponent>()->SetPos(pos);
+	}
 	//AddGameObject<Polygon2D>(2);
 	AddGameObject<Predation>(1);
 	//AddUITexture<Score>();
@@ -60,11 +78,6 @@ void Game::Init()
 	//m_BGM = new Audio(this);
 	//m_BGM->Load("asset\\audio\\gameBGM.wav");
 	//m_BGM->Play(true);
-
-	for (auto ui : m_Texture)
-	{
-		ui->Init();
-	}
 }
 
 void Game::Uninit()
@@ -89,14 +102,14 @@ void Game::Update()
 		for (GameObject* object : m_GameObject[i]) {
 			object->Update();
 		}
-		m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });	//ラムダ式
+		m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });	
 	}
 	for (auto ui : m_Texture)
 	{
 		ui->Update();
 	}
 
-	std::vector<Enemy*> enemyList = GetGameObjects<Enemy>();
+	//std::vector<Enemy*> enemyList = GetGameObjects<Enemy>();
 	//if (enemyList.size() == 0) {
 	//Scene::GetInstance()->ChangeScene(new Result);
 	//}

@@ -5,29 +5,27 @@
 #include "explosion.h"
 #include "collision.h"
 #include "transform3DComponent.h"
+#include "transform2DComponent.h"
 #include "game.h"
 #include "enemy.h"
+#include "sphereColiderComponent.h"
 
 void Bullet::Init()
 {
-	m_Component = new ModelRenderer(this);
-	((ModelRenderer*)m_Component)->Load("asset\\model\\bullet.obj");
-
 	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\bullet.obj");
 	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	AddComponent<SphereColiderComponent>();
 
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		"shader\\unlitTextureVS.cso");
+	m_ObjType = OBJ_TYPE::BULLET;
 
-	Renderer::CreatePixelShader(&m_PixelShader,
-		"shader\\unlitTexturePS.cso");
+	for (auto component : m_ComponentList)
+	{
+		component->Init();
+	}
 }
 
 void Bullet::Uninit()
 {
-	m_VertexLayout->Release();
-	m_VertexShader->Release();
-	m_PixelShader->Release();
 
 	for (auto component : m_ComponentList)
 	{
@@ -49,44 +47,21 @@ void Bullet::Update()
 
 	++m_frame;
 
+	BulletCollision();
+
 	if (m_frame >= 60){
-		Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Explosion>();
-		explosion->SetPos(pos);
+		Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1)->GetComponent<Transform2DComponent>()->SetPos(pos);
 		SetDestroy();
 		return;
 	}
 
-	//敵との衝突判定
-	std::vector<Enemy*> enemyList = Scene::GetInstance()->GetScene<Game>()->GetGameObjects<Enemy>();;
+	GetComponent<Transform3DComponent>()->SetPos(pos);
 
-	for (Enemy* enemy : enemyList) 
+	for (auto component : m_ComponentList)
 	{
-		XMFLOAT3 enemyPos = enemy->GetPos();
-		XMFLOAT3 enemyScale = enemy->GetScale();
-		//XMFLOAT3 direction;
-		//direction.x = enemyPos.x - GetPos().x;
-		//direction.y = enemyPos.y - GetPos().y;
-		//direction.z = enemyPos.z - GetPos().z;
-
-		//float length;
-		//length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-
-		//if (length < 2.0f) {
-		//	Explosion* explosion = scene->AddGameObject<Explosion>(1);
-		//	explosion->SetPos(GetPos());
-		//	SetDestroy();
-		//	enemy->SetDestroy();
-		//}
-
-		if (collision.CollisionBS(pos, enemyPos, 2.0f)) {
-			Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Explosion>();
-			explosion->SetPos(pos);
-			SetDestroy();
-			enemy->SetDestroy();
-		}
+		component->Update();
 	}
 
-	GetComponent<Transform3DComponent>()->SetPos(pos);
 }
 
 void Bullet::Draw()
@@ -94,5 +69,23 @@ void Bullet::Draw()
 	for (auto component : m_ComponentList)
 	{
 		component->Draw();
+	}
+}
+
+void Bullet::BulletCollision()
+{
+	if (std::get<0>(GetColider()->GetCollision()))
+	{
+		std::list<GameObject*> objectList = std::get<2>(GetComponent<Colider>()->GetCollision());
+		for (auto onCollisionObject : objectList)
+		{
+			if (onCollisionObject->GetObjectType() == OBJ_TYPE::ENEMY)
+			{
+				Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1);
+				explosion->GetComponent<Transform2DComponent>()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
+				SetDestroy();
+				onCollisionObject->SetDestroy();
+			}
+		}
 	}
 }

@@ -17,4 +17,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollision()override;
+	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollisionOBB();
+
 };

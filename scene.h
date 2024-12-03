@@ -4,6 +4,7 @@
 class Scene
 {
 private:
+	static Scene* m_Scene;
 	explicit Scene(SceneState* state) : m_State(state){}
 	Scene() = default;
 	virtual ~Scene() { delete m_State; }
@@ -30,8 +31,11 @@ public:
 
 	static Scene* GetInstance()
 	{
-		static Scene* scene = new Scene;
-		return scene;
+		if (m_Scene == nullptr)
+		{
+			m_Scene = new Scene;
+		}
+		return m_Scene;
 	}
 
 	template <class T>

@@ -3,7 +3,7 @@
 
 void Sky::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\player.obj");
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\sky.obj");
 	GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 10.0f, 0.0f));
 	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1000.0f, 100.0f, 1000.0f));
 	GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));

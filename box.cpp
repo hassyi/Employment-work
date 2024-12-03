@@ -4,26 +4,18 @@
 #include "manager.h"
 #include "collision.h"
 #include "transform3DComponent.h"
+#include "boxColiderComponent.h"
 
 void Box::Init()
 {
-	SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
 	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\box.obj");
+	AddComponent<BoxColiderComponent>();
 
-
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		"shader\\unlitTextureVS.cso");
-
-	Renderer::CreatePixelShader(&m_PixelShader,
-		"shader\\unlitTexturePS.cso");
+	m_ObjType = OBJ_TYPE::BOX;
 }
 
 void Box::Uninit()
 {
-	m_VertexLayout->Release();
-	m_VertexShader->Release();
-	m_PixelShader->Release();
 
 	for (auto component : m_ComponentList)
 	{
@@ -34,7 +26,16 @@ void Box::Uninit()
 
 void Box::Update()
 {
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
 
+	GetComponent<BoxColiderComponent>()->SetPos(pos);
+	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(scale.x, scale.y / 2, scale.z));
+
+	for (auto component : m_ComponentList)
+	{
+		component->Update();
+	}
 }
 
 void Box::Draw()

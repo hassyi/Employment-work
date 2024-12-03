@@ -135,6 +135,18 @@
     <ClCompile Include="texture2D.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="enemyBullet.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="cylinderColiderComponent.cpp">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="sphereColiderComponent.cpp">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="buffParticle.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -268,6 +280,18 @@
     </ClInclude>
     <ClInclude Include="component.h">
       <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyBullet.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="cylinderColiderComponent.h">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="sphereColiderComponent.h">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="buffParticle.h">
+      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -89,63 +89,122 @@ void Transform2DComponent::Draw()
 {
 	if (m_isBillBoard)
 	{
-		//頂点データ書き換え
-		D3D11_MAPPED_SUBRESOURCE msr;
-		Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
+		if (m_isZBuff)
+		{
+			//入力レイアウト設定
+			Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-		vertex[0] = m_Vertex[0];
-		vertex[1] = m_Vertex[1];
-		vertex[2] = m_Vertex[2];
-		vertex[3] = m_Vertex[3];
+			//シェーダー設定
+			Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
+			Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-		Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
+			//カメラのビューマトリクス取得
+			Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
+			XMMATRIX view = camera->GetViewMatrix();
 
-		//入力レイアウト設定
-		Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
+			//ビューの逆行列
+			XMMATRIX invView;
+			invView = XMMatrixInverse(nullptr, view);	//逆行列
+			invView.r[3].m128_f32[0] = 0.0f;
+			invView.r[3].m128_f32[1] = 0.0f;
+			invView.r[3].m128_f32[2] = 0.0f;
 
-		//シェーダー設定
-		Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
-		Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-		//カメラのビューマトリクス取得
-		Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
-		XMMATRIX view = camera->GetViewMatrix();
+			//頂点バッファ設定
+			UINT stride = sizeof(VERTEX_3D);
+			UINT offset = 0;
+			Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-		//ビューの逆行列
-		XMMATRIX invView;
-		invView = XMMatrixInverse(nullptr, view);	//逆行列
-		invView.r[3].m128_f32[0] = 0.0f;
-		invView.r[3].m128_f32[1] = 0.0f;
-		invView.r[3].m128_f32[2] = 0.0f;
+			//マテリアル設定
+			MATERIAL material;
+			ZeroMemory(&material, sizeof(material));
+			material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			material.TextureEnable = true;
+			Renderer::SetMaterial(material);
 
-		//ワールドマトリクス設定
-		XMMATRIX world, scale, rot, trans;
-		scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-		trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
-		world = scale * invView * trans;
-		Renderer::SetWorldMatrix(world);
+			//テクスチャ設定
+			Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-		//頂点バッファ設定
-		UINT stride = sizeof(VERTEX_3D);
-		UINT offset = 0;
-		Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
+			//プリミティブトポロジ設定
+			Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-		//マテリアル設定
-		MATERIAL material;
-		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		material.TextureEnable = true;
-		Renderer::SetMaterial(material);
+			//Zバッファ無効
+			Renderer::SetDepthEnable(false);
 
-		//テクスチャ設定
-		Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
+			//ワールドマトリクス設定
+			XMMATRIX world, scale, rot, trans;
+			scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+			trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
+			world = scale * invView * trans;
+			Renderer::SetWorldMatrix(world);
 
-		//プリミティブトポロジ設定
-		Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+			//ポリゴン設定
+			Renderer::GetDeviceContext()->Draw(4, 0);
 
-		//ポリゴン設定
-		Renderer::GetDeviceContext()->Draw(4, 0);
+			//Zバッファ有効
+			Renderer::SetDepthEnable(true);
+
+		}
+		else
+		{
+			//頂点データ書き換え
+			D3D11_MAPPED_SUBRESOURCE msr;
+			Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
+
+			vertex[0] = m_Vertex[0];
+			vertex[1] = m_Vertex[1];
+			vertex[2] = m_Vertex[2];
+			vertex[3] = m_Vertex[3];
+
+			Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
+
+			//入力レイアウト設定
+			Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
+
+			//シェーダー設定
+			Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
+			Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
+
+			//カメラのビューマトリクス取得
+			Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
+			XMMATRIX view = camera->GetViewMatrix();
+
+			//ビューの逆行列
+			XMMATRIX invView;
+			invView = XMMatrixInverse(nullptr, view);	//逆行列
+			invView.r[3].m128_f32[0] = 0.0f;
+			invView.r[3].m128_f32[1] = 0.0f;
+			invView.r[3].m128_f32[2] = 0.0f;
+
+			//ワールドマトリクス設定
+			XMMATRIX world, scale, rot, trans;
+			scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+			trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
+			world = scale * invView * trans;
+			Renderer::SetWorldMatrix(world);
+
+			//頂点バッファ設定
+			UINT stride = sizeof(VERTEX_3D);
+			UINT offset = 0;
+			Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
+
+			//マテリアル設定
+			MATERIAL material;
+			ZeroMemory(&material, sizeof(material));
+			material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			material.TextureEnable = true;
+			Renderer::SetMaterial(material);
+
+			//テクスチャ設定
+			Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
+
+			//プリミティブトポロジ設定
+			Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+			//ポリゴン設定
+			Renderer::GetDeviceContext()->Draw(4, 0);
+		}
 	}
 	else
 	{
@@ -194,4 +253,20 @@ void Transform2DComponent::SetVertex(VERTEX_3D vertex[4])
 	m_Vertex[1] = vertex[1];
 	m_Vertex[2] = vertex[2];
 	m_Vertex[3] = vertex[3];
+}
+
+void Transform2DComponent::SetPosSize(float posx, float posy, float sizex, float sizey)
+{
+	m_VertexPos.x = posx;
+	m_VertexPos.y = posy;
+	m_VertexSize.x = sizex;
+	m_VertexSize.y = sizey;
+}
+
+void Transform2DComponent::SetAnimation(float animx, float animy, float animsizex, float animsizey)
+{
+	m_AnimX = animx;
+	m_AnimY = animy;
+	m_AnimSizeX = animsizex;
+	m_AnimSizeY = animsizey;
 }
