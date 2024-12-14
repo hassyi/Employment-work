@@ -2,7 +2,18 @@
 #include "gameObject.h"
 #include "component.h"
 
-class Enemy : public GameObject {
+typedef enum
+{
+	None = 0,
+	Idle,
+	Walk,
+	FindPos,
+
+	Max
+}SearchState;
+
+class Enemy : public GameObject 
+{
 private:
 	Component* m_Component{};
 
@@ -14,6 +25,8 @@ private:
 	int m_CreateBulletFrame = 0;
 	float m_GroundHeight = 0.0f;
 
+	SearchState m_State = SearchState::None;
+
 public:
 
 	void Init()override;
@@ -22,5 +35,7 @@ public:
 	void Draw()override;
 
 	void EnemyCollision();
+	void PlayerFollow();
+
 
 };

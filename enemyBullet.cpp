@@ -56,7 +56,7 @@ void EnemyBullet::Update()
 	EnemyBulletCollision();
 	++m_Frame;
 
-	if (m_Frame >= 40){
+	if (m_Frame >= 40 || length <= 0.0f) {
 		Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1)->GetComponent<Transform2DComponent>()->SetPos(pos);
 		SetDestroy();
 		return;
