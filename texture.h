@@ -72,6 +72,12 @@ public:
 		m_VertexSize.y = sizey;
 	}
 
+	void SetVertexPos(float posx, float posy)
+	{
+		m_VertexPos.x = posx;
+		m_VertexPos.y = posy;
+	}
+
 	void SetAnimation(float animx, float animy, float sizex, float sizey)
 	{
 		m_AnimX = animx;

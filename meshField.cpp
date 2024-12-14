@@ -8,20 +8,20 @@ float g_FieldHeight[FIELDHIGHT_NUM][FIELDHIGHT_NUM] =
 	{0.0f, 9.0f,6.0f,4.0f,3.0f,2.0f,2.0f,1.0f,0.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,7.0f, 8.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
 	{0.0f,10.0f,7.0f,5.0f,4.0f,3.0f,3.0f,2.0f,0.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,7.0f, 8.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
 	{0.0f, 9.0f,6.0f,6.0f,5.0f,4.0f,4.0f,3.0f,0.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,7.0f, 8.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
-	{0.0f, 9.0f,6.0f,5.0f,4.0f,3.0f,4.0f,3.0f,0.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,7.0f, 8.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
-	{0.0f,12.0f,9.0f,7.0f,6.0f,5.0f,5.0f,4.0f,0.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,7.0f, 8.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
-	{0.0f,11.0f,8.0f,6.0f,5.0f,4.0f,4.0f,3.0f,0.0f,0.0f,0.0f,1.0f,2.0f,6.0f,7.0f,9.0f,11.0f,13.0f,14.0f, 5.0f,0.0f,0.0f,0.0f},
-	{0.0f,11.0f,8.0f,7.0f,6.0f,5.0f,6.0f,4.0f,1.0f,0.0f,0.0f,1.0f,2.0f,5.0f,6.0f,8.0f,10.0f,11.0f,12.0f, 4.0f,0.0f,0.0f,0.0f},
-	{0.0f,11.0f,8.0f,7.0f,6.0f,5.0f,5.0f,4.0f,1.0f,0.0f,0.0f,1.0f,2.0f,4.0f,5.0f,7.0f, 8.0f, 9.0f,10.0f, 5.0f,0.0f,0.0f,0.0f},
-	{0.0f,10.0f,6.0f,4.0f,3.0f,2.0f,2.0f,1.0f,0.0f,0.0f,0.0f,1.0f,2.0f,3.0f,4.0f,6.0f, 7.0f, 8.0f, 9.0f, 6.0f,0.0f,0.0f,0.0f},
-	{0.0f,10.0f,5.0f,3.0f,2.0f,1.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,2.0f,2.0f,3.0f,5.0f, 6.0f, 7.0f, 8.0f, 7.0f,0.0f,0.0f,0.0f},
-	{0.0f,11.0f,7.0f,5.0f,4.0f,3.0f,3.0f,2.0f,0.0f,0.0f,0.0f,1.0f,2.0f,2.0f,2.0f,4.0f, 5.0f, 6.0f, 7.0f, 7.0f,0.0f,0.0f,0.0f},
-	{0.0f,10.0f,6.0f,4.0f,3.0f,2.0f,2.0f,1.0f,0.0f,0.0f,0.0f,1.0f,2.0f,3.0f,2.0f,4.0f, 5.0f, 6.0f, 7.0f, 6.0f,0.0f,0.0f,0.0f},
-	{0.0f,12.0f,5.0f,3.0f,2.0f,1.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,2.0f,3.0f,2.0f,3.0f, 4.0f, 5.0f, 6.0f, 6.0f,0.0f,0.0f,0.0f},
-	{0.0f,12.0f,5.0f,3.0f,2.0f,1.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,2.0f,2.0f,3.0f,3.0f, 4.0f, 5.0f, 6.0f, 7.0f,0.0f,0.0f,0.0f},
-	{0.0f,11.0f,7.0f,5.0f,4.0f,3.0f,4.0f,3.0f,0.0f,0.0f,0.0f,1.0f,2.0f,1.0f,2.0f,2.0f, 3.0f, 4.0f, 5.0f, 7.0f,0.0f,0.0f,0.0f},
-	{0.0f,10.0f,6.0f,4.0f,3.0f,2.0f,3.0f,2.0f,0.0f,0.0f,0.0f,1.0f,2.0f,2.0f,1.0f,2.0f, 3.0f, 3.0f, 4.0f, 7.0f,0.0f,0.0f,0.0f},
-	{0.0f,10.0f,6.0f,4.0f,3.0f,2.0f,2.0f,1.0f,0.0f,0.0f,0.0f,1.0f,2.0f,3.0f,2.0f,1.0f, 2.0f, 3.0f, 3.0f, 6.0f,0.0f,0.0f,0.0f},
+	{0.0f, 9.0f,6.0f,5.0f,4.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
+	{0.0f,12.0f,9.0f,7.0f,6.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f,15.0f,15.0f,14.0f,0.0f,0.0f,0.0f},
+	{0.0f,11.0f,8.0f,6.0f,5.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,10.0f,13.0f,14.0f, 5.0f,0.0f,0.0f,0.0f},
+	{0.0f,11.0f,8.0f,7.0f,6.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,10.0f,11.0f,12.0f, 4.0f,0.0f,0.0f,0.0f},
+	{0.0f,11.0f,8.0f,7.0f,6.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 9.0f,10.0f, 5.0f,0.0f,0.0f,0.0f},
+	{0.0f,10.0f,6.0f,4.0f,3.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 8.0f, 9.0f, 6.0f,0.0f,0.0f,0.0f},
+	{0.0f,10.0f,5.0f,3.0f,2.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 7.0f, 8.0f, 7.0f,0.0f,0.0f,0.0f},
+	{0.0f,11.0f,7.0f,5.0f,4.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 6.0f, 7.0f, 7.0f,0.0f,0.0f,0.0f},
+	{0.0f,10.0f,6.0f,4.0f,3.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 6.0f, 7.0f, 6.0f,0.0f,0.0f,0.0f},
+	{0.0f,12.0f,5.0f,3.0f,2.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 5.0f, 6.0f, 6.0f,0.0f,0.0f,0.0f},
+	{0.0f,12.0f,5.0f,3.0f,2.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 5.0f, 6.0f, 7.0f,0.0f,0.0f,0.0f},
+	{0.0f,11.0f,7.0f,5.0f,4.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 4.0f, 5.0f, 7.0f,0.0f,0.0f,0.0f},
+	{0.0f,10.0f,6.0f,4.0f,3.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 3.0f, 4.0f, 7.0f,0.0f,0.0f,0.0f},
+	{0.0f,10.0f,6.0f,4.0f,3.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f, 0.0f, 3.0f, 3.0f, 6.0f,0.0f,0.0f,0.0f},
 	{0.0f, 8.0f,6.0f,4.0f,3.0f,2.0f,2.0f,2.0f,5.0f,5.0f,5.0f,3.0f,4.0f,4.0f,5.0f,3.0f, 3.0f, 2.0f, 3.0f, 5.0f,0.0f,0.0f,0.0f},
 	{0.0f, 9.0f,7.0f,5.0f,4.0f,3.0f,3.0f,2.0f,6.0f,6.0f,6.0f,4.0f,5.0f,5.0f,6.0f,4.0f, 5.0f, 3.0f, 4.0f, 6.0f,0.0f,0.0f,0.0f},
 	{0.0f,10.0f,8.0f,6.0f,5.0f,4.0f,5.0f,4.0f,5.0f,5.0f,5.0f,4.0f,6.0f,6.0f,7.0f,5.0f, 4.0f, 5.0f, 5.0f, 5.0f,0.0f,0.0f,0.0f},
@@ -32,7 +32,7 @@ float g_FieldHeight[FIELDHIGHT_NUM][FIELDHIGHT_NUM] =
 
 void MeshField::Init()
 {
-	//í∏ì_ÉoÉbÉtÉ@ê∂ê¨
+	//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°ÁîüÊàê
 	{
 		for (int x = 0; x < FIELDHIGHT_NUM; x++)
 		{
@@ -45,7 +45,7 @@ void MeshField::Init()
 			}
 		}
 
-		//ñ@ê¸ÉxÉNÉgÉãéZèo
+		//Ê≥ïÁ∑ö„Éô„ÇØ„Éà„É´ÁÆóÂá∫
 		for (int x = 1; x < FIELDHIGHT_NUM - 1; x++)
 		{
 			for (int z = 1; z < FIELDHIGHT_NUM - 1; z++)
@@ -60,12 +60,12 @@ void MeshField::Init()
 				vz.y = m_Vertex[x][z - 1].Position.y - m_Vertex[x][z + 1].Position.y;
 				vz.z = m_Vertex[x][z - 1].Position.z - m_Vertex[x][z + 1].Position.z;
 
-				//äOêœ
+				//Â§ñÁ©ç
 				vn.x = vz.y * vx.z - vz.z * vx.y;
 				vn.y = vz.z * vx.x - vz.x * vx.z;
 				vn.z = vz.x * vx.y - vz.y * vx.x;
 
-				//ê≥ãKâª
+				//Ê≠£Ë¶èÂåñ
 				float len = sqrtf(vn.x * vn.x + vn.y * vn.y + vn.z * vn.z);
 				vn.x /= len;
 				vn.y /= len;
@@ -89,7 +89,7 @@ void MeshField::Init()
 		Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
 	}
 
-	//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@
+	//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°
 	{
 		unsigned int index[((FIELDHIGHT_NUM + 1) * 2) * (FIELDHIGHT_NUM - 1) - 2];
 
@@ -126,7 +126,7 @@ void MeshField::Init()
 		Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_IndexBuffer);
 	}
 
-	//ÉeÉNÉXÉ`ÉÉì«Ç›çûÇ›
+	//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Ë™≠„ÅøËæº„Åø
 	TexMetadata metadata;
 	ScratchImage image;
 	LoadFromWICFile(L"asset\\texture\\field2.jpg", WIC_FLAGS_NONE, &metadata, image);
@@ -160,14 +160,14 @@ void MeshField::Update()
 
 void MeshField::Draw()
 {
-	//ì¸óÕÉåÉCÉAÉEÉgê›íË
+	//ÂÖ•Âäõ„É¨„Ç§„Ç¢„Ç¶„ÉàË®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ÉVÉFÅ[É_Å[ê›íË
+	//„Ç∑„Çß„Éº„ÉÄ„ÉºË®≠ÂÆö
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ÉèÅ[ÉãÉhÉ}ÉgÉäÉNÉXê›íË
+	//„ÉØ„Éº„É´„Éâ„Éû„Éà„É™„ÇØ„ÇπË®≠ÂÆö
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 	rot = XMMatrixRotationRollPitchYaw(GetRot().x, GetRot().y, GetRot().z);
@@ -175,28 +175,28 @@ void MeshField::Draw()
 	world = scale * rot * trans;
 	Renderer::SetWorldMatrix(world);
 
-	//í∏ì_ÉoÉbÉtÉ@ê›íË
+	//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°Ë®≠ÂÆö
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@ê›íË
+	//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetIndexBuffer(m_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	//É}ÉeÉäÉAÉãê›íË
+	//„Éû„ÉÜ„É™„Ç¢„É´Ë®≠ÂÆö
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ÉeÉNÉXÉ`ÉÉê›íË
+	//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-	//ÉvÉäÉ~ÉeÉBÉuÉgÉ|ÉçÉWê›íË
+	//„Éó„É™„Éü„ÉÜ„Ç£„Éñ„Éà„Éù„É≠„Ç∏Ë®≠ÂÆö
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//É|ÉäÉSÉìê›íË
+	//„Éù„É™„Ç¥„É≥Ë®≠ÂÆö
 	//Renderer::GetDeviceContext()->Draw(21 * 21, 0);
 	Renderer::GetDeviceContext()->DrawIndexed(((FIELDHIGHT_NUM + 1) * 2) * (FIELDHIGHT_NUM - 1) - 2, 0, 0);
 
@@ -205,8 +205,8 @@ void MeshField::Draw()
 float MeshField::GetHeight(XMFLOAT3 pos)
 {
 	int x, z;
-	//ÉuÉçÉbÉNî‘çÜéZèo
-	x = pos.x / 5.0f + 10.0f;		//InitÇ≈ê›íËÇµÇƒÇÈíl
+	//„Éñ„É≠„ÉÉ„ÇØÁï™Âè∑ÁÆóÂá∫
+	x = pos.x / 5.0f + 10.0f;		//Init„ÅßË®≠ÂÆö„Åó„Å¶„ÇãÂÄ§
 	z = pos.z / -5.0f + 10.0f;
 
 	XMFLOAT3 pos0, pos1, pos2, pos3;
@@ -224,39 +224,39 @@ float MeshField::GetHeight(XMFLOAT3 pos)
 	v1p.y = pos.y - pos1.y;
 	v1p.z = pos.z - pos1.z;
 
-	//äOêœ
+	//Â§ñÁ©ç
 	float cy = v12.z * v1p.x - v12.x * v1p.z;
 
 	float py;
 	XMFLOAT3 n;
 	if (cy > 0.0f)
 	{
-		//ç∂è„É|ÉäÉSÉì
+		//Â∑¶‰∏ä„Éù„É™„Ç¥„É≥
 		XMFLOAT3 v10;
 		v10.x = pos0.x - pos1.x;
 		v10.y = pos0.y - pos1.y;
 		v10.z = pos0.z - pos1.z;
 
-		//äOêœ
+		//Â§ñÁ©ç
 		n.x = v10.y * v12.z - v10.z * v12.y;
 		n.y = v10.z * v12.x - v10.x * v12.z;
 		n.z = v10.x * v12.y - v10.y * v12.x;
 	}
 	else
 	{
-		//âEè„É|ÉäÉSÉì
+		//Âè≥‰∏ä„Éù„É™„Ç¥„É≥
 		XMFLOAT3 v13;
 		v13.x = pos3.x - pos1.x;
 		v13.y = pos3.y - pos1.y;
 		v13.z = pos3.z - pos1.z;
 
-		//äOêœ
+		//Â§ñÁ©ç
 		n.x = v12.y * v13.z - v12.z * v13.y;
 		n.y = v12.z * v13.x - v12.x * v13.z;
 		n.z = v12.x * v13.y - v12.y * v13.x;
 	}
 
-	//çÇÇ≥éÊìæ
+	//È´ò„ÅïÂèñÂæó
 	py = -((pos.x - pos1.x) * n.x + (pos.z - pos1.z) * n.z) / n.y + pos1.y;
 
 	return py;

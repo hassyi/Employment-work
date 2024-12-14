@@ -25,6 +25,8 @@
 #include "transform3DComponent.h"
 #include "transform2DComponent.h"
 #include "buffParticle.h"
+#include "cloth.h"
+#include "wave.h"
 
 void Game::Init()
 {
@@ -32,9 +34,9 @@ void Game::Init()
 	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
 	AddGameObject<Player>(1);
-	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 0.0f));
-	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
-	AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, -10.0f));
+	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 0.0f));
+	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
+	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, -10.0f));
 
 	//{
 	//	AddGameObject<Cylinder>(1);
@@ -54,30 +56,35 @@ void Game::Init()
 		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
+
+	AddGameObject<Cloth>(1);
 	AddGameObject<Sky>(1);
 	//AddGameObject<PartrcleEmitter>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
-	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
-	AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
+	//AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
+	//AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
 
-	MeshField* meshField = GetGameObject<MeshField>();
-	for (int i = 0; i < 10; i++)
-	{
-		Tree* tree = AddGameObject<Tree>(1);
+	//MeshField* meshField = GetGameObject<MeshField>();
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	Tree* tree = AddGameObject<Tree>(1);
 
-		XMFLOAT3 pos;
-		pos.x = (float)rand() / RAND_MAX * 100.0f - 50.0f;
-		pos.z = (float)rand() / RAND_MAX * 100.0f - 50.0f;
-		pos.y = meshField->GetHeight(pos);
+	//	XMFLOAT3 pos;
+	//	pos.x = (float)rand() / RAND_MAX * 100.0f - 50.0f;
+	//	pos.z = (float)rand() / RAND_MAX * 100.0f - 50.0f;
+	//	pos.y = meshField->GetHeight(pos);
 
-		tree->GetComponent<Transform2DComponent>()->SetPos(pos);
-	}
+	//	tree->GetComponent<Transform2DComponent>()->SetPos(pos);
+	//}
 	//AddGameObject<Polygon2D>(2);
 	AddGameObject<Predation>(1);
+	AddGameObject<Wave>(1);
 	//AddUITexture<Score>();
 	AddUITexture<Time>();
 	//m_BGM = new Audio(this);
 	//m_BGM->Load("asset\\audio\\gameBGM.wav");
 	//m_BGM->Play(true);
+
+	m_Satate = SCENE_STATE::SCENE_GAME;
 }
 
 void Game::Uninit()
@@ -109,6 +116,9 @@ void Game::Update()
 		ui->Update();
 	}
 
+	if (Input::GetKeyTrigger(VK_RETURN)) {
+		Scene::GetInstance()->ChangeScene(new Result);
+	}
 	//std::vector<Enemy*> enemyList = GetGameObjects<Enemy>();
 	//if (enemyList.size() == 0) {
 	//Scene::GetInstance()->ChangeScene(new Result);
@@ -117,6 +127,8 @@ void Game::Update()
 
 void Game::Draw()
 {
+	Renderer::Begin();
+
 	for (int i = 0; i < LAYER_MAX; i++) {
 		//m_GameObject[i].sort();
 		for (GameObject* object : m_GameObject[i]) {
@@ -127,6 +139,6 @@ void Game::Draw()
 	{
 		ui->Draw();
 	}
-
+	Renderer::End();
 }
 

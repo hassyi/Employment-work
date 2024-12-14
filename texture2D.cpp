@@ -30,8 +30,11 @@ void Texture2D::Update()
 
 void Texture2D::Draw()
 {
-	for (auto component : m_ComponentList)
+	if (m_isDraw)
 	{
-		component->Draw();
+		for (auto component : m_ComponentList)
+		{
+			component->Draw();
+		}
 	}
 }

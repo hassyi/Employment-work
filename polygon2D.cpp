@@ -1,7 +1,9 @@
 #include "main.h"
 #include "renderer.h"
 #include "polygon2D.h"
-
+#include "scene.h"
+#include "title.h"
+#include "titleCamera.h"
 
 
 void Polygon2D::Init()
@@ -13,22 +15,22 @@ void Polygon2D::Init()
 	vertex[0].Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-	vertex[1].Position = XMFLOAT3(150.0f, 0.0f, 0.0f);
+	vertex[1].Position = XMFLOAT3(SCREEN_WIDTH, 0.0f, 0.0f);
 	vertex[1].Normal   = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	vertex[1].Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
 
-	vertex[2].Position = XMFLOAT3(0.0f, 300.0f, 0.0f);
+	vertex[2].Position = XMFLOAT3(0.0f, SCREEN_HEIGHT, 0.0f);
 	vertex[2].Normal   = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	vertex[2].Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
 
-	vertex[3].Position = XMFLOAT3(150.0f, 300.0f, 0.0f);
+	vertex[3].Position = XMFLOAT3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 	vertex[3].Normal   = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	vertex[3].Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	//’¸“_ƒoƒbƒtƒ@¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	D3D11_BUFFER_DESC bd{};
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(VERTEX_3D) * 4;
@@ -41,10 +43,10 @@ void Polygon2D::Init()
 	Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
 
 	
-	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Ý
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	TexMetadata metadata;
 	ScratchImage image;
-	LoadFromWICFile(L"asset\\texture\\persona.jpeg", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\sky.jpg", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(Renderer::GetDevice(), image.GetImages(), image.GetImageCount(), metadata, &m_Texture);
 	assert(m_Texture);
 
@@ -74,34 +76,43 @@ void Polygon2D::Update()
 
 void Polygon2D::Draw()
 {
-	//“ü—ÍƒŒƒCƒAƒEƒgÝ’è
+	//å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆè¨­å®š
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ƒVƒF[ƒ_[Ý’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®š
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ƒ}ƒgƒŠƒNƒXÝ’è
+	//ãƒžãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	Renderer::SetWorldViewProjection2D();
 
-	//’¸“_ƒoƒbƒtƒ@Ý’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//ƒ}ƒeƒŠƒAƒ‹Ý’è
+	//ãƒžãƒ†ãƒªã‚¢ãƒ«è¨­å®š
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	material.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ƒeƒNƒXƒ`ƒƒÝ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 	
-	//ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWÝ’è
+	//ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//ƒ|ƒŠƒSƒ“Ý’è
+
+	//ã‚¹ãƒ†ãƒ³ã‚·ãƒ«èª­è¾¼æœ‰åŠ¹
+	Renderer::SetStencilEnable(false);
+
+	//ãƒãƒªã‚´ãƒ³è¨­å®š
 	Renderer::GetDeviceContext()->Draw(4, 0);
+
+
+	Renderer::SetDepthEnable(true);
+
+	Scene::GetInstance()->GetScene<Title>()->GetGameObject<TitleCamera>()->Draw();
 }

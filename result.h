@@ -18,7 +18,7 @@ public:
 
 	template <typename T>	//テンプレート関数
 	T* AddGameObject(int Layer) {
-		T* gameObject = new T();
+		T* gameObject = new T;
 		gameObject->Init();
 		m_GameObject[Layer].push_back(gameObject);
 
@@ -41,9 +41,9 @@ public:
 
 	template <class T>
 	T* AddUITexture() {
-		T* ui = new T();
-		ui->Init();
+		T* ui = new T;
 		m_Texture.push_back(ui);
+		ui->SetScene(this);
 
 		return ui;
 	}

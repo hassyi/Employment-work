@@ -2,7 +2,9 @@
 #include "manager.h"
 #include "scene.h"
 #include "camera.h"
+#include "titleCamera.h"
 #include "game.h"
+#include "title.h"
 
 void Transform2DComponent::Init()
 {
@@ -98,9 +100,19 @@ void Transform2DComponent::Draw()
 			Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 			Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
+			XMMATRIX view;
+
 			//カメラのビューマトリクス取得
-			Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
-			XMMATRIX view = camera->GetViewMatrix();
+			if (m_isTitle)
+			{
+				TitleCamera* titlecamera = Scene::GetInstance()->GetScene<Title>()->GetGameObject<TitleCamera>();
+				view = titlecamera->GetViewMatrix();
+			}
+			else
+			{
+				Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
+				view = camera->GetViewMatrix();
+			}
 
 			//ビューの逆行列
 			XMMATRIX invView;

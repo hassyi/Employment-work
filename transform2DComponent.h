@@ -20,6 +20,7 @@ private:
 	int m_Count = 0;
 	bool m_isBillBoard = false;
 	bool m_isZBuff = false;
+	bool m_isTitle = false;
  
 public:
 	Transform2DComponent() = default;
@@ -45,4 +46,5 @@ public:
 	void SetPosSize(float posx, float posy, float sizex, float sizey);
 	void SetAnimation(float animx, float animy, float animsizex, float animsizey);
 	void SetZBuff(bool isZBuff) { m_isZBuff = isZBuff; }
+	void SetIsTitle(bool isTitle) { m_isTitle = isTitle; }
 };

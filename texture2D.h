@@ -1,5 +1,6 @@
 #pragma once
 #include "UI.h"
+#include "uiComponent.h"
 
 
 class Texture2D : public UI
@@ -11,6 +12,8 @@ private:
 
 	const wchar_t* m_TextureData = L"none";
 
+	bool m_isDraw = true;
+
 public:
 
 	void Init()override;
@@ -18,7 +21,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
-
+	void SetIsDraw(bool isDraw) { m_isDraw = isDraw; }
 
 	void SetTransTexNum(float posx, float posy, float sizex, float sizey, const wchar_t* data, int num)
 	{

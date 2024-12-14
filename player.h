@@ -16,7 +16,7 @@ private:
 	BuffParticle* m_BuffParticle{};
 
 	float m_Rot = 0.0f;
-	XMFLOAT3 m_dir;
+	XMFLOAT3 m_dir{};
 	float m_GroundHeight = 0.0f;
 	bool m_JampFlag = false;
 	float m_move = 0.0f;
@@ -51,7 +51,7 @@ public:
 	void PlayerCollision();
 	void PredationAttack();
 	void PlayerBuff();
+	void PlayerAttack();
 
-	XMFLOAT3 GetDir() { return m_dir; }
-	//void Attack();
+	XMFLOAT3 GetDir() const { return m_dir; }
 };

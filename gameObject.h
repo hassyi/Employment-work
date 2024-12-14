@@ -102,8 +102,8 @@ public:
 	T* AddComponent()
 	{
 		T* component = new T;
-		m_ComponentList.push_back(component);
 		component->AcceptGameObject(this);
+		m_ComponentList.push_back(component);
 		component->Init();
 
 		return component;

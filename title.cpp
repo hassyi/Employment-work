@@ -4,20 +4,69 @@
 #include "manager.h"
 #include "game.h"
 #include "texture2D.h"
+#include "player.h"
+#include "titleCamera.h"
+#include "field.h"
+#include "sky.h"
+#include "fieldDepthShadow.h"
+#include "playerShadow.h"
+#include "cloth.h"
+#include "wave.h"
+#include "polygon2D.h"
+#include "bonFire.h"
+#include "transform3DComponent.h"
+#include "transform2DComponent.h"
+#include "box.h"
+#include "fireParticle.h"
+#include "titleName.h"
 
 void Title::Init()
 {
-	AddUITexture<Texture2D>()->SetTransTexNum(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, L"asset\\texture\\title.png", 1);
+	//AddUITexture<Texture2D>()->SetTransTexNum(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, L"asset\\texture\\title.png", 1);
+	AddGameObject<TitleCamera>(0);
+	AddGameObject<Field>(1)->SetPosZ(-45.0f);
+	AddGameObject<PlayerShadow>(1);
+	AddGameObject<Polygon2D>(1);
+	AddGameObject<Player>(1);
+	//AddGameObject<Box>(1);
+	AddGameObject<Wave>(1)->SetPos(XMFLOAT3(-50.0f, -3.0f, 90.0f));
+	AddGameObject<BonFire>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(2.0f, 0.0f, 0.0f));
+	AddGameObject<Sky>(1);
+	//AddGameObject<FieldDepthShadow>(1);
+	//AddGameObject<Cloth>(1);
+	AddGameObject<FireParticle>(1);
+	AddUITexture<TitleName>();
+	AddUITexture<Texture2D>()->SetTransTexNum(480.0f, 550.0f, 350.0f, 40.0f, L"asset\\texture\\start.png", 1);
 
 	for (auto texture : m_Texture)
 	{
 		texture->Init();
 	}
 
+	m_BGM = new Audio();
+	m_BGM->Load("asset\\audio\\title1.wav");
+	m_BGM->Play(true);
+	m_SE = new Audio();
+	m_SE->Load("asset\\audio\\start.wav");
+	m_Satate = SCENE_STATE::SCENE_TITLE;
 }
 
 void Title::Uninit()
 {
+	m_BGM->Uninit();
+	delete m_BGM;
+
+	m_SE->Uninit();
+	delete m_SE;
+
+	for (int i = 0; i < LAYER_MAX; i++) {
+		for (GameObject* object : m_GameObject[i]) {
+			object->Uninit();
+			delete object;
+		}
+		m_GameObject[i].clear();
+	}
+
 	for (auto texture : m_Texture)
 	{
 		texture->Uninit();
@@ -27,19 +76,99 @@ void Title::Uninit()
 
 void Title::Update()
 {
+	for (int i = 0; i < LAYER_MAX; i++) {
+		for (GameObject* object : m_GameObject[i]) {
+			object->Update();
+		}
+		m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });
+	}
+
 	for (auto texture : m_Texture)
 	{
 		texture->Update();
 	}
+
+	m_DrawFrame++;
+
+	if (m_DrawFrame >= 30) {
+		GetUITexture<Texture2D>(1)->SetIsDraw(false);
+	}
+	if (m_DrawFrame >= 60) {
+		GetUITexture<Texture2D>(1)->SetIsDraw(true);
+		m_DrawFrame = 0;
+	}
+
 	if (Input::GetKeyTrigger(VK_RETURN)) {
-		Scene::GetInstance()->ChangeScene(new Game);
+		GetUITexture<Texture2D>(1)->SetIsDraw(true);
+		m_SE->Play();
+		m_isChageScene = true;
+	}
+
+	if (m_isChageScene)
+	{
+		m_ChageSceneFrame++;
+		if (m_ChageSceneFrame >= 60)
+		{
+			Scene::GetInstance()->ChangeScene(new Game);
+		}
 	}
 }
 
 void Title::Draw()
 {
+	//LIGHT light;
+	//float length;
+	//light.Enable = true;
+	//light.Direction = XMFLOAT4(1.0f, -1.0f, 0.0f, 0.0f);
+	//length = sqrtf(light.Direction.x * light.Direction.x + light.Direction.y * light.Direction.y + light.Direction.z * light.Direction.z);
+	//light.Direction.x /= length;
+	//light.Direction.y /= length;
+	//light.Direction.z /= length;
+	//light.Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	//light.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//XMVECTOR cpos = { -10.0f, 10.0f, -10.0f, 0.0f };
+	//XMVECTOR cat = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//XMVECTOR cup = { 0.0f, 1.0f, 0.0f, 0.0f };
+	//
+	//light.ViewMatrix = XMMatrixLookAtLH(cpos, cat, cup);
+
+	//light.ProjctionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / SCREEN_HEIGHT, 5.0f, 30.0f);
+	//Renderer::SetLight(light);
+
+	//Renderer::BeginDepth();
+	//Renderer::SetViewMatrix(light.ViewMatrix);
+	//Renderer::SetProjectionMatrix(light.ProjctionMatrix);
+
+	//GetGameObject<FieldDepthShadow>()->Draw();
+	//GetGameObject<PlayerShadow>()->Draw();
+
+	Renderer::Begin();
+
+	//GetGameObject<TitleCamera>()->Draw();
+	//GetGameObject<FieldDepthShadow>()->Draw();
+	//GetGameObject<PlayerShadow>()->Draw();
+
+	//light.Enable = false;
+	//Renderer::SetLight(light);
+
+	//GetGameObject<Cloth>()->Draw();
+	//GetGameObject<Wave>()->Draw();
+	//GetGameObject<Sky>()->Draw();
+
+	for (int i = 0; i < LAYER_MAX; i++) {
+		//m_GameObject[i].sort();
+		for (GameObject* object : m_GameObject[i]) {
+			object->Draw();
+		}
+	}
+
 	for (auto texture : m_Texture)
 	{
 		texture->Draw();
 	}
+
+	Renderer::End();
+
+
 }

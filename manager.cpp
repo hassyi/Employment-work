@@ -16,7 +16,7 @@ void Manager::Init()
 	Input::Init();
 	Audio::InitMaster();
 
-	Scene::GetInstance()->InitScene(new Game);
+	Scene::GetInstance()->InitScene(new Title);
 
 }
 
@@ -40,8 +40,5 @@ void Manager::Update()
 
 void Manager::Draw()
 {
-	Renderer::Begin();
 	Scene::GetInstance()->Draw();
-
-	Renderer::End();
 }

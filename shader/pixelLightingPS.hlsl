@@ -1,33 +1,33 @@
 #include "common.hlsl"
 
-Texture2D	g_Texture : register(t0);			//0”ÔƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
-SamplerState g_SamplerState : register(s0);		//ƒTƒ“ƒvƒ‰[0”Ô
+Texture2D	g_Texture : register(t0);			//0ç•ªãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+SamplerState g_SamplerState : register(s0);		//ã‚µãƒ³ãƒ—ãƒ©ãƒ¼0ç•ª
 
 
 void main(in PS_IN In, out float4 outDiffuse : SV_Target)
 {
-	float4 normal = normalize(In.Normal);
+	float3 normal = normalize(In.Normal);
 	float light = 0.5f - 0.5f * dot(normal.xyz, Light.Direction.xyz);
 
-	//ƒeƒNƒXƒ`ƒƒ‚ÌƒsƒNƒZƒ‹F‚Ìæ“¾
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ”ã‚¯ã‚»ãƒ«è‰²ã®å–å¾—
 	outDiffuse = g_Texture.Sample(g_SamplerState, In.TexCoord);
-	outDiffuse.rgb *= In.Diffuse.rgb * light;		//–¾‚é‚³‚ğæZ
-	outDiffuse.a *= In.Diffuse.a;					//ƒ¿‚É–¾‚é‚³‚ÍŠÖŒW‚È‚¢‚Ì‚Å•ÊŒvZ
+	outDiffuse.rgb *= In.Diffuse.rgb * light;		//æ˜ã‚‹ã•ã‚’ä¹—ç®—
+	outDiffuse.a *= In.Diffuse.a;					//Î±ã«æ˜ã‚‹ã•ã¯é–¢ä¿‚ãªã„ã®ã§åˆ¥è¨ˆç®—
 
-	//ƒJƒƒ‰‚©‚çƒsƒNƒZƒ‹‚ÖŒü‚©‚¤ƒxƒNƒgƒ‹
+	//ã‚«ãƒ¡ãƒ©ã‹ã‚‰ãƒ”ã‚¯ã‚»ãƒ«ã¸å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«
 	float3 eyev = In.WorldPosition.rgb * light;
 	eyev = normalize(eyev);
 
-	//Œõ‚Ì”½ËƒxƒNƒgƒ‹
+	//å…‰ã®åå°„ãƒ™ã‚¯ãƒˆãƒ«
 	float3 refv = reflect(Light.Direction.xyz, normal.xyz);
-	refv = normalize(refv);			//³‹K‰»‚·‚é
+	refv = normalize(refv);			//æ­£è¦åŒ–ã™ã‚‹
 
-	//ƒXƒyƒLƒ…ƒ‰‚ÌŒvZ
-	float specular = -dot(eyev, refv);		//‹¾–Ê”½Ë‚ÌŒvZ
-	specular = saturate(specular);			//’l‚ğƒTƒ`ƒ…ƒŒ[ƒg	
-	specular = pow(specular, 30);			//‚±‚±‚Å‚Í30æ‚É‚µ‚Ä‚İ‚é
+	//ã‚¹ãƒšã‚­ãƒ¥ãƒ©ã®è¨ˆç®—
+	float specular = -dot(eyev, refv);		//é¡é¢åå°„ã®è¨ˆç®—
+	specular = saturate(specular);			//å€¤ã‚’ã‚µãƒãƒ¥ãƒ¬ãƒ¼ãƒˆ	
+	specular = pow(specular, 30);			//ã“ã“ã§ã¯30ä¹—ã«ã—ã¦ã¿ã‚‹
 
-	outDiffuse.rgb += specular;				//ƒXƒyƒLƒ…ƒ‰’l‚ğƒfƒBƒtƒ…[ƒY‚µ‚Ä‘«‚µ‚±‚Ş
+	outDiffuse.rgb += specular;				//ã‚¹ãƒšã‚­ãƒ¥ãƒ©å€¤ã‚’ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºã—ã¦è¶³ã—ã“ã‚€
 
 }
 

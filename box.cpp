@@ -12,6 +12,11 @@ void Box::Init()
 	AddComponent<BoxColiderComponent>();
 
 	m_ObjType = OBJ_TYPE::BOX;
+
+	for (auto component : m_ComponentList)
+	{
+		component->Init();
+	}
 }
 
 void Box::Uninit()

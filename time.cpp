@@ -16,6 +16,7 @@ void Time::Uninit()
 	for (auto component : m_ComponentList)
 	{
 		component->Uninit();
+
 		delete component;
 	}
 }

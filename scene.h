@@ -4,9 +4,9 @@
 class Scene
 {
 private:
+	Scene() = default;
 	static Scene* m_Scene;
 	explicit Scene(SceneState* state) : m_State(state){}
-	Scene() = default;
 	virtual ~Scene() { delete m_State; }
 	SceneState* m_State;
 
@@ -24,6 +24,7 @@ public:
 	}
 	void ChangeScene(SceneState* state)
 	{
+		m_State->Uninit();
 		delete m_State;
 		m_State = state;
 		Init();
@@ -48,5 +49,5 @@ public:
 		return nullptr;
 	}
 
-
+	SceneState* GetNowScene() { return m_State; }
 };

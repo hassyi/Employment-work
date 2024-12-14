@@ -1,47 +1,47 @@
 #include "common.hlsl"
 
-Texture2D g_Texture : register(t0);         //ƒeƒNƒXƒ`ƒƒ0”Ô
+Texture2D g_Texture : register(t0);         //ãƒ†ã‚¯ã‚¹ãƒãƒ£0ç•ª
 SamplerState g_SamplerState : register(s0);
 
 void main(in PS_IN In, out float4 outDiffuse : SV_Target)
 {
-    //ƒsƒNƒZƒ‹‚Ì–@ü‚Ì³‹K‰»
-    float4 normal = normalize(In.Normal);
-    //ŒõŒ¹ŒvZ
+    //ãƒ”ã‚¯ã‚»ãƒ«ã®æ³•ç·šã®æ­£è¦åŒ–
+    float3 normal = normalize(In.Normal);
+    //å…‰æºè¨ˆç®—
     float light = 0.5f - dot(normal.xyz, Light.Direction.xyz) * 0.5f;
     
-    //ƒeƒNƒXƒ`ƒƒ‚ÌF‚ğæ“¾
+    //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è‰²ã‚’å–å¾—
     outDiffuse = g_Texture.Sample(g_SamplerState, In.TexCoord);
-    //ŒõŒ¹ŒvZ‚ÌæZ‚·‚é
+    //å…‰æºè¨ˆç®—ã®ä¹—ç®—ã™ã‚‹
     outDiffuse.rgb *= In.Diffuse.rgb * light;
-    //ƒ¿’l‚Ìˆ—
+    //Î±å€¤ã®å‡¦ç†
     outDiffuse.a *= In.Diffuse.a;
     
-    //ƒXƒyƒLƒ…ƒ‰[
-    //‹üƒxƒNƒgƒ‹ì¬
+    //ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒ¼
+    //è¦–ç·šãƒ™ã‚¯ãƒˆãƒ«ä½œæˆ
     float3 eyev = In.WorldPosition.xyz - CameraPosition.xyz;
     eyev = normalize(eyev);
-    //Œõ‚Ì”½ËƒxƒNƒgƒ‹
+    //å…‰ã®åå°„ãƒ™ã‚¯ãƒˆãƒ«
     float3 refv = reflect(Light.Direction.xyz, normal.xyz);
     refv = normalize(refv);
-    //ƒXƒyƒLƒ…ƒ‰[‚ÌŒvZ
+    //ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒ¼ã®è¨ˆç®—
     float specular = -dot(eyev, refv);
     specular = saturate(specular);
-    specular = pow(specular, 30.0f);        //ƒXƒyƒLƒ…ƒ‰‚Ì’²®
+    specular = pow(specular, 30.0f);        //ã‚¹ãƒšã‚­ãƒ¥ãƒ©ã®èª¿æ•´
     
-    //ƒXƒyƒLƒ…ƒ‰[‚ğƒfƒBƒtƒ…[ƒY‚É‰ÁZ‚·‚é
+    //ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒ¼ã‚’ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºã«åŠ ç®—ã™ã‚‹
     outDiffuse.rgb += specular;
     
-    //ƒŠƒ€ƒ‰ƒCƒeƒBƒ“ƒOˆ—
-    //Œõ‚Ì•ûŒü‚Æ‹üƒxƒNƒgƒ‹‚Ìl—¶(‹tŒõ‚Ù‚Ç–¾‚é‚¢)
+    //ãƒªãƒ ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°å‡¦ç†
+    //å…‰ã®æ–¹å‘ã¨è¦–ç·šãƒ™ã‚¯ãƒˆãƒ«ã®è€ƒæ…®(é€†å…‰ã»ã©æ˜ã‚‹ã„)
     float lit = 1.0f - max(0, dot(Light.Direction.xyz, eyev.xyz));
-    //—ÖŠs•”•ª‚Ù‚Ç–¾‚é‚­‚·‚é
+    //è¼ªéƒ­éƒ¨åˆ†ã»ã©æ˜ã‚‹ãã™ã‚‹
     float lim = 1.0f - max(0, dot(normal.xyz, -eyev));
-    //lit‚Æ lim‚Ì–¾‚é‚³‚ğ‡¬
+    //litã¨ limã®æ˜ã‚‹ã•ã‚’åˆæˆ
     lim *= lit;
     lim = pow(lim, 3);
     
-    //ƒŠƒ€ƒ‰ƒCƒeƒBƒ“ƒO‚Ì–¾‚é‚³‚ğƒfƒBƒtƒ…[ƒY‚É‰ÁZ
+    //ãƒªãƒ ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã®æ˜ã‚‹ã•ã‚’ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºã«åŠ ç®—
     outDiffuse.rgb += lim;
     
     

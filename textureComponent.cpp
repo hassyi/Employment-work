@@ -117,7 +117,7 @@ void TextureComponent::Draw()
 		//マテリアル設定
 		MATERIAL material;
 		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, m_Alpha);
 		material.TextureEnable = true;
 		Renderer::SetMaterial(material);
 
@@ -132,30 +132,30 @@ void TextureComponent::Draw()
 	}
 	else 
 	{
-		//頂点データ書き換え
-		D3D11_MAPPED_SUBRESOURCE msr;
-		Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
+		////頂点データ書き換え
+		//D3D11_MAPPED_SUBRESOURCE msr;
+		//Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		//VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-		vertex[0].Position = XMFLOAT3(m_VertexPos.x, m_VertexPos.y, 0.0f);
-		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[0].TexCoord = XMFLOAT2(m_AnimX, m_AnimY);
+		//vertex[0].Position = XMFLOAT3(m_VertexPos.x, m_VertexPos.y, 0.0f);
+		//vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[0].TexCoord = XMFLOAT2(m_AnimX, m_AnimY);
 
-		vertex[1].Position = XMFLOAT3(m_VertexPos.x + m_VertexSize.x, m_VertexPos.y, 0.0f);
-		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[1].TexCoord = XMFLOAT2(m_AnimX + m_AnimSizeX, m_AnimY);
+		//vertex[1].Position = XMFLOAT3(m_VertexPos.x + m_VertexSize.x, m_VertexPos.y, 0.0f);
+		//vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[1].TexCoord = XMFLOAT2(m_AnimX + m_AnimSizeX, m_AnimY);
 
-		vertex[2].Position = XMFLOAT3(m_VertexPos.x, m_VertexPos.y + m_VertexSize.y, 0.0f);
-		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[2].TexCoord = XMFLOAT2(m_AnimX, m_AnimY + m_AnimSizeY);
+		//vertex[2].Position = XMFLOAT3(m_VertexPos.x, m_VertexPos.y + m_VertexSize.y, 0.0f);
+		//vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[2].TexCoord = XMFLOAT2(m_AnimX, m_AnimY + m_AnimSizeY);
 
-		vertex[3].Position = XMFLOAT3(m_VertexPos.x + m_VertexSize.x, m_VertexPos.y + m_VertexSize.y, 0.0f);
-		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[3].TexCoord = XMFLOAT2(m_AnimX + m_AnimSizeX, m_AnimY + m_AnimSizeY);
+		//vertex[3].Position = XMFLOAT3(m_VertexPos.x + m_VertexSize.x, m_VertexPos.y + m_VertexSize.y, 0.0f);
+		//vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[3].TexCoord = XMFLOAT2(m_AnimX + m_AnimSizeX, m_AnimY + m_AnimSizeY);
 
 		Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
 
@@ -177,7 +177,7 @@ void TextureComponent::Draw()
 		//マテリアル設定
 		MATERIAL material;
 		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, m_Alpha);
 		material.TextureEnable = true;
 		Renderer::SetMaterial(material);
 

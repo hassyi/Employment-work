@@ -25,7 +25,7 @@ void Field::Init()
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(20.0f, 20.0f);
 
-	//’¸“_ƒoƒbƒtƒ@¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	D3D11_BUFFER_DESC bd{};
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(VERTEX_3D) * 4;
@@ -38,10 +38,10 @@ void Field::Init()
 	Renderer::GetDevice()->CreateBuffer(&bd, &sd, &m_VertexBuffer);
 
 
-	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Ý
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	TexMetadata metadata;
 	ScratchImage image;
-	LoadFromWICFile(L"asset\\texture\\field000.jpg", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\fieldsand.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(Renderer::GetDevice(), image.GetImages(), image.GetImageCount(), metadata, &m_Texture);
 	assert(m_Texture);
 
@@ -79,9 +79,9 @@ void Field::Draw()
 	//lightDirection = XMQuaternionNormalize(lightDirection);
 	//light.Ambient = XMFLOAT4(0.2f, 0.1f, 0.1f, 1.0f);
 	//light.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//light.SkyColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);					//‹ó‚ÌF‚Í•(–³F)
-	//light.GroundColor = XMFLOAT4(0.4f, 0.0f, 0.0f, 1.0f);				//’n–ÊF‚ÍÔ
-	//light.GroundNormal = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);			//’n–Ê^ãŒü‚«
+	//light.SkyColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);					//ç©ºã®è‰²ã¯é»’(ç„¡è‰²)
+	//light.GroundColor = XMFLOAT4(0.4f, 0.0f, 0.0f, 1.0f);				//åœ°é¢è‰²ã¯èµ¤
+	//light.GroundNormal = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);			//åœ°é¢çœŸä¸Šå‘ã
 	//XMVECTOR GroundNormal = XMLoadFloat4(&light.GroundNormal);
 	//GroundNormal = XMQuaternionNormalize(GroundNormal);
 
@@ -90,14 +90,14 @@ void Field::Draw()
 
 	//Renderer::SetLight(light);
 
-	//“ü—ÍƒŒƒCƒAƒEƒgÝ’è
+	//å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆè¨­å®š
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ƒVƒF[ƒ_[Ý’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®š
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒXÝ’è
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒžãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(GetScale().x, GetScale().y, GetScale().z);
 	rot = XMMatrixRotationRollPitchYaw(GetRot().x, GetRot().y, GetRot().z);
@@ -105,25 +105,25 @@ void Field::Draw()
 	world = scale * rot * trans;
 	Renderer::SetWorldMatrix(world);
 
-	//’¸“_ƒoƒbƒtƒ@Ý’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 
-	//ƒ}ƒeƒŠƒAƒ‹Ý’è
+	//ãƒžãƒ†ãƒªã‚¢ãƒ«è¨­å®š
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 
-	//ƒeƒNƒXƒ`ƒƒÝ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 	Renderer::GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
-	//ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWÝ’è
+	//ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//ƒ|ƒŠƒSƒ“Ý’è
+	//ãƒãƒªã‚´ãƒ³è¨­å®š
 	Renderer::GetDeviceContext()->Draw(4, 0);
 
 }

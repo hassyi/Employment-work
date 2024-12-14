@@ -1,5 +1,4 @@
 #include "player.h"
-#include "animationModel.h"
 #include "input.h"
 #include "camera.h"
 #include "scene.h"
@@ -12,7 +11,6 @@
 #include "meshField.h"
 #include "transform3DComponent.h"
 #include "transform2DComponent.h"
-#include "transform3DAnimaitonComponent.h"
 #include "game.h"
 #include "boxColiderComponent.h"
 #include "buffParticle.h"
@@ -22,21 +20,19 @@ void Player::Init()
 	m_Component = new AnimationModel(this);
 	((AnimationModel*)m_Component)->Load("asset\\model\\Vampire A Lusth.fbx");
 	((AnimationModel*)m_Component)->LoadAnimation("asset\\model\\Idle.fbx", "Idle");
+	((AnimationModel*)m_Component)->LoadAnimation("asset\\model\\Idle_Title.fbx", "Idle_Title");
 	((AnimationModel*)m_Component)->LoadAnimation("asset\\model\\Running.fbx", "Run");
 
-	//AddComponent<Transform3DAnimationComponent>()->AddModelData("asset\\model\\Vampire A Lusth.fbx", Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>());
-	//GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Idle.fbx", "Idle");
-	//GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Running.fbx", "Run");
 	AddComponent<Transform3DComponent>();
 	AddComponent<BoxColiderComponent>();
 	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
-	GetComponent<Colider>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	SetScale(GetComponent<Transform3DComponent>()->GetScale());
 
-	//for (auto component : m_ComponentList)
-	//{
-	//	component->Init();
-	//}
+	for (auto component : m_ComponentList)
+	{
+		component->Init();
+	}
+	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	m_AnimationName1 = "Idle";
 	m_AnimationName2 = "Idle";
@@ -79,9 +75,17 @@ void Player::Uninit()
 
 void Player::Update()
 {
-	m_Predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
+	SCENE_STATE scene = Scene::GetInstance()->GetNowScene()->GetSceneState();
 
-	m_AnimationName = "Idle";
+	if (scene == SCENE_STATE::SCENE_GAME) {
+		m_AnimationName = "Idle";
+	}
+	else if (scene == SCENE_STATE::SCENE_TITLE) {
+		m_AnimationName1 = "Idle_Title";
+		return;
+	}
+
+	m_Predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
 	
 	PlayerControl();
 
@@ -91,32 +95,10 @@ void Player::Update()
 	GetComponent<Transform3DComponent>()->SetOldPos(GetComponent<Transform3DComponent>()->GetPos());
 	SetOldPos(GetComponent<Transform3DComponent>()->GetOldPos());
 
-
 	PlayerCollision();
-
-	for (auto component : m_ComponentList)
-	{
-		component->Update();
-	}
-
-	if (Input::GetKeyTrigger('F')) 
-	{
-		m_dir.x = cosf(GetRot().y - (XM_PI / 2));
-		m_dir.y = 0.0f;
-		m_dir.z = sinf(GetRot().y + (XM_PI / 2));
-		Bullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Bullet>(1);
-		bullet->GetComponent<Transform3DComponent>()->SetPos(GetPos());
-		//m_SE->Play();
-	}
-
-	PredationAttack();
-	PlayerBuff();
 
 	GetComponent<Transform3DComponent>()->SetOldPos(GetComponent<Transform3DComponent>()->GetPos());
 
-	if (Input::GetKeyTrigger(VK_RETURN)) {
-		Scene::GetInstance()->ChangeScene(new Result);
-	}
 
 	if (m_AnimationName2 != m_AnimationName)
 	{
@@ -129,19 +111,14 @@ void Player::Update()
 		m_AnimetionBlendRatio = 1.0f;
 	}
 
-
+	for (auto component : m_ComponentList)
+	{
+		component->Update();
+	}
 }
 
 void Player::Draw()
 {
-	//for (auto component : m_ComponentList)
-	//{
-	//	if (component == (AnimationModel*)component)
-	//	{
-	//		((AnimationModel*)component)->UpdateAnimation(m_AnimationName1.c_str(), m_AnimationFrame, m_AnimationName2.c_str(), m_AnimationFrame, m_AnimetionBlendRatio);
-	//	}
-	//	component->Draw();
-	//}
 
 	((AnimationModel*)m_Component)->UpdateAnimation(m_AnimationName1.c_str(), m_AnimationFrame,
 											m_AnimationName2.c_str(), m_AnimationFrame,
@@ -187,11 +164,7 @@ void Player::Draw()
 void Player::PlayerControl()
 {
 	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
-	Predation* predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
 
-	//XMFLOAT3 pos = GetComponent<Transform3DAnimationComponent>()->GetPos();
-	//XMFLOAT3 oldPos = GetComponent<Transform3DAnimationComponent>()->GetOldPos();
-	//XMFLOAT3 vel = GetComponent<Transform3DAnimationComponent>()->GetVel();
 	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
 	XMFLOAT3 oldPos = GetComponent<Transform3DComponent>()->GetOldPos();
 	XMFLOAT3 vel = GetComponent<Transform3DComponent>()->GetVel();
@@ -199,7 +172,8 @@ void Player::PlayerControl()
 	float dt = 30.0f * (1.0f / 60.0f);
 	float dt1 = 1.0f / 60.0f;
 
-	if (Input::GetKeyPress(VK_LSHIFT) || predation->GetBuff()) {
+	if (Input::GetKeyPress(VK_LSHIFT) || m_Predation->GetBuff()) {
+		//PlayerBuff();
 		m_move = 0.5f;
 	}
 	else {
@@ -234,7 +208,8 @@ void Player::PlayerControl()
 		m_Rot = 3.14f / 2.0f;
 		m_AnimationName = "Run";
 	}
-		//ジャンプ
+
+	//ジャンプ
 	if (Input::GetKeyPress(VK_SPACE))
 	{
 		if (!m_JampFlag)
@@ -244,6 +219,25 @@ void Player::PlayerControl()
 		}
 	}
 
+	if (Input::GetKeyTrigger('R'))	{
+		m_Predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
+		PredationAttack();
+	}
+
+	if (Input::GetKeyTrigger('F'))
+	{
+		m_dir.x = cosf(GetRot().y - (XM_PI / 2));
+		m_dir.y = 0.0f;
+		m_dir.z = sinf(GetRot().y + (XM_PI / 2));
+		Bullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Bullet>(1);
+		bullet->GetComponent<Transform3DComponent>()->SetPos(GetPos());
+		//m_SE->Play();
+	}
+
+	if (Input::GetKeyTrigger('Q'))
+	{
+		PlayerAttack();
+	}
 
 	if (m_IsGravity) {
 		m_Gravity = -30.0f;
@@ -289,30 +283,11 @@ void Player::PlayerCollision()
 	XMFLOAT3 oldPos = GetComponent<Transform3DComponent>()->GetOldPos();
 	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
 	XMFLOAT3 vel = GetComponent<Transform3DComponent>()->GetVel();
-
+	GetColider()->SetPos(pos);
+	XMFLOAT3 coliderPos = GetColider()->GetPos();
+	XMFLOAT3 coliderScale = GetColider()->GetScale();
 	//地面の高さ
 	m_GroundHeight = meshField->GetHeight(pos);
-
-	//auto cylinderList = Scene::GetInstance()->GetScene<Game>()->GetGameObjects<Cylinder>();
-
-	//for (auto cylinder : cylinderList) {
-	//	XMFLOAT3 cylinderPos = cylinder->GetPos();
-	//	XMFLOAT3 cylinderScale = cylinder->GetScale();
-
-	//	if (collision.CollisionCylinder(pos, cylinderPos, cylinderScale.x))
-	//	{
-	//		if (collision.CollisionCylinderHeight(pos, cylinderPos, cylinderScale.y)) {
-	//			m_GroundHeight = cylinderPos.y + cylinderScale.y;
-	//		}
-	//		else 
-	//		{
-	//			pos.x = oldPos.x;
-	//			pos.z = oldPos.z;
-	//			vel.x = 0.0f;
-	//			vel.z = 0.0f;
-	//		}
-	//	}
-	//}
 	
 	if (std::get<0>(GetColider()->GetCollision()) == true)
 	{
@@ -321,10 +296,10 @@ void Player::PlayerCollision()
 		{
 			if (onCollisionObject->GetObjectType() == OBJ_TYPE::BOX)
 			{
-				float boxposy = onCollisionObject->GetColider()->GetPos().y + (onCollisionObject->GetColider()->GetScale().y * 2) + 1.0f;
-				if (pos.y - scale.y >= boxposy)
+				float boxposy = onCollisionObject->GetColider()->GetPos().y + (onCollisionObject->GetColider()->GetScale().y * 2);
+				if (coliderPos.y - coliderScale.y >= boxposy)
 				{
-					m_GroundHeight = boxposy + onCollisionObject->GetColider()->GetScale().y;
+					m_GroundHeight = boxposy + onCollisionObject->GetColider()->GetScale().y + 1.0f;
 					m_Gravity = 0.0f;
 					m_JampFlag = false;
 				}
@@ -335,8 +310,8 @@ void Player::PlayerCollision()
 					float boxPosZ = onCollisionObject->GetColider()->GetPos().z;
 					float boxScaleX = onCollisionObject->GetColider()->GetScale().x;
 					float boxScaleZ = onCollisionObject->GetColider()->GetScale().z;
-					float disx = pos.x - boxPosX;
-					float disz = pos.z - boxPosZ;
+					float disx = coliderPos.x - boxPosX;
+					float disz = coliderPos.z - boxPosZ;
 
 					//計算しやすいように距離の値を＋にする
 					if (disx < 0) {
@@ -354,45 +329,45 @@ void Player::PlayerCollision()
 
 					if (rotbb >= rot)
 					{
-						if (0.0f > pos.x - boxPosX) {
-							pos.x = (boxPosX - boxScaleX - geta) - scale.x / 2;
+						if (0.0f > coliderPos.x - boxPosX) {
+							coliderPos.x = (boxPosX - boxScaleX - geta) - scale.x / 2;
 						}
-						else if (0.0f < pos.x - boxPosX) {
-							pos.x = (boxPosX + boxScaleX + geta) + scale.x / 2;
+						else if (0.0f < coliderPos.x - boxPosX) {
+							coliderPos.x = (boxPosX + boxScaleX + geta) + scale.x / 2;
 						}
 					}
 					else if (rotbb <= rot)
 					{
-						if (0.0f > pos.z - boxPosZ)	{
-							pos.z = (boxPosZ - boxScaleZ - geta) - scale.z / 2;
+						if (0.0f > coliderPos.z - boxPosZ)	{
+							coliderPos.z = (boxPosZ - boxScaleZ - geta) - scale.z / 2;
 						}
-						else if (0.0f < pos.z - boxPosZ) {
-							pos.z = (boxPosZ + boxScaleZ + geta) + scale.z / 2;
+						else if (0.0f < coliderPos.z - boxPosZ) {
+							coliderPos.z = (boxPosZ + boxScaleZ + geta) + scale.z / 2;
 						}
 					}
-					GetComponent<Transform3DComponent>()->SetPos(pos);
-					GetColider()->SetPos(pos);
+					GetComponent<Transform3DComponent>()->SetPos(coliderPos);
+					GetColider()->SetPos(coliderPos);
 				}
 			}
-			else if (onCollisionObject->GetObjectType() == OBJ_TYPE::CYLINDER)
-			{
-				XMFLOAT3 cylinderPos = onCollisionObject->GetColider()->GetPos();
-				XMFLOAT3 cylinderScale = onCollisionObject->GetColider()->GetScale();
-				float directionY = pos.y - cylinderPos.y;
-				if (directionY > cylinderScale.y - 0.5f)
-				{
-					m_GroundHeight = cylinderPos.y + cylinderScale.y;
-					m_Gravity = 0.0f;
-					m_JampFlag = false;
-				}
-				else
-				{
-					pos.x = (cylinderPos.x + cylinderScale.x) + scale.x / 2;
-					pos.z = (cylinderPos.z + cylinderScale.z) + scale.z / 2;
-					vel.x = 0.0f;
-					vel.z = 0.0f;
-				}
-			}
+			//else if (onCollisionObject->GetObjectType() == OBJ_TYPE::CYLINDER)
+			//{
+			//	XMFLOAT3 cylinderPos = onCollisionObject->GetColider()->GetPos();
+			//	XMFLOAT3 cylinderScale = onCollisionObject->GetColider()->GetScale();
+			//	float directionY = pos.y - cylinderPos.y;
+			//	if (directionY > cylinderScale.y - 0.5f)
+			//	{
+			//		m_GroundHeight = cylinderPos.y + cylinderScale.y;
+			//		m_Gravity = 0.0f;
+			//		m_JampFlag = false;
+			//	}
+			//	else
+			//	{
+			//		pos.x = (cylinderPos.x + cylinderScale.x) + scale.x / 2;
+			//		pos.z = (cylinderPos.z + cylinderScale.z) + scale.z / 2;
+			//		vel.x = 0.0f;
+			//		vel.z = 0.0f;
+			//	}
+			//}
 		}
 	}
 	else
@@ -407,8 +382,6 @@ void Player::PlayerCollision()
 
 void Player::PredationAttack()
 {
-	Predation* predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
-
 	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
 	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
 	XMFLOAT3 rot = GetComponent<Transform3DComponent>()->GetRot();
@@ -418,12 +391,10 @@ void Player::PredationAttack()
 	predationPos.z = pos.z + 1.0f * sinf(rot.y + (XM_PI / 2));
 	predationPos.y = pos.y;
 
-	if (Input::GetKeyTrigger('R')) 
-	{
-		predation->SetUse(true);
-		predation->GetComponent<Transform3DComponent>()->SetPos(predationPos);
-		GetComponent<Transform3DComponent>()->SetVel(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	}
+	m_Predation->SetUse(true);
+	m_Predation->GetComponent<Transform3DComponent>()->SetPos(predationPos);
+	GetComponent<Transform3DComponent>()->SetVel(XMFLOAT3(0.0f, 0.0f, 0.0f));
+
 
 }
 
@@ -435,4 +406,9 @@ void Player::PlayerBuff()
 
 	m_BuffParticle->SetPlayerBuff(m_Predation->GetBuff());
 	m_BuffParticle->GetComponent<Transform2DComponent>()->SetPos(pos);
+}
+
+void Player::PlayerAttack()
+{
+
 }

@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include <list>
 #include "uiComponent.h"
+#include "sceneState.h"
 
 class UIComponent;
 
@@ -10,6 +11,7 @@ class UI
 {
 protected:
 	std::list<UIComponent* > m_ComponentList;
+	SceneState* m_Scene;
 	
 	bool m_ShouldDelete = false;
 
@@ -23,6 +25,9 @@ public:
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
+
+	void SetScene(SceneState* state) { m_Scene = state; }
+	SceneState* GetScene() { return m_Scene; }
 
 	void SetDelete(bool _delete) { m_ShouldDelete = _delete; }
 	bool Delete() 
@@ -42,7 +47,7 @@ public:
 	T* AddComponent()
 	{
 		T* component = new T;
-		component->AcceptGameObject(this);
+		component->AcceptUITexture(this);
 		m_ComponentList.push_back(component);
 		
 		return component;

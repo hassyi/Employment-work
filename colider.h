@@ -10,6 +10,9 @@ protected:
 	XMFLOAT3 m_Scale = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 m_Rot = { 0.0f,0.0f,0.0f };
 
+	ID3D11VertexShader* m_VertexShader{};
+	ID3D11PixelShader* m_PixelShader{};
+	ID3D11InputLayout* m_VertexLayout{};
 
 public:
 	Colider(){}

@@ -44,14 +44,15 @@ struct LIGHT
 	float4 Diffuse;
 	float4 Ambient;
 	
-    float4 SkyColor; //“V‹…F
-    float4 GroundColor; //’n–ÊF
-    float4 GroundNormal; //’n–Ê‚Ì–@ü
+    float4 SkyColor; //å¤©çƒè‰²
+    float4 GroundColor; //åœ°é¢è‰²
+    float4 GroundNormal; //åœ°é¢ã®æ³•ç·š
 
-    float4 Position; //ŒõŒ¹‚ÌÀ•W
-    float4 PointLightParam; //Œõ‚Ì”ÍˆÍ
+    float4 Position; //å…‰æºã®åº§æ¨™
+    float4 PointLightParam; //å…‰ã®ç¯„å›²
 
-
+    matrix ViewMatrix;
+    matrix ProjectonMatrix;
 };
 
 cbuffer LightBuffer : register(b4)
@@ -69,19 +70,21 @@ struct VS_IN
 	float4 Normal		: NORMAL0;
 	float4 Diffuse		: COLOR0;
 	float2 TexCoord		: TEXCOORD0;
+    //uint InstanceId		: SV_InstanceID; //æç”»ã™ã‚‹å›æ•°ã‚’å–å¾—
 };
 
 
 struct PS_IN
 {
 	float4 Position		: SV_POSITION;
-    float4 WorldPosition : POSITION0; //ƒsƒNƒZƒ‹‚Ì‹óŠÔ‚Å‚ÌÀ•W
-    float4 Normal : NORMAL0; //ƒsƒNƒZƒ‹‚Ì–@ü
+    float4 WorldPosition : POSITION0; //ãƒ”ã‚¯ã‚»ãƒ«ã®ç©ºé–“ã§ã®åº§æ¨™
+    float3 Normal : NORMAL0; //ãƒ”ã‚¯ã‚»ãƒ«ã®æ³•ç·š
 	float4 Diffuse		: COLOR0;
 	float2 TexCoord		: TEXCOORD0;
+    float4 LightPosition : POSITION1;
 };
 
 cbuffer CameraBuffer : register(b5)
 {
-    float4 CameraPosition; //ƒJƒƒ‰‚ÌÀ•W
+    float4 CameraPosition; //ã‚«ãƒ¡ãƒ©ã®åº§æ¨™
 }

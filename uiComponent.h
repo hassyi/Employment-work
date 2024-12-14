@@ -20,7 +20,7 @@ public:
 	virtual void Update()override {}
 	virtual void Draw()override {}
 
-	void AcceptGameObject(UI* ui) { m_UI = ui; }
+	void AcceptUITexture(UI* ui) { m_UI = ui; }
 	UI* GetUITexture() { return m_UI; }
 
 };

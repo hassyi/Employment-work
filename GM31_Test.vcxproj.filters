@@ -31,6 +31,9 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{ba9077b2-79b0-48ca-b492-794cb59d7abb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AIState">
+      <UniqueIdentifier>{71581a60-e392-48c9-9156-cebd9e109613}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -146,6 +149,45 @@
     </ClCompile>
     <ClCompile Include="buffParticle.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyAIStateBase.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="searchPlayerState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="sandParticle.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleEffect.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="titleCamera.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldDepthShadow.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="playerShadow.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="wave.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="bonFire.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="cloth.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="fireParticle.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="titleName.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="startButton.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +335,48 @@
     <ClInclude Include="buffParticle.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="enemyAIState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyAIStateBase.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="searchPlayerState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="sandParticle.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleEffect.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="titleCamera.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldDepthShadow.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="playerShadow.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="cloth.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="wave.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="bonFire.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="fireParticle.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="titleName.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="startButton.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl" />
@@ -306,5 +390,9 @@
     <FxCompile Include="shader\LimLightingVS.hlsl" />
     <FxCompile Include="shader\vertexLightingPS.hlsl" />
     <FxCompile Include="shader\vertexLightingVS.hlsl" />
+    <FxCompile Include="shader\DepthShadowMappingPS.hlsl" />
+    <FxCompile Include="shader\DepthShadowMappingVS.hlsl" />
+    <FxCompile Include="shader\wavePS.hlsl" />
+    <FxCompile Include="shader\waveVS.hlsl" />
   </ItemGroup>
 </Project>

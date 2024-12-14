@@ -13,7 +13,7 @@ void Result::Init()
 		texture->Init();
 	}
 
-
+	m_Satate = SCENE_STATE::SCENE_RESULT;
 }
 
 void Result::Uninit()
@@ -39,8 +39,10 @@ void Result::Update()
 
 void Result::Draw()
 {
+	Renderer::Begin();
 	for (auto texture : m_Texture)
 	{
 		texture->Draw();
 	}
+	Renderer::End();
 }

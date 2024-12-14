@@ -33,6 +33,7 @@ void PartrcleEmitter::Init()
 	GetComponent<Transform2DComponent>()->SetVertex(vertex);
 	GetComponent<Transform2DComponent>()->SetBillBoard(true);
 	GetComponent<Transform2DComponent>()->SetZBuff(true);
+	GetComponent<Transform2DComponent>()->SetIsTitle(true);
 
 	for (auto component : m_ComponentList)
 	{
@@ -56,7 +57,7 @@ void PartrcleEmitter::Update()
 		if (!m_Particle[i].Enable) {
 			m_Particle[i].Enable = true;
 
-			m_Particle[i].Pos = GetPos();
+			m_Particle[i].Pos = XMFLOAT3(5.0f,0.0f,0.0f);
 			m_Particle[i].Vel.x = (rand() % 100 - 50) / 500.0f;
 			m_Particle[i].Vel.y = (rand() % 100 + 50) / 500.0f;
 			m_Particle[i].Vel.z = (rand() % 100 - 50) / 500.0f;

@@ -2,10 +2,10 @@
 
 #include <xaudio2.h>
 #include "gameObject.h"
-#include "component.h"
+#include "gameObjectComponent.h"
 
 
-class Audio : public Component
+class Audio : public GameObjectComponet
 {
 private:
 	static IXAudio2*				m_Xaudio;
@@ -22,7 +22,7 @@ public:
 	static void InitMaster();
 	static void UninitMaster();
 
-	using Component::Component;
+	using GameObjectComponet::GameObjectComponet;
 
 	void Uninit();
 

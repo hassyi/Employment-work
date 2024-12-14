@@ -5,7 +5,8 @@ void Transform3DComponent::Init()
 {
 	m_Model = new ModelRenderer;
 
-	if (m_ModelData != "none") m_Model->Load(m_ModelData);
+	if (m_ModelData != "none")	m_Model->Load(m_ModelData);
+		
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
 		"shader\\unlitTextureVS.cso");
@@ -47,6 +48,20 @@ void Transform3DComponent::Draw()
 	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 	world = scale * rot * trans;
 	Renderer::SetWorldMatrix(world);
+
+	//// ラスタライザステート設定
+	//D3D11_RASTERIZER_DESC rasterizerDesc{};
+	//rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	//rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	//rasterizerDesc.DepthClipEnable = TRUE;
+	//rasterizerDesc.MultisampleEnable = FALSE;
+	//rasterizerDesc.DepthBias = 1;
+	//rasterizerDesc.SlopeScaledDepthBias = 1.0f;
+
+	//ID3D11RasterizerState* rs;
+	//Renderer::GetDevice()->CreateRasterizerState(&rasterizerDesc, &rs);
+
+	//Renderer::GetDeviceContext()->RSSetState(rs);
 
 	m_Model->Draw();
 
