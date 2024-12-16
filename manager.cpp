@@ -16,7 +16,7 @@ void Manager::Init()
 	Input::Init();
 	Audio::InitMaster();
 
-	Scene::GetInstance()->InitScene(new Title);
+	Scene::GetInstance()->InitScene(new Game);
 
 }
 

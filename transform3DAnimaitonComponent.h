@@ -11,8 +11,15 @@ private:
 	const char* m_AnimationData = "none";
 	const char* m_AnimationName = "none";
 
-	float m_Rotation = 0.0f;
+	int m_AnimationFrame1 = 0;
+	int m_AnimationFrame2 = 0;
 
+	float m_Rotation = 0.0f;
+	float m_AnimetionBlendRatio = 0.0f;
+
+	std::string		m_AnimationName1{};
+	std::string		m_AnimationName2{};
+	std::string		m_AnimationNameState{};
 
 public:
 	Transform3DAnimationComponent() = default;
@@ -38,6 +45,16 @@ public:
 		m_Model->LoadAnimation(m_AnimationData, m_AnimationName);
 	}
 
+	void SetAnimationState(const char* name) { m_AnimationNameState = name; }
+
+	void SetInitAnimationState(const char* name)
+	{
+		m_AnimationName1 = name;
+		m_AnimationName2 = name;
+	}
+
+	void SetAnimationFrame(int frame) { m_AnimationFrame2 = frame; }
+	
 	void SetTransform(XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rot)
 	{
 		m_Pos = pos;

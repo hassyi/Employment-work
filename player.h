@@ -20,6 +20,19 @@ private:
 	float m_GroundHeight = 0.0f;
 	bool m_JampFlag = false;
 	float m_move = 0.0f;
+	
+
+	//攻撃のフレーム
+	int m_AttackFrame = 0;
+	bool m_isAttack = false;
+	//次の攻撃の受付時間のフレーム
+	int m_AttackReseveFrame = 0;
+	bool m_isNext = false;
+	bool m_isNextOnAttack = false;
+
+	//次の攻撃のフレーム
+	int m_NextAttackFrame = 0;
+	bool m_isNextAttack = false;
 
 	int m_AnimationFrame = 0;
 	int m_IdleFrame = 0;

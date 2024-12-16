@@ -57,7 +57,7 @@ void Game::Init()
 		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
 
-	AddGameObject<Cloth>(1);
+	//AddGameObject<Cloth>(1);
 	AddGameObject<Sky>(1);
 	//AddGameObject<PartrcleEmitter>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
 	//AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
@@ -77,7 +77,7 @@ void Game::Init()
 	//}
 	//AddGameObject<Polygon2D>(2);
 	AddGameObject<Predation>(1);
-	AddGameObject<Wave>(1);
+	//AddGameObject<Wave>(1);
 	//AddUITexture<Score>();
 	AddUITexture<Time>();
 	//m_BGM = new Audio(this);

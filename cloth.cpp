@@ -9,7 +9,7 @@ void Cloth::Init()
 			for (int x = 0; x <= VERTEX_X; x++)
 			{
 				m_Vertex[y][x].vertex.Position = XMFLOAT3(3.0f * (x - VERTEX_X / 2), -3.0f * (y - VERTEX_Y / 2), 0.0f);
-				m_Vertex[y][x].vertex.Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				m_Vertex[y][x].vertex.Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
 				m_Vertex[y][x].vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 				m_Vertex[y][x].vertex.TexCoord = XMFLOAT2(x / VERTEX_X, y / VERTEX_Y);
 				m_Vertex[y][x].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);

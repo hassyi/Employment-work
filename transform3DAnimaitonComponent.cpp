@@ -23,13 +23,28 @@ void Transform3DAnimationComponent::Uninit()
 
 void Transform3DAnimationComponent::Update()
 {
-
+	if (m_AnimationName2 != m_AnimationNameState)
+	{
+		m_AnimationName1 = m_AnimationName2;
+		m_AnimationName2 = m_AnimationNameState;
+		m_AnimetionBlendRatio = 0.0f;
+	}
+	m_AnimetionBlendRatio += 0.1f;
+	if (m_AnimetionBlendRatio > 1.0f) {
+		m_AnimetionBlendRatio = 1.0f;
+	}
 }
 
 void Transform3DAnimationComponent::Draw()
 {
 	if (m_ModelData == "none") return;
 	if (m_Model == nullptr) return;
+
+	m_Model->UpdateAnimation(m_AnimationName1.c_str(), m_AnimationFrame1,
+		m_AnimationName2.c_str(), m_AnimationFrame2,
+		m_AnimetionBlendRatio);
+	m_AnimationFrame1++;
+	m_AnimationFrame2++;
 
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
