@@ -5,6 +5,7 @@
 void TitleName::Init()
 {
 	AddComponent<TextureComponent>()->SetTransTexNum(150.0f, 80.0f, 350.0f, 150.0f, L"asset\\texture\\titlename.png", 1);
+	GetComponent<TextureComponent>()->SetDisitDisplay(false);
 	for (auto component : m_ComponentList)
 	{
 		component->Init();
@@ -36,6 +37,7 @@ void TitleName::Draw()
 {
 	for (auto component : m_ComponentList)
 	{
+		GetComponent<TextureComponent>()->SetPosSize(150.0f, 80.0f, 350.0f, 150.0f);
 		component->Draw();
 		
 	}

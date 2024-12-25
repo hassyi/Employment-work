@@ -27,14 +27,16 @@
 #include "buffParticle.h"
 #include "cloth.h"
 #include "wave.h"
+#include "fade.h"
+#include "lifeGauge.h"
+#include "bulletGauge.h"
+#include "staminaGauge.h"
 
 void Game::Init()
 {
 	AddGameObject<Camera>(0);
 	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
-	AddGameObject<Player>(1);
-	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 0.0f));
 	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
 	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, -10.0f));
 
@@ -46,21 +48,24 @@ void Game::Init()
 	//}
 	{
 		Box* box = AddGameObject<Box>(1);
-		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 0.0f, 10.0f));
+		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, 10.0f));
 		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
 	{
 		Box* box = AddGameObject<Box>(1);
-		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 0.0f, -10.0f));
+		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, -10.0f));
 		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
 
+	AddGameObject<Player>(1);
+	AddGameObject<Enemy>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(10.0f, 0.0f, 5.0f));
+	AddGameObject<Polygon2D>(1);
 	//AddGameObject<Cloth>(1);
 	AddGameObject<Sky>(1);
 	//AddGameObject<PartrcleEmitter>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
-	//AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
+	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
 	//AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
 
 	//MeshField* meshField = GetGameObject<MeshField>();
@@ -75,11 +80,16 @@ void Game::Init()
 
 	//	tree->GetComponent<Transform2DComponent>()->SetPos(pos);
 	//}
-	//AddGameObject<Polygon2D>(2);
 	AddGameObject<Predation>(1);
 	//AddGameObject<Wave>(1);
 	//AddUITexture<Score>();
-	AddUITexture<Time>();
+	AddUITexture<Time>()->SetTextureNum(0);
+	AddUITexture<LifeGauge>()->SetTextureNum(2);
+	AddUITexture<BulletGauge>()->SetTextureNum(3);
+	AddUITexture<StaminaGauge>()->SetTextureNum(4);
+	AddUITexture<Fade>()->SetTextureNum(1);
+	GetUITexture<Fade>(1)->SetFade(false);
+
 	//m_BGM = new Audio(this);
 	//m_BGM->Load("asset\\audio\\gameBGM.wav");
 	//m_BGM->Play(true);

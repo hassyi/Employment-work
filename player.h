@@ -31,12 +31,24 @@ private:
 	bool m_isNextOnAttack = false;
 
 	//次の攻撃のフレーム
-	int m_NextAttackFrame = 0;
-	bool m_isNextAttack = false;
+	int m_SecondAttackFrame = 0;
+	bool m_isSecondAttack = false;
+
+	bool m_isAttackCancel = false;
+
+	//捕食攻撃のフレーム
+	int m_PredationFrame = 0;
+	bool m_isPredation = false;
+
+	//ステップ
+	int m_StepFrame = 0;
+	float m_StepSpeed = 3.0f;
+	bool m_isStep = false;
+
+	//武器切り替え
+	bool m_Sword = true;
 
 	int m_AnimationFrame = 0;
-	int m_IdleFrame = 0;
-	int m_RunFrame = 0;
 	float m_AnimetionBlendRatio = 0.0f;
 
 	ID3D11VertexShader* m_VertexShader;

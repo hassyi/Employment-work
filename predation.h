@@ -15,6 +15,7 @@ private:
 	int m_frame = 0;
 	bool m_buff = false;
 	bool m_use = false;
+	bool m_isHit = false;
 
 public:
 	void Init()override;

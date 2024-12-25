@@ -35,7 +35,7 @@ void Box::Update()
 	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
 
 	GetComponent<BoxColiderComponent>()->SetPos(pos);
-	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(scale.x, scale.y / 2, scale.z));
+	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(scale.x, scale.y, scale.z));
 
 	for (auto component : m_ComponentList)
 	{

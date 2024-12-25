@@ -168,7 +168,7 @@
     <ClCompile Include="fieldDepthShadow.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="playerShadow.cpp">
+    <ClCompile Include="sphereShadow.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="wave.cpp">
@@ -186,7 +186,19 @@
     <ClCompile Include="titleName.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="startButton.cpp">
+    <ClCompile Include="fade.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="capsuleColiderComponent.cpp">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="lifeGauge.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletGauge.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="staminaGauge.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -356,7 +368,7 @@
     <ClInclude Include="fieldDepthShadow.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="playerShadow.h">
+    <ClInclude Include="sphereShadow.h">
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="cloth.h">
@@ -374,7 +386,19 @@
     <ClInclude Include="titleName.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="startButton.h">
+    <ClInclude Include="fade.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="capsuleColiderComponent.h">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="lifeGauge.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletGauge.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="staminaGauge.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -394,5 +418,7 @@
     <FxCompile Include="shader\DepthShadowMappingVS.hlsl" />
     <FxCompile Include="shader\wavePS.hlsl" />
     <FxCompile Include="shader\waveVS.hlsl" />
+    <FxCompile Include="shader\wireFramePS.hlsl" />
+    <FxCompile Include="shader\wireFrameVS.hlsl" />
   </ItemGroup>
 </Project>

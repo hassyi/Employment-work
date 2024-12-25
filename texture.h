@@ -21,7 +21,7 @@ protected:
 	XMFLOAT2 m_VertexSize = {};
 
 	float m_AnimX = 0.0f, m_AnimY = 0.0f;
-	float m_AnimSizeX = 0.0f, m_AnimSizeY = 0.0f;
+	float m_AnimSizeX = 1.0f, m_AnimSizeY = 1.0f;
 	float m_Disit = 0.0f;
 
 	const wchar_t* m_TextureData = L"none";

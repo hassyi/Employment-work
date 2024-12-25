@@ -7,6 +7,7 @@ class Bullet : public GameObject
 private:
 
 	int m_frame = 0;
+	bool m_isHit = false;
 
 public:
 	void Init()override;

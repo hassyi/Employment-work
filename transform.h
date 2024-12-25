@@ -56,4 +56,63 @@ public:
 	XMFLOAT3 GetRot() const { return m_Rot; }
 	XMFLOAT3 GetVel() const { return m_Vel; }
 
+
+	XMFLOAT3 GetForward()
+	{
+		//オイラー格から回転行列を生成
+		XMMATRIX rotationMatrix;
+		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+
+		XMFLOAT3 forward;
+		XMStoreFloat3(&forward, rotationMatrix.r[2]);
+		return forward;
+	}
+	XMFLOAT3 GetRight()
+	{
+		//オイラー格から回転行列を生成
+		XMMATRIX rotationMatrix;
+		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+
+		XMFLOAT3 right;
+		XMStoreFloat3(&right, rotationMatrix.r[0]);
+		return right;
+	}
+	XMFLOAT3 GetTop()
+	{
+		//オイラー格から回転行列を生成
+		XMMATRIX rotationMatrix;
+		rotationMatrix = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+
+		XMFLOAT3 top;
+		XMStoreFloat3(&top, rotationMatrix.r[1]);
+		return top;
+	}
+
+	struct Vec3
+	{
+		XMFLOAT3 vec;
+
+		Vec3 operator - (const Vec3& othsr)const
+		{
+			Vec3 v;
+			v.vec = XMFLOAT3(vec.x - othsr.vec.x, vec.y - othsr.vec.y, vec.z - othsr.vec.z);
+			return v;
+		}
+
+		float Dot(const Vec3& othsr)const{
+			return vec.x * othsr.vec.x * vec.y * othsr.vec.y * vec.z * othsr.vec.z;
+		}
+
+		float Lemgth()const {
+			return sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+		}
+
+		XMFLOAT3 Normalize()const {
+			float len = Lemgth();
+			return XMFLOAT3(vec.x / len, vec.y / len, vec.z / len);
+		}
+	};
+
+
+
 };

@@ -49,7 +49,7 @@ void Time::Draw()
 			float x = (score % 5) * (1.0f / 5);
 			float y = (score / 5) * (1.0f / 5);
 
-			GetComponent<TextureComponent>()->SetPosSize(0.0f, 0.0f, 50.0f, 50.0f);
+			GetComponent<TextureComponent>()->SetPosSize(1100.0f, 0.0f, 50.0f, 50.0f);
 			GetComponent<TextureComponent>()->SetDisit(50.0f * (SCORE_DISIT - 1 - i));
 			GetComponent<TextureComponent>()->SetAnimation(x, y, 0.2f, 0.2f);
 			component->Draw();

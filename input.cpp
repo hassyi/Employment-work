@@ -27,7 +27,7 @@ void Input::Update()
 	memcpy( m_OldKeyState, m_KeyState, 256 );
 
 	GetKeyboardState( m_KeyState );
-
+	
 }
 
 bool Input::GetKeyPress(BYTE KeyCode)

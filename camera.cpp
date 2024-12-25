@@ -3,6 +3,7 @@
 #include "input.h"
 #include "player.h"
 #include "game.h"
+#include "transform.h"
 
 void Camera::Init()
 {
@@ -55,7 +56,7 @@ void Camera::Draw()
 	{
 	case 0:
 		SetKeyCamera();
-		SetTarget(player->GetPos());
+		SetTarget(player->GetComponent<Transform>()->GetPos());
 
 		SetPosX((m_R * sinf(m_F) * cosf(m_S)) + GetTarget().x);
 		SetPosY((m_R * cosf(m_F)) + GetTarget().y);
@@ -63,7 +64,7 @@ void Camera::Draw()
 
 		break;
 	case 1:
-		SetMouseCamera(player->GetPos());
+		SetMouseCamera(player->GetComponent<Transform>()->GetPos());
 		break;
 	default:
 		break;
@@ -89,8 +90,6 @@ void Camera::Draw()
 
 void Camera::SetMouseCamera(XMFLOAT3 pos)
 {
-	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-
 	m_OldmousePos = m_MousePos;
 
 	m_MousePos = XMFLOAT2(GetMousePosX(), GetMousePosY());
@@ -134,7 +133,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	//中央から下にいる場合
 	if (m_OldmousePos.y > m_CenterCamY)
 	{
-		if (GetPos().y <= (m_R - 3.0f) + player->GetPos().y)
+		if (GetPos().y <= (m_R - 3.0f) + pos.y)
 		{
 			if (m_MousePos.y > m_OldmousePos.y + 15.0f)
 			{
@@ -153,7 +152,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	//中央から上にいる場合
 	if (m_OldmousePos.y < m_CenterCamY)
 	{
-		if (GetPos().y >= (-m_R + 3.0f) + player->GetPos().y)
+		if (GetPos().y >= (-m_R + 3.0f) + pos.y)
 		{
 			if (m_MousePos.y < m_OldmousePos.y - 15.0f)
 			{
@@ -170,9 +169,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 		m_Radian = XM_PI * 0.01f;
 	}
 
-	SetTargetX(pos.x);
-	SetTargetY(pos.y + m_len * 0.3f);
-	SetTargetZ(pos.z);
+	SetTarget(pos);
 
 	SetPosX((m_R * sinf(m_F) * cosf(m_S)) + GetTarget().x);
 	SetPosY((m_R * cosf(m_F)) + GetTarget().y);
@@ -221,7 +218,7 @@ void Camera::SetKeyCamera()
 	}
 	m_Radian = XM_PI * 0.01f;
 
-	if (GetPos().y <= (m_R - 3.0f) + player->GetPos().y)
+	if (GetPos().y <= (m_R - 3.0f) + player->GetComponent<Transform>()->GetPos().y)
 	{
 		if (Input::GetKeyPress('U'))
 		{
@@ -237,7 +234,7 @@ void Camera::SetKeyCamera()
 	}
 	m_Radian = XM_PI * 0.01f;
 
-	if (GetPos().y >= (-m_R + 3.0f) + player->GetPos().y)
+	if (GetPos().y >= (-m_R + 3.0f) + player->GetComponent<Transform>()->GetPos().y)
 	{
 		if (Input::GetKeyPress('J'))
 		{

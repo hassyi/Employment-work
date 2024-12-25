@@ -5,36 +5,75 @@
 
 void BoxColiderComponent::Init()
 {
+	m_Model = new ModelRenderer;
+	m_Model->Load("asset\\model\\box.obj");
+
 	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
 	m_Scale = GetGameObject()->GetComponent<Transform>()->GetScale();
 	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
 
+	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
+		"shader\\wireFrameVS.cso");
+
+	Renderer::CreatePixelShader(&m_PixelShader,
+		"shader\\wireFramePS.cso");
 }
 
 void BoxColiderComponent::Uninit()
 {
+	m_VertexLayout->Release();
+	m_VertexShader->Release();
+	m_PixelShader->Release();
 
+	delete m_Model;
 }
 
 void BoxColiderComponent::Update()
 {
-	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
-	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
+	//m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
+	//m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
 }
 
 void BoxColiderComponent::Draw()
 {
-	//D3D11_RASTERIZER_DESC rasterDesc{};
-	//rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
-	//rasterDesc.CullMode = D3D11_CULL_NONE;
-	//rasterDesc.DepthClipEnable = TRUE;
-	//rasterDesc.DepthBias = 1;
-	//rasterDesc.SlopeScaledDepthBias = 1.0f;
+	//入力レイアウト設定
+	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//ID3D11RasterizerState* wireframeState;
-	//Renderer::GetDevice()->CreateRasterizerState(&rasterDesc, &wireframeState);
+	//シェーダー設定
+	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
+	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
-	//Renderer::GetDeviceContext()->RSSetState(wireframeState);
+	//ワールドマトリクス設定
+	XMMATRIX world, scale, rot, trans;
+	scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+	if (GetGameObject()->GetObjectType() == OBJ_TYPE::BOX)	{
+		trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
+	}
+	else {
+		trans = XMMatrixTranslation(m_Pos.x, m_Pos.y + m_Scale.y, m_Pos.z);
+	}
+	world = scale * rot * trans;
+	Renderer::SetWorldMatrix(world);
+
+	D3D11_RASTERIZER_DESC rasterDesc{};
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.DepthBias = 1;
+	rasterDesc.SlopeScaledDepthBias = 1.0f;
+
+	ID3D11RasterizerState* wireframeState;
+	Renderer::GetDevice()->CreateRasterizerState(&rasterDesc, &wireframeState);
+
+	Renderer::GetDeviceContext()->RSSetState(wireframeState);
+
+	m_Model->Draw();
+
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+
+	Renderer::GetDevice()->CreateRasterizerState(&rasterDesc, &wireframeState);
+	Renderer::GetDeviceContext()->RSSetState(wireframeState);
 
 }
 

@@ -51,6 +51,7 @@ void Bullet::Update()
 
 	if (m_frame >= 60){
 		Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1)->GetComponent<Transform2DComponent>()->SetPos(pos);
+		m_isHit = false;
 		SetDestroy();
 		return;
 	}
@@ -81,10 +82,14 @@ void Bullet::BulletCollision()
 		{
 			if (onCollisionObject->GetObjectType() == OBJ_TYPE::ENEMY)
 			{
-				Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1);
-				explosion->GetComponent<Transform2DComponent>()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
-				SetDestroy();
-				onCollisionObject->SetDestroy();
+				if (!m_isHit)
+				{
+					Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1);
+					explosion->GetComponent<Transform2DComponent>()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
+					SetDestroy();
+					onCollisionObject->SetLife(onCollisionObject->GetLife() - 1);
+					m_isHit = true;
+				}
 			}
 		}
 	}

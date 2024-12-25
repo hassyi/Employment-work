@@ -2,6 +2,8 @@
 #include "gameObjectComponent.h"
 #include <tuple>
 
+class ModelRenderer;
+
 class Colider : public GameObjectComponet
 {
 protected:
@@ -9,6 +11,8 @@ protected:
 	XMFLOAT3 m_OldPos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 m_Scale = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 m_Rot = { 0.0f,0.0f,0.0f };
+
+	ModelRenderer* m_Model{};
 
 	ID3D11VertexShader* m_VertexShader{};
 	ID3D11PixelShader* m_PixelShader{};

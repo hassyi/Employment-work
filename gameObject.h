@@ -36,6 +36,7 @@ protected:
 
 	OBJ_TYPE m_ObjType = OBJ_TYPE::NONE;
 
+	int m_Life = 0;
 
 public:
 	GameObject(){}
@@ -67,12 +68,14 @@ public:
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 	void SetDestroy() { m_Destroy = true; }
 	void SetScene(SceneState* scene) { m_SceneState = scene; }
+	void SetLife(int life) { m_Life = life; }
 
 	XMFLOAT3 GetPos() const{	return m_Pos;	}
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
 	XMFLOAT3 GetScale() const{	return m_Scale;	}
 	XMFLOAT3 GetRot() const{	return m_Rot;	}
 	XMFLOAT3 GetVel() const{ return m_Vel; }
+	int GetLife()const { return m_Life; }
 	SceneState* GetScene() { return m_SceneState; }
 	std::list<Component*> GetComponentList() { return m_ComponentList; }
 	OBJ_TYPE GetObjectType() { return m_ObjType; }

@@ -46,7 +46,7 @@ public:
 	template <class T>
 	T* AddComponent()
 	{
-		T* component = new T;
+		T* component = new T();
 		component->AcceptUITexture(this);
 		m_ComponentList.push_back(component);
 		

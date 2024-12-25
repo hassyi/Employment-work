@@ -8,7 +8,6 @@ class BoxColiderComponent : public Colider
 private:
 
 
-
 public:
 	BoxColiderComponent() = default;
 

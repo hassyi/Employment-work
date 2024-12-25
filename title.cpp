@@ -9,7 +9,6 @@
 #include "field.h"
 #include "sky.h"
 #include "fieldDepthShadow.h"
-#include "playerShadow.h"
 #include "cloth.h"
 #include "wave.h"
 #include "polygon2D.h"
@@ -19,24 +18,22 @@
 #include "box.h"
 #include "fireParticle.h"
 #include "titleName.h"
+#include "fade.h"
 
 void Title::Init()
 {
-	//AddUITexture<Texture2D>()->SetTransTexNum(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, L"asset\\texture\\title.png", 1);
 	AddGameObject<TitleCamera>(0);
 	AddGameObject<Field>(1)->SetPosZ(-45.0f);
-	AddGameObject<PlayerShadow>(1);
 	AddGameObject<Polygon2D>(1);
 	AddGameObject<Player>(1);
-	//AddGameObject<Box>(1);
 	AddGameObject<Wave>(1)->SetPos(XMFLOAT3(-50.0f, -3.0f, 90.0f));
 	AddGameObject<BonFire>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(2.0f, 0.0f, 0.0f));
 	AddGameObject<Sky>(1);
-	//AddGameObject<FieldDepthShadow>(1);
-	//AddGameObject<Cloth>(1);
 	AddGameObject<FireParticle>(1);
-	AddUITexture<TitleName>();
+	AddUITexture<TitleName>()->SetTextureNum(0);
 	AddUITexture<Texture2D>()->SetTransTexNum(480.0f, 550.0f, 350.0f, 40.0f, L"asset\\texture\\start.png", 1);
+	AddUITexture<Fade>()->SetTextureNum(2);
+	GetUITexture<Fade>(2)->SetFade(false);
 
 	for (auto texture : m_Texture)
 	{
@@ -102,6 +99,7 @@ void Title::Update()
 		GetUITexture<Texture2D>(1)->SetIsDraw(true);
 		m_SE->Play();
 		m_isChageScene = true;
+		GetUITexture<Fade>(2)->SetFadeState(FADE_STATE::FADE_OUT);
 	}
 
 	if (m_isChageScene)
@@ -109,7 +107,11 @@ void Title::Update()
 		m_ChageSceneFrame++;
 		if (m_ChageSceneFrame >= 60)
 		{
-			Scene::GetInstance()->ChangeScene(new Game);
+			GetUITexture<Fade>(2)->SetFade(true);
+			if (GetUITexture<Fade>(2)->GetFadeState() == FADE_NONE)
+			{
+				Scene::GetInstance()->ChangeScene(new Game);
+			}
 		}
 	}
 }

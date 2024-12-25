@@ -1,5 +1,6 @@
 #pragma once
 #include "sceneState.h"
+#include "fade.h"
 
 class Scene
 {

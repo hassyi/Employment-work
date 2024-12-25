@@ -14,7 +14,7 @@ private:
 		XMFLOAT3	Vel;
 	};
 
-	static const int PARTICLE_MAX = 1000;
+	static const int PARTICLE_MAX = 100;
 	PARTICLE m_Particle[PARTICLE_MAX]{};			//ここに{}を入れるとstructの中身が0とかfalseに初期化される
 
 	bool m_isPlayerBuff = false;

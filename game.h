@@ -93,11 +93,12 @@ public:
 	}
 
 	template <class T>
-	T* GetUITexture() {
+	T* GetUITexture(int num) {
 		for (UI* ui : m_Texture) {
-			T* ret = dynamic_cast<T*>(UI);
+			T* ret = dynamic_cast<T*>(ui);
 			if (ret != nullptr) {
-				return ret;
+				if (ret->GetTextureNum() == num)
+					return ret;
 			}
 		}
 		return nullptr;

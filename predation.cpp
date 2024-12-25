@@ -11,7 +11,7 @@
 void Predation::Init()
 {
 	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\player.obj");
-	AddComponent<BoxColiderComponent>();
+	AddComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(0.6f, 1.0f, 0.6f));
 }
 
 void Predation::Uninit()
@@ -28,6 +28,7 @@ void Predation::Update()
 {
 	if (m_use) {
 		m_frame++;
+		GetColider()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
 		PredationCollision();
 		for (auto component : m_ComponentList)
 		{
@@ -35,6 +36,7 @@ void Predation::Update()
 		}
 		if (m_frame >= 30) {
 			m_use = false;
+			m_isHit = false;
 			m_frame = 0;
 		}
 	}		
@@ -66,8 +68,12 @@ void Predation::PredationCollision()
 		{
 			if (onCollisionObject->GetObjectType() == OBJ_TYPE::ENEMY)
 			{
-				onCollisionObject->SetDestroy();
-				SetBuff(true);
+				if (!m_isHit)
+				{
+					SetBuff(true);
+					onCollisionObject->SetLife(onCollisionObject->GetLife() - 1);
+					m_isHit = true;
+				}
 			}
 		}
 	}

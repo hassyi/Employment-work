@@ -3,10 +3,11 @@
 #include "main.h"
 #include "manager.h"
 #include <thread>
+#include <string>
 
 
 const char* CLASS_NAME = "AppClass";
-const char* WINDOW_NAME = "DX11ƒQ[ƒ€";
+const char* WINDOW_NAME = "DX11ã‚²ãƒ¼ãƒ ";
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -71,7 +72,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	dwExecLastTime = timeGetTime();
 	dwCurrentTime = 0;
 
-
+	int frameCount = 0;
 
 	MSG msg;
 	while(1)
@@ -94,6 +95,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 			if((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
 			{
+				frameCount++;
+				if (frameCount > 60)
+				{
+					float fps = 1000.0f / (dwCurrentTime - dwExecLastTime);
+					std::string title;
+					title = "Game : " + std::to_string(fps) + "fps";
+					SetWindowText(g_Window, title.c_str());
+					frameCount = 0;
+				}
+
 				dwExecLastTime = dwCurrentTime;
 
 				Manager::Update();

@@ -4,6 +4,8 @@
 #include "scene.h"
 #include "title.h"
 #include "titleCamera.h"
+#include "game.h"
+#include "camera.h"
 
 
 void Polygon2D::Init()
@@ -114,5 +116,13 @@ void Polygon2D::Draw()
 
 	Renderer::SetDepthEnable(true);
 
-	Scene::GetInstance()->GetScene<Title>()->GetGameObject<TitleCamera>()->Draw();
+	SCENE_STATE scene = Scene::GetInstance()->GetNowScene()->GetSceneState();
+
+	if (scene == SCENE_STATE::SCENE_TITLE) {
+		Scene::GetInstance()->GetScene<Title>()->GetGameObject<TitleCamera>()->Draw();
+	}
+	else {
+		Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>()->Draw();
+	}
+
 }

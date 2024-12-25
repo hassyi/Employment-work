@@ -125,6 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,6 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,7 +162,9 @@
     <ClCompile Include="boxColiderComponent.cpp" />
     <ClCompile Include="buffParticle.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletGauge.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="capsuleColiderComponent.cpp" />
     <ClCompile Include="cloth.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="cylinder.cpp" />
@@ -169,10 +173,12 @@
     <ClCompile Include="enemyAIStateBase.cpp" />
     <ClCompile Include="enemyBullet.cpp" />
     <ClCompile Include="explosion.cpp" />
+    <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="fieldDepthShadow.cpp" />
     <ClCompile Include="fireParticle.cpp" />
-    <ClCompile Include="playerShadow.cpp" />
+    <ClCompile Include="lifeGauge.cpp" />
+    <ClCompile Include="sphereShadow.cpp" />
     <ClCompile Include="sandParticle.cpp" />
     <ClCompile Include="searchPlayerState.cpp" />
     <ClCompile Include="game.cpp" />
@@ -191,7 +197,7 @@
     <ClCompile Include="score.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="sphereColiderComponent.cpp" />
-    <ClCompile Include="startButton.cpp" />
+    <ClCompile Include="staminaGauge.cpp" />
     <ClCompile Include="texture2D.cpp" />
     <ClCompile Include="textureComponent.cpp" />
     <ClCompile Include="time.cpp" />
@@ -213,7 +219,9 @@
     <ClInclude Include="boxColiderComponent.h" />
     <ClInclude Include="buffParticle.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletGauge.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="capsuleColiderComponent.h" />
     <ClInclude Include="cloth.h" />
     <ClInclude Include="colider.h" />
     <ClInclude Include="collision.h" />
@@ -225,10 +233,12 @@
     <ClInclude Include="enemyAIStateBase.h" />
     <ClInclude Include="enemyBullet.h" />
     <ClInclude Include="explosion.h" />
+    <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="fieldDepthShadow.h" />
     <ClInclude Include="fireParticle.h" />
-    <ClInclude Include="playerShadow.h" />
+    <ClInclude Include="lifeGauge.h" />
+    <ClInclude Include="sphereShadow.h" />
     <ClInclude Include="sandParticle.h" />
     <ClInclude Include="searchPlayerState.h" />
     <ClInclude Include="game.h" />
@@ -251,7 +261,7 @@
     <ClInclude Include="score.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="sphereColiderComponent.h" />
-    <ClInclude Include="startButton.h" />
+    <ClInclude Include="staminaGauge.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture2D.h" />
     <ClInclude Include="textureComponent.h" />
@@ -412,6 +422,22 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="shader\waveVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\wireFramePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\wireFrameVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>

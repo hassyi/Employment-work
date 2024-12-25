@@ -64,9 +64,7 @@ void FireParticle::Update()
 
 			m_Particle[i].Pos = XMFLOAT3(2.0f, 0.0f, 0.0f);
 			m_Particle[i].Pos.y = (rand() % 100 + 50) / 250.0f;
-			//m_Particle[i].Vel.x = (rand() % 100 - 50) / 500.0f;
 			m_Particle[i].Vel.y = (rand() % 100 + 50) / 1000.0f;
-			//m_Particle[i].Vel.z = (rand() % 100 - 50) / 500.0f;
 
 			m_Particle[i].Life = 20;
 
@@ -75,11 +73,6 @@ void FireParticle::Update()
 	}
 	for (int i = 0; i < PARTICLE_MAX; i++) {
 		if (m_Particle[i].Enable) {
-			//重力
-			//m_Particle[i].Vel.y += -0.01f;
-
-			//m_Particle[i].Pos.x += m_Particle[i].Vel.x;
-			//m_Particle[i].Pos.z += m_Particle[i].Vel.z;
 			m_Particle[i].Pos.y += m_Particle[i].Vel.y;
 			m_Particle[i].Pos.x += (rand() % 100 - 50) / 1000.0f;
 			m_Particle[i].Pos.z += (rand() % 100 - 50) / 1000.0f;
