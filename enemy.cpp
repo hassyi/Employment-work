@@ -5,13 +5,15 @@
 #include "transform3DComponent.h"
 #include "transform3DAnimaitonComponent.h"
 #include "boxColiderComponent.h"
-#include "enemyBullet.h"
+#include "capsuleColiderComponent.h"
 #include "meshField.h"
 #include <random>
 #include "player.h"
 #include "sphereShadow.h"
 #include <iostream>
 #include <algorithm>
+#include "enemyAIState.h"
+#include "enemyAI.h"
 
 void Enemy::Init()
 {
@@ -22,11 +24,14 @@ void Enemy::Init()
 	GetComponent<Transform3DAnimationComponent>()->SetInitAnimationState("Idle");
 
 	AddComponent<Transform>();
-	AddComponent<BoxColiderComponent>();
+	//AddComponent<BoxColiderComponent>();
+	AddComponent<CapsuleColiderComponent>();
+	//AddComponent<EnemyAIState>();
+	AddComponent<EnemyAI>()->SetNode(this);
 	GetComponent<Transform>()->SetScale(XMFLOAT3(0.02f, 0.02f, 0.02f));
 	AddComponent<SphereShadow>()->SetScale(XMFLOAT3(1.5f, 1.5f, 1.5f));
 
-	SetLife(10);
+	SetLife(10.0f);
 
 	m_ObjType = OBJ_TYPE::ENEMY;
 
@@ -35,11 +40,14 @@ void Enemy::Init()
 		component->Init();
 	}
 
-	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(1.0f, 2.0f, 1.0f));
+	//GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(1.0f, 2.0f, 1.0f));
+	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 }
 
 void Enemy::Uninit()
 {
+	//GetComponent<EnemyAIState>()->Uninit();
+
 	for (auto component : m_ComponentList)
 	{
 		component->Uninit();
@@ -49,37 +57,43 @@ void Enemy::Uninit()
 
 void Enemy::Update()
 {
-	PlayerFollow();
+
 	EnemyCollision();
-	//m_CreateBulletFrame++;
-	if (m_CreateBulletFrame > 120)
-	{
-		Scene::GetInstance()->GetScene<Game>()->AddGameObject<EnemyBullet>(1)->GetComponent<Transform3DComponent>()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
-		m_CreateBulletFrame = 0;
-	}
+
+	//GetComponent<EnemyAIState>()->Update(this);
+	GetComponent<EnemyAI>()->Update();
 
 	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
-	float gravity = -10.0f;
-	pos.y += gravity;
+
+	if (m_IsGravity) 
+	{
+		m_Gravity = -10.0f;
+		pos.y += m_Gravity;
+	}
 
 	if (pos.y < m_GroundHeight) {
 		pos.y = m_GroundHeight;
-		gravity = 0.0f;
+		m_IsGravity = false;
+		m_Gravity = 0.0f;
+	}
+	else {
+		m_IsGravity = true;
 	}
 	GetComponent<Transform>()->SetPosY(pos.y);
 	GetComponent<SphereShadow>()->SetPos(pos);
 	
-	if (GetLife() <= 0)
-	{
-		SetDestroy();
-		return;
-	}
+
 	
 	for (auto component : m_ComponentList)
 	{
 		component->Update();
 	}
 
+	if (GetLife() <= 0.0f)
+	{
+		SetDestroy();
+		return;
+	}
 }
 
 void Enemy::Draw()
@@ -88,6 +102,7 @@ void Enemy::Draw()
 	{
 		component->Draw();
 	}
+	DrawImGui();
 }
 
 void Enemy::EnemyCollision()
@@ -105,6 +120,8 @@ void Enemy::EnemyCollision()
 	XMFLOAT3 coliderScale = GetColider()->GetScale();
 	//地面の高さ
 	m_GroundHeight = meshField->GetHeight(pos);
+
+	GetColider()->GetCollision();
 
 	if (std::get<0>(GetColider()->GetCollision()) == true)
 	{
@@ -176,124 +193,23 @@ void Enemy::EnemyCollision()
 
 }
 
-void  Enemy::PlayerFollow()
+void Enemy::DrawImGui()
 {
-	XMFLOAT3 playerpos = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->GetComponent<Transform>()->GetPos();
-
-	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
-	XMFLOAT3 rot = GetComponent<Transform>()->GetRot();
-	XMFLOAT3 direction{};
-	float length;
-
-	direction.x = playerpos.x - pos.x;
-	direction.y = playerpos.y - pos.y;
-	direction.z = playerpos.z - pos.z;
-
-	length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-	direction.x /= length;
-	direction.z /= length;
-
-	if (length >= 3.5f && !m_isAttack) {
-		m_Speed = 0.02f;
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Walk");
-	}
-	else {
-		m_Speed = 0.0f;
-		EnemyAttack();
-	}
-	pos.x += direction.x * m_Speed;
-	pos.z += direction.z * m_Speed;
-
-	GetComponent<Transform>()->SetPos(pos);
-
-	//プレイヤーまでのベクトル
-	XMFLOAT3 vec = XMFLOAT3(playerpos.x - pos.x, playerpos.y - pos.y, playerpos.z - pos.z);
-	float len = sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-	vec.x /= len;
-	vec.y /= len;
-	vec.z /= len;
-	XMFLOAT3 FrontVec = GetComponent<Transform>()->GetForward();
-	XMFLOAT3 RightVec = GetComponent<Transform>()->GetRight();
+	XMFLOAT3 transPos = GetComponent<Transform>()->GetPos();
+	XMFLOAT3 transRot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 coliderPos = GetColider()->GetPos();
+	XMFLOAT3 coliderRot = GetColider()->GetRot();
 
 	{
-		float dot = vec.x * FrontVec.x + vec.y + FrontVec.y + vec.z * FrontVec.z;
+		ImGui::Begin("Enemy");
 
-		float vec1len = sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-		float vec2len = sqrtf(FrontVec.x * FrontVec.x + FrontVec.y * FrontVec.y + FrontVec.z * FrontVec.z);
+		ImGui::Text("This is some useful text.");
+		ImGui::Text("EnemyPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
+		ImGui::Text("EnemyRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
+		//ImGui::Text("Life : %d", GetLife());
 
-		//ベクトルの大きさが0だったら処理を中止
-		if (vec1len == 0 || vec2len == 0)
-		{
-			return;
-		}
-
-		// cosθを計算
-		float cosTheta = dot / (vec1len * vec2len);
-
-		cosTheta = std::clamp(cosTheta, -1.0f, 1.0f);
-
-		float angleRadians = acosf(cosTheta);
-		float angleDegrees = angleRadians * 180.0f / XM_PI;
-
-		//ほぼ正面を向いている
-		if (angleDegrees < 5.0f)
-		{
-			return;
-		}
-
+		ImGui::End();
 	}
 
-	{
-		float dot = vec.x * RightVec.x + vec.y * RightVec.y + vec.z * RightVec.z;
-
-		float vec1len = sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-		float vec2len = sqrtf(RightVec.x * RightVec.x + RightVec.y * RightVec.y + RightVec.z * RightVec.z);
-
-		//ベクトルの大きさが0だったら処理を中止
-		if (vec1len == 0 || vec2len == 0)
-		{
-			return;
-		}
-
-		// cosθを計算
-		float cosTheta = dot / (vec1len * vec2len);
-
-		cosTheta = std::clamp(cosTheta, -1.0f, 1.0f);
-
-		float angleRadians = acosf(cosTheta);
-		float angleDegrees = angleRadians * 180.0f / XM_PI;
-
-		if (angleDegrees < 90.0f)
-		{
-			XMFLOAT3 rot = GetComponent<Transform>()->GetRot();
-			rot.y += 0.02f;
-			GetComponent<Transform>()->SetRot(rot);
-		}
-		else
-		{
-			XMFLOAT3 rot = GetComponent<Transform>()->GetRot();
-			rot.y -= 0.02f;
-			GetComponent<Transform>()->SetRot(rot);
-		}
-
-	}
 
 }
-
-void Enemy::EnemyAttack()
-{
-	if (m_isAttack) m_AttackFrame--;
-	if (!m_isAttack && m_Speed == 0.0f)
-	{
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
-		m_isAttack = true;
-		m_AttackFrame = 80;
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Attack");
-	}
-
-	if (m_AttackFrame <= 0) {
-		m_isAttack = false;
-		m_AttackFrame = 0;
-	}
-}
-

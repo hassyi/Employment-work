@@ -39,7 +39,11 @@ public:
 	void Draw()override;
 
 	void EnemyCollision();
-	void PlayerFollow();
-	void EnemyAttack();
+
+	void SetSpeed(float speed) { m_Speed = speed; }
+	float GetSpeed()const { return m_Speed; }
+
+
+	void DrawImGui()override;
 
 };

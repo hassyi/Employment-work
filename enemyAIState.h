@@ -1,26 +1,42 @@
 #pragma once
-#include "enemyAIStateBase.h"
+#include "gameObjectComponent.h"
+#include "enemy.h"
 
-class EnemyAIState
+
+typedef enum
+{
+	STATE_NONE = 0,
+	STATE_IDLE,
+	STATE_CHASE,
+	STATE_ATTACK,
+	STATE_DODGE,
+
+	STATE_MAX
+}ENEMY_STATE;
+
+class EnemyAIStateBase;
+class EnemyAttackState;
+class ChasePlayerState;
+class EnemyDodgeState;
+//class EnemyIdleState;
+
+class EnemyAIState : public GameObjectComponet
 {
 private:
 	EnemyAIStateBase* m_State = nullptr;
-
+	EnemyAttackState* m_AttackState = nullptr;
+	ChasePlayerState* m_ChaseState = nullptr;
+	EnemyDodgeState* m_DodgeState = nullptr;
+	//EnemyIdleState* m_IdleState = nullptr;
 
 public:
 	EnemyAIState() = default;
 	~EnemyAIState() {}
 
-	void Init() { m_State->Init(); }
-	void Uninit() { m_State->Uninit(); }
-	void Update() { m_State->Update(); }
-	void Draw() {}
+	void Init();
+	void Uninit();
+	void Update(Enemy* enemy);
 
-	void ChangeState(EnemyAIStateBase* state) 
-	{
-		delete m_State; 
-		m_State = state;
-		Update();
-	}
+	void ChangeState(ENEMY_STATE state);
 
 };

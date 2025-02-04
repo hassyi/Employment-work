@@ -16,11 +16,11 @@ void EnemyBullet::Init()
 
 	m_ObjType = OBJ_TYPE::BULLET_ENEMY;
 
-	m_PlayerPos = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->GetPos();
 	for (auto component : m_ComponentList)
 	{
 		component->Init();
 	}
+	m_PlayerPos = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->GetComponent<Transform>()->GetPos();
 }
 
 void EnemyBullet::Uninit()
@@ -41,17 +41,16 @@ void EnemyBullet::Update()
 	direction.y = m_PlayerPos.y - pos.y;
 	direction.z = m_PlayerPos.z - pos.z;
 
-	XMFLOAT3 dir = direction;
-	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);		//Normalize
-	dir.x /= length;
-	dir.y /= length;
-	dir.z /= length;
+	float length = Length(direction);
+	direction = Normalize(direction);
 
 	float speed = 0.75f;
 
-	pos.x += dir.x * speed;
-	pos.y += dir.y * speed;
-	pos.z += dir.z * speed;
+	pos.x += direction.x * speed;
+	pos.y += direction.y * speed;
+	pos.z += direction.z * speed;
+
+	GetComponent<Transform3DComponent>()->SetPos(pos);
 
 	EnemyBulletCollision();
 	++m_Frame;
@@ -62,7 +61,6 @@ void EnemyBullet::Update()
 		return;
 	}
 
-	GetComponent<Transform3DComponent>()->SetPos(pos);
 
 	for (auto component : m_ComponentList)
 	{

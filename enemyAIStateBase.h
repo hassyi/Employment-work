@@ -1,5 +1,6 @@
 #pragma once
-#include "main.h"
+
+class Enemy;
 
 class EnemyAIStateBase
 {
@@ -12,7 +13,7 @@ public:
 
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
-	virtual void Update() = 0;
+	virtual void Update(Enemy* enemy) = 0;
 
 	
 
