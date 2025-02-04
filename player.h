@@ -4,6 +4,12 @@
 #include "animationModel.h"
 #include <string>
 
+enum WEAPON_TYPE
+{
+	SWORD,
+	GUN
+};
+
 class Predation;
 class BuffParticle;
 
@@ -17,9 +23,10 @@ private:
 
 	float m_Rot = 0.0f;
 	XMFLOAT3 m_dir{};
-	float m_GroundHeight = 0.0f;
 	bool m_JampFlag = false;
 	float m_move = 0.0f;
+	float m_BulletPoint = 0.0f;
+	bool m_IsBuff = false;
 	
 
 	//攻撃のフレーム
@@ -62,8 +69,7 @@ private:
 
 	class Audio* m_SE{};
 
-	float m_Gravity = 0.0f;
-	bool m_IsGravity = true;
+	WEAPON_TYPE m_Weapon = SWORD;
 
 
 public:
@@ -78,5 +84,12 @@ public:
 	void PlayerBuff();
 	void PlayerAttack();
 
+	void SetIsBuff(bool isbuff) { m_IsBuff = isbuff; }
+
+	bool GetIsBuff() { return m_IsBuff; }
 	XMFLOAT3 GetDir() const { return m_dir; }
+	float GetBulletPoint() { return m_BulletPoint; }
+	WEAPON_TYPE GetWeaponType() { return m_Weapon; }
+
+	void DrawImGui()override;
 };

@@ -1,4 +1,5 @@
 #include "boxColiderComponent.h"
+#include "gameObject.h"
 #include "transform3DComponent.h"
 #include "game.h"
 #include "scene.h"
@@ -17,6 +18,8 @@ void BoxColiderComponent::Init()
 
 	Renderer::CreatePixelShader(&m_PixelShader,
 		"shader\\wireFramePS.cso");
+
+	m_ColiderType = BOX_COLIDER;
 }
 
 void BoxColiderComponent::Uninit()
@@ -30,12 +33,20 @@ void BoxColiderComponent::Uninit()
 
 void BoxColiderComponent::Update()
 {
-	//m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
-	//m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
+	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
+	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
+
+	m_Pos = Add(m_Pos, m_AddPos);
+
+	MoveCollision();
 }
 
 void BoxColiderComponent::Draw()
 {
+	//DrawImGui();
+
+	if (!Scene::GetInstance()->GetScene<Game>()->GetIsDrawColider()) return;
+
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
@@ -98,7 +109,7 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 			m_Pos.z + (m_Scale.z) >= position.z - (scale.z) &&
 			m_Pos.x - (m_Scale.x) <= position.x + (scale.x) &&
 			m_Pos.x + (m_Scale.x) >= position.x - (scale.x) &&
-			m_Pos.y - (m_Scale.y * 2.0f) <= position.y + (scale.y * 3.0f) &&	//上面
+			m_Pos.y - (m_Scale.y * 2.0f) <= position.y + (scale.y * 2.0f) &&	//上面
 			m_Pos.y + (m_Scale.y) >= position.y - (scale.y)						//下面
 			)
 		{
@@ -177,6 +188,35 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 			return OnCollisionObject;
 		}
 
+	}
+}
+
+void BoxColiderComponent::MoveCollision()
+{
+	XMFLOAT3 vector = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	Angle angle;
+	angle = GetAddAngle(m_Rot, vector);
+
+	m_Box = { m_Pos,
+			 XMFLOAT3(m_Scale.x, m_Scale.y, m_Scale.z),
+			 angle.AngleX, angle.AngleY, angle.AngleZ };
+
+}
+
+void BoxColiderComponent::DrawImGui()
+{
+	
+
+	{
+		ImGui::Begin("BoxColider");
+
+		ImGui::Text("ColiderPos : x = %.1f, y = %.1f, z = %.1f", m_Pos.x, m_Pos.y, m_Pos.z);
+		ImGui::Text("ColiderScale : x = %.1f, y = %.1f, z = %.1f", m_Scale.x, m_Scale.y, m_Scale.z);
+		ImGui::Text("BoxAxiz0 : x = %.1f, y = %.1f, z = %.1f", m_Box.axiz[0].x, m_Box.axiz[0].y, m_Box.axiz[0].z);
+		ImGui::Text("BoxAxiz0 : x = %.1f, y = %.1f, z = %.1f", m_Box.axiz[1].x, m_Box.axiz[1].y, m_Box.axiz[1].z);
+		ImGui::Text("BoxAxiz0 : x = %.1f, y = %.1f, z = %.1f", m_Box.axiz[2].x, m_Box.axiz[2].y, m_Box.axiz[2].z);
+
+		ImGui::End();
 	}
 }
 

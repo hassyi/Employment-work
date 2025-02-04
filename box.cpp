@@ -17,6 +17,9 @@ void Box::Init()
 	{
 		component->Init();
 	}
+
+	m_Add = GetComponent<Transform3DComponent>()->GetRot();
+
 }
 
 void Box::Uninit()
@@ -33,9 +36,15 @@ void Box::Update()
 {
 	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
 	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
+	XMFLOAT3 rot = GetComponent<Transform3DComponent>()->GetRot();
+
+	rot = m_Add;
 
 	GetComponent<BoxColiderComponent>()->SetPos(pos);
-	GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(scale.x, scale.y, scale.z));
+	GetComponent<BoxColiderComponent>()->SetScale(scale);
+	GetComponent<BoxColiderComponent>()->SetRot(rot);
+	GetComponent<Transform3DComponent>()->SetRot(rot);
+	
 
 	for (auto component : m_ComponentList)
 	{
@@ -45,8 +54,39 @@ void Box::Update()
 
 void Box::Draw()
 {
+	DrawImGui();
+
 	for (auto component : m_ComponentList)
 	{
 		component->Draw();
 	}
+}
+
+void Box::DrawImGui()
+{
+	XMFLOAT3 transPos = GetComponent<Transform>()->GetPos();
+	XMFLOAT3 transScale = GetComponent<Transform>()->GetScale();
+	XMFLOAT3 transRot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 coliderPos = GetColider()->GetPos();
+	XMFLOAT3 coliderScale = GetColider()->GetScale();
+	XMFLOAT3 coliderRot = GetColider()->GetRot();
+
+	{
+		ImGui::Begin("Box");
+
+		ImGui::Text("BoxPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
+		ImGui::Text("ColiderPos : x = %.1f, y = %.1f, z = %.1f", coliderPos.x, coliderPos.y, coliderPos.z);
+		ImGui::Text("BoxScale : x = %.1f, y = %.1f, z = %.1f", transScale.x, transScale.y, transScale.z);
+		ImGui::Text("ColiderScale : x = %.1f, y = %.1f, z = %.1f", coliderScale.x, coliderScale.y, coliderScale.z);
+		ImGui::Text("BoxRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
+
+		static float add[3] = { 0.0f,0.0f,0.0f };
+
+		ImGui::SliderFloat3("AddRot", add, 0.0f, 3.0f);
+		SetAdd(XMFLOAT3(add[0], add[1], add[2]));
+
+
+		ImGui::End();
+	}
+
 }

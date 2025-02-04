@@ -1,6 +1,7 @@
 #pragma once
 #include "colider.h"
-#include "gameObject.h"
+
+class GameObject;
 
 class CylinderColiderComponent : public Colider
 {
@@ -11,4 +12,5 @@ public:
 	void Draw()override;
 
 	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollision()override;
+	void MoveCollision()override;
 };

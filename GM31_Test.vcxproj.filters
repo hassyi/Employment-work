@@ -34,6 +34,12 @@
     <Filter Include="AIState">
       <UniqueIdentifier>{71581a60-e392-48c9-9156-cebd9e109613}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{cb64e0d4-a6be-4052-89c9-e7f599b2d7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="behavior">
+      <UniqueIdentifier>{c9f0871f-5936-43c3-bb0f-3380b953d447}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -153,7 +159,7 @@
     <ClCompile Include="enemyAIStateBase.cpp">
       <Filter>AIState</Filter>
     </ClCompile>
-    <ClCompile Include="searchPlayerState.cpp">
+    <ClCompile Include="enemyIdleState.cpp">
       <Filter>AIState</Filter>
     </ClCompile>
     <ClCompile Include="sandParticle.cpp">
@@ -177,9 +183,6 @@
     <ClCompile Include="bonFire.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="cloth.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="fireParticle.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -199,6 +202,78 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="staminaGauge.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="chasePlayerState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyAttackState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyAIState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imguiManager.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="weaponIcon.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyDodgeState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorMove.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorIdle.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorSequence.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorDodge.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyAI.cpp">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorSelector.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorPunch.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorGun.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorSearch.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="swordIcon.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="gunIcon.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -353,7 +428,7 @@
     <ClInclude Include="enemyAIStateBase.h">
       <Filter>AIState</Filter>
     </ClInclude>
-    <ClInclude Include="searchPlayerState.h">
+    <ClInclude Include="enemyIdleState.h">
       <Filter>AIState</Filter>
     </ClInclude>
     <ClInclude Include="sandParticle.h">
@@ -369,9 +444,6 @@
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="sphereShadow.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="cloth.h">
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="wave.h">
@@ -400,6 +472,90 @@
     </ClInclude>
     <ClInclude Include="staminaGauge.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="chasePlayerState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyAttackState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="calculation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imguiManager.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyDodgeState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="modelFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponIcon.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorNode.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorMove.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorIdle.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorSelector.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorSequence.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorDodge.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyAI.h">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorPunch.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorGun.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorSearch.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="swordIcon.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="gunIcon.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="searchState.h">
+      <Filter>AIState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

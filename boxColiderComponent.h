@@ -1,11 +1,14 @@
 #pragma once
 #include "colider.h"
-#include "gameObject.h"
 
+class GameObject;
 
 class BoxColiderComponent : public Colider
 {
 private:
+	Box m_Box{ XMFLOAT3(0.0f,0.0f,0.0f),
+			   XMFLOAT3(0.0f,0.0f,0.0f),
+			  {XMFLOAT3(0.0f,0.0f,0.0f), XMFLOAT3(0.0f,0.0f,0.0f), XMFLOAT3(0.0f,0.0f,0.0f) } };
 
 
 public:
@@ -18,5 +21,11 @@ public:
 
 	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollision()override;
 	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollisionOBB();
+
+	void MoveCollision()override;
+
+	Box GetOBB() { return m_Box; }
+
+	void DrawImGui();
 
 };

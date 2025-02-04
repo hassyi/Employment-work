@@ -12,4 +12,6 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	void DrawImGui()override;
+
 };

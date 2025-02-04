@@ -1,22 +1,30 @@
 #include "capsuleColiderComponent.h"
+#include "gameObject.h"
 #include "transform3DComponent.h"
 #include "game.h"
 #include "scene.h"
+#include <algorithm>
+#include "boxColiderComponent.h"
 
 void CapsuleColiderComponent::Init()
 {
 	m_Model = new ModelRenderer;
-	m_Model->Load("asset\\model\\sphere_smooth.obj");
+	m_Model->Load("asset\\model\\capsule.obj");
 
-	m_Pos = GetGameObject()->GetComponent<Transform3DComponent>()->GetPos();
-	m_Scale = GetGameObject()->GetComponent<Transform3DComponent>()->GetScale();
-	m_Rot = GetGameObject()->GetComponent<Transform3DComponent>()->GetRot();
+	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
+	m_Scale = GetGameObject()->GetComponent<Transform>()->GetScale();
+	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
+
+	m_StartPos = XMFLOAT3(m_Pos.x, m_Pos.y + m_CenterLength, m_Pos.z);
+	m_EndPos = XMFLOAT3(m_Pos.x, m_Pos.y - m_CenterLength, m_Pos.z);
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
 		"shader\\wireFrameVS.cso");
 
 	Renderer::CreatePixelShader(&m_PixelShader,
 		"shader\\wireFramePS.cso");
+
+	m_ColiderType = CAPSULE_COLIDER;
 }
 
 void CapsuleColiderComponent::Uninit()
@@ -25,13 +33,16 @@ void CapsuleColiderComponent::Uninit()
 
 void CapsuleColiderComponent::Update()
 {
-	m_Pos = GetGameObject()->GetComponent<Transform3DComponent>()->GetPos();
-	m_Scale = GetGameObject()->GetComponent<Transform3DComponent>()->GetScale();
-	m_Rot = GetGameObject()->GetComponent<Transform3DComponent>()->GetRot();
+	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
+	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
+
+	MoveCollision();
 }
 
 void CapsuleColiderComponent::Draw()
 {
+	if (!Scene::GetInstance()->GetScene<Game>()->GetIsDrawColider()) return;
+
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
@@ -43,7 +54,7 @@ void CapsuleColiderComponent::Draw()
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
 	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
-	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);	
+	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y + m_Scale.y, m_Pos.z);	
 	world = scale * rot * trans;
 	Renderer::SetWorldMatrix(world);
 
@@ -67,6 +78,288 @@ void CapsuleColiderComponent::Draw()
 	Renderer::GetDeviceContext()->RSSetState(wireframeState);
 }
 
+
+void CapsuleColiderComponent::MoveCollision()
+{
+	m_Pos = Add(m_Pos, m_AddPos);
+	{
+		Angle angle;
+
+		XMFLOAT3 vec;
+		XMFLOAT3 topVec;
+		XMFLOAT3 bottomVec;
+
+		vec = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		angle = GetAddAngle(m_Rot, vec);
+
+		topVec.x = angle.AngleX.x + angle.AngleX.y + angle.AngleX.z;
+		topVec.y = angle.AngleY.x + angle.AngleY.y + angle.AngleY.z;
+		topVec.z = angle.AngleZ.x + angle.AngleZ.y + angle.AngleZ.z;
+
+		topVec = MulFloat(topVec, m_CenterLength);
+
+		m_StartPos.x = topVec.x + m_Pos.x;
+		m_StartPos.y = topVec.y + m_Pos.y;
+		m_StartPos.z = topVec.z + m_Pos.z;
+
+		vec = XMFLOAT3(0.0f, -1.0f, 0.0f);
+		angle = GetAddAngle(m_Rot, vec);
+
+		bottomVec.x = angle.AngleX.x + angle.AngleX.y + angle.AngleX.z;
+		bottomVec.y = angle.AngleY.x + angle.AngleY.y + angle.AngleY.z;
+		bottomVec.z = angle.AngleZ.x + angle.AngleZ.y + angle.AngleZ.z;
+
+		bottomVec = MulFloat(bottomVec, m_CenterLength);
+
+		m_EndPos.x = bottomVec.x + m_Pos.x;
+		m_EndPos.y = bottomVec.y + m_Pos.y;
+		m_EndPos.z = bottomVec.z + m_Pos.z;
+	}
+	m_Capsule = { m_StartPos, m_EndPos, m_Scale.x };
+
+}
+
+float CapsuleColiderComponent::SegmentDistance(const XMFLOAT3 vec1start, const XMFLOAT3 vec1end, const XMFLOAT3 vec2start, const XMFLOAT3 vec2end, float& t1, float& t2)
+{
+	XMFLOAT3 dir1 = XMFLOAT3(vec1end.x - vec1start.x, vec1end.y - vec1start.y, vec1end.z - vec1start.z);
+	XMFLOAT3 dir2 = XMFLOAT3(vec2end.x - vec2start.x, vec2end.y - vec2start.y, vec2end.z - vec2start.z);
+	XMFLOAT3 r = XMFLOAT3(vec1start.x - vec2start.x, vec1start.y - vec2start.y, vec1start.z - vec2start.z);
+
+	float dot11 = Dot(dir1, dir1);
+	float dot22 = Dot(dir2, dir2);
+	float dot2r = Dot(dir2, r);
+
+	float s = 0.0f, t = 0.0f;
+
+	if (dot11 > 1e-6f && dot22 > 1e-6f)
+	{
+		float dot12 = Dot(dir1, dir2);
+		float dot1r = Dot(dir1, r);
+		float denom = dot11 * dot22 - dot12 * dot12;
+
+		if (std::abs(denom) > 1e-6f)
+		{
+			s = (dot12 * dot2r - dot1r * dot22) / denom;
+			t = (dot11 * dot2r - dot12 * dot1r) / denom;
+		}
+
+		s = std::clamp(s, 0.0f, 1.0f);
+		t = std::clamp(t, 0.0f, 1.0f);
+	}
+
+	t1 = s;
+	t2 = t;
+
+	XMFLOAT3 closestPosint1 = XMFLOAT3(dir1.x * s, dir1.y * s, dir1.z * s);
+	closestPosint1 = XMFLOAT3(vec1start.x + closestPosint1.x, vec1start.y + closestPosint1.y, vec1start.z + closestPosint1.z);
+
+	XMFLOAT3 closestPosint2 = XMFLOAT3(dir2.x * t, dir2.y * t, dir2.z * t);
+	closestPosint2 = XMFLOAT3(vec2start.x + closestPosint2.x, vec2start.y + closestPosint2.y, vec2start.z + closestPosint2.z);
+
+	XMFLOAT3 direction = XMFLOAT3(closestPosint1.x - closestPosint2.x, closestPosint1.y - closestPosint2.y, closestPosint1.z - closestPosint2.z);
+
+	float length = Length(direction);
+
+	return LengthSquared(direction);
+
+}
+
+bool CapsuleColiderComponent::CapsuleCollision(const CapsuleColiderComponent* colider1, const CapsuleColiderComponent* colider2)
+{
+	Capsule capsule1 = colider1->GetCapsule();
+	Capsule capsule2 = colider2->GetCapsule();
+
+	float t1, t2;
+	float distanceSquared = SegmentDistance(capsule1.startPos, capsule1.endPos, capsule2.startPos, capsule2.endPos, t1, t2);
+
+	float radiusSum = capsule1.radius + capsule2.radius;
+
+	if (distanceSquared <= radiusSum * radiusSum)
+	{
+		if (m_GameObject->GetObjectType() == OBJ_TYPE::PREDATION) {
+			return true;
+		}
+		XMFLOAT3 capsule1Len = XMFLOAT3(capsule1.endPos.x - capsule1.startPos.x, capsule1.endPos.y - capsule1.startPos.y, capsule1.endPos.z - capsule1.startPos.z);
+		XMFLOAT3 capsule2Len = XMFLOAT3(capsule2.endPos.x - capsule2.startPos.x, capsule2.endPos.y - capsule2.startPos.y, capsule2.endPos.z - capsule2.startPos.z);
+
+		capsule1Len = XMFLOAT3(capsule1Len.x * t1, capsule1Len.y * t1, capsule1Len.z * t1);
+		capsule2Len = XMFLOAT3(capsule2Len.x * t2, capsule2Len.y * t2, capsule2Len.z * t2);
+
+		XMFLOAT3 point1 = XMFLOAT3(capsule1.startPos.x + capsule1Len.x, capsule1.startPos.y + capsule1Len.y, capsule1.startPos.z + capsule1Len.z);
+		XMFLOAT3 point2 = XMFLOAT3(capsule2.startPos.x + capsule2Len.x, capsule2.startPos.y + capsule2Len.y, capsule2.startPos.z + capsule2Len.z);
+		
+		XMFLOAT3 pointLen = XMFLOAT3(point1.x - point2.x, point1.y - point2.y, point1.z - point2.z);
+
+		XMFLOAT3 normal = Normalize(pointLen);
+
+		float depth = radiusSum - sqrt(distanceSquared);
+
+		XMFLOAT3 object1Pos = colider1->GetPos();
+		XMFLOAT3 object2Pos = colider2->GetPos();
+
+		XMFLOAT3 direction = XMFLOAT3(object1Pos.x - object2Pos.x, object1Pos.y - object2Pos.y, object1Pos.z - object2Pos.z);
+
+		direction = Normalize(direction);
+
+		XMFLOAT3 correction = MulFloat(direction, depth);
+
+		m_Pos = Add(m_Pos, correction);
+		XMFLOAT3 pos = m_GameObject->GetComponent<Transform>()->GetPos();
+		m_GameObject->GetComponent<Transform>()->SetPos(Add(pos, correction));
+
+		return true;
+		
+	}
+
+	return false;
+}
+
+bool CapsuleColiderComponent::BoxCollision(Capsule& capsule,  GameObject* object)
+{
+
+	const float min = 0.00001f;		
+	const int maxCount = 5;
+
+	Box box = object->GetComponent<BoxColiderComponent>()->GetOBB();
+	Angle angle;
+
+	int count = 0;
+	while (count < maxCount)
+	{
+		// カプセルのローカル座標変換
+		XMFLOAT3 localStart = LocalSpace(capsule.startPos, box);
+		XMFLOAT3 localEnd = LocalSpace(capsule.endPos, box);
+
+		// ボックスの範囲内にクランプ
+		XMFLOAT3 clampedStart = clampToBox(localStart, box.size);
+		XMFLOAT3 clampedEnd = clampToBox(localEnd, box.size);
+
+		//衝突判定
+		float distStartSquared = Dot(Sub(localStart, clampedStart), Sub(localStart, clampedStart));
+		float distEndSquared = Dot(Sub(localEnd, clampedEnd), Sub(localEnd, clampedEnd));
+
+		if (distStartSquared > capsule.radius * capsule.radius && distEndSquared > capsule.radius * capsule.radius) {
+			return count > 0;
+		}
+
+		//一番深いポジション
+		XMFLOAT3 DeepPos{};
+
+		//埋まった深さの線分の始点と終点
+		XMFLOAT3 penetrationStart{};
+		XMFLOAT3 penetrationEnd{};
+
+		if (distStartSquared > distEndSquared)
+		{
+			DeepPos = clampedEnd;
+			penetrationStart = localEnd;
+			penetrationEnd = clampedEnd;
+		}
+		else
+		{
+			DeepPos = clampedStart;
+			penetrationStart = localStart;
+			penetrationEnd = clampedStart;
+		}
+
+		XMFLOAT3 penetrationVector = Sub(penetrationStart, penetrationEnd);
+
+		//埋まってる深さの計算
+		float penetrationDepth = capsule.radius - Length(penetrationVector);
+		if (penetrationDepth <= min) {
+			break;
+		}
+
+		//カプセルの法線
+		XMFLOAT3 localNormal = Normalize(penetrationVector);
+		//当たったボックスの法線
+		XMFLOAT3 worldNormal = Sub(WorldSpace(localNormal, box), box.center);
+
+		XMFLOAT3 correction = MulFloat(Normalize(worldNormal), penetrationDepth);
+
+		DeepPos = WorldSpace(DeepPos, box);
+		penetrationStart = WorldSpace(penetrationStart, box);
+		penetrationEnd = WorldSpace(penetrationEnd, box);
+
+		XMFLOAT3 t = XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+		float dotProdact = Dot(t, worldNormal);
+		float len = Length(t) * Length(worldNormal);
+
+		float cosTheta = dotProdact / len;
+
+		cosTheta = std::fmax(-1.0f, std::fmin(1.0f, cosTheta));
+
+		float radian = std::acos(cosTheta);
+
+		XMVECTOR deepVector = { DeepPos.x, DeepPos.y, DeepPos.z,0.0f };
+		XMVECTOR clampedEndVector = { clampedEnd.x, clampedEnd.y ,clampedEnd.z ,0.0f };
+
+
+
+		//法線と真上のベクトルのなす角が４５度以下なら
+		if (radian <= 50.0f * (XM_PI / 180.0f) && penetrationStart.y <= penetrationEnd.y + m_Scale.x)
+		{
+			float a = 90.0f;
+			float b = 90.0f - (radian / (XM_PI / 180.0f));
+			float c = 180.0f - (a + b);
+
+			float radius = (penetrationDepth / sinf(a)) / 2;
+
+			float oppositeSideA = (2 * radius) * sinf(a);
+			float oppositeSideB = (2 * radius) * sinf(b);
+			float oppositeSideC = (2 * radius) * sinf(c);
+
+			float baiA = sqrtf(oppositeSideB * oppositeSideB + oppositeSideC * oppositeSideC);
+
+			float ratioA = oppositeSideA / oppositeSideC;
+
+			float reA = ratioA * penetrationDepth;
+
+			XMFLOAT3 reverseVel = XMFLOAT3(0.0f, worldNormal.y, 0.0f);
+			XMFLOAT3 reverseVec = Normalize(reverseVel);
+
+			reverseVec = XMFLOAT3(reverseVec.x * baiA, reverseVec.y * baiA, reverseVec.z * baiA);
+
+			capsule.startPos = Add(capsule.startPos, reverseVec);
+			capsule.endPos = Add(capsule.endPos, reverseVec);
+			m_Pos = Add(m_Pos, reverseVec);
+			XMFLOAT3 objectPos = m_GameObject->GetComponent<Transform>()->GetPos();
+			m_GameObject->GetComponent<Transform>()->SetPos(Add(objectPos, reverseVec));
+
+			m_GameObject->SetIsGravity(false);
+			m_GameObject->SetGravityScale(0.0f);
+		}
+		else
+		{
+			float a = 90.0f;
+			float b = 90.0f - (radian / (XM_PI / 180.0f));
+			float c = 180.0f - (a + b);
+
+			float radius = (penetrationDepth / sinf(a)) / 2;
+
+			float oppositeSideA = (2 * radius) * sinf(a);
+			float oppositeSideB = (2 * radius) * sinf(b);
+			float oppositeSideC = (2 * radius) * sinf(c);
+
+			float baiA = sqrtf(oppositeSideB * oppositeSideB + oppositeSideC * oppositeSideC);
+
+			XMFLOAT3 reverseVel = XMFLOAT3(worldNormal.x, 0.0f, worldNormal.z);
+			XMFLOAT3 reverseVec = Normalize(reverseVel);
+
+			reverseVec = XMFLOAT3(reverseVec.x * baiA, reverseVec.y * baiA, reverseVec.z * baiA);
+
+			capsule.startPos = Add(capsule.startPos, reverseVec);
+			capsule.endPos = Add(capsule.endPos, reverseVec);
+			m_Pos = Add(m_Pos, reverseVec);
+			XMFLOAT3 objectPos = m_GameObject->GetComponent<Transform>()->GetPos();
+			m_GameObject->GetComponent<Transform>()->SetPos(Add(objectPos, reverseVec));
+		}
+		count++;
+
+	}
+}
+
 std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::GetCollision()
 {
 	int objSize = 0;
@@ -84,20 +377,28 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::G
 		position = object->GetComponent<Colider>()->GetPos();
 		scale = object->GetComponent<Colider>()->GetScale();
 
-		XMFLOAT3 direction;
-		direction.x = position.x - m_Pos.x;
-		direction.y = position.y - m_Pos.y;
-		direction.z = position.z - m_Pos.z;
-
-		float length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-
-		if (length < scale.x)
+		if (object->GetColider()->GetColiderType() == CAPSULE_COLIDER)
 		{
-			objectList.push_back(object);
-			objSize = objectList.size();
+			CapsuleColiderComponent* otherCapsule = object->GetComponent<CapsuleColiderComponent>();
+
+			if (CapsuleCollision(this, otherCapsule))
+			{
+				objectList.push_back(object);
+				objSize = objectList.size();
+			}
 		}
 
+		if (object->GetColider()->GetColiderType() == BOX_COLIDER)
+		{
+			if (BoxCollision(m_Capsule, object))
+			{
+				objectList.push_back(object);
+				objSize = objectList.size();
+			}
+			
+		}
 	}
+
 	if (objSize != 0)
 	{
 		auto itr = objectList.begin();
