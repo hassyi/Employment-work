@@ -2,11 +2,9 @@
 #include "gameObject.h"
 #include "UI.h"
 
-class LifeGauge : public UI
+class WeaponIcon : public UI
 {
 private:
-	float m_LifeMax = 0;
-
 
 public:
 	void Init() override;

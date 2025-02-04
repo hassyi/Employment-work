@@ -5,6 +5,7 @@
 class BulletGauge : public UI
 {
 private:
+	float m_BP_Max = 0.0f;
 
 public:
 	void Init() override;

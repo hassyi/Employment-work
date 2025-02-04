@@ -2,6 +2,7 @@
 #include "sceneState.h"
 #include "gameObject.h"
 #include "UI.h"
+#include "imguiManager.h"
 
 
 
@@ -14,6 +15,9 @@ private:
 	std::list<GameObject*> m_GameObject[LAYER_MAX];
 	std::list<UI*> m_Texture;
 
+	ImguiManager* m_ImGui = nullptr;
+
+	bool m_IsDrawColider  = false;
 
 public:
 	void Init()override;
@@ -21,6 +25,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	void SetIsDrawColider(bool isDraw) { m_IsDrawColider = isDraw; }
+	bool GetIsDrawColider() { return m_IsDrawColider; }
 
 	//listの追加
 	template <typename T>	//テンプレート関数
@@ -104,5 +110,6 @@ public:
 		return nullptr;
 	}
 
+	void DrawImGui();
 
 };

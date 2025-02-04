@@ -4,6 +4,7 @@
 #include <list>
 #include "colider.h"
 #include "sceneState.h"
+#include "imguiManager.h"
 
 typedef enum
 {
@@ -13,6 +14,7 @@ typedef enum
 	BULLET,
 	BULLET_ENEMY,
 	PLAYER,
+	PREDATION,
 	ENEMY,
 
 	MAX
@@ -36,7 +38,13 @@ protected:
 
 	OBJ_TYPE m_ObjType = OBJ_TYPE::NONE;
 
-	int m_Life = 0;
+	float m_Life = 0;
+
+	float m_Gravity = 0.0f;
+	bool m_IsGravity = true;
+	float m_GroundHeight = 0.0f;
+
+	XMFLOAT3 m_Add = { 0.0f,0.0f,0.0f };
 
 public:
 	GameObject(){}
@@ -68,14 +76,18 @@ public:
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 	void SetDestroy() { m_Destroy = true; }
 	void SetScene(SceneState* scene) { m_SceneState = scene; }
-	void SetLife(int life) { m_Life = life; }
+	void SetLife(float life) { m_Life = life; }
+	void SetIsGravity(bool isGravity) { m_IsGravity = isGravity; }
+	void SetGravityScale(float gravity) { m_Gravity = gravity; }
+	void SetAdd(XMFLOAT3 add) { m_Add = add; }
+	void SetGuroundHeiht(float height) { m_GroundHeight = height; }
 
 	XMFLOAT3 GetPos() const{	return m_Pos;	}
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
 	XMFLOAT3 GetScale() const{	return m_Scale;	}
 	XMFLOAT3 GetRot() const{	return m_Rot;	}
 	XMFLOAT3 GetVel() const{ return m_Vel; }
-	int GetLife()const { return m_Life; }
+	float GetLife()const { return m_Life; }
 	SceneState* GetScene() { return m_SceneState; }
 	std::list<Component*> GetComponentList() { return m_ComponentList; }
 	OBJ_TYPE GetObjectType() { return m_ObjType; }
@@ -156,4 +168,6 @@ public:
 		return top;
 	}
 
+
+	virtual void DrawImGui() {};
 };

@@ -20,6 +20,8 @@ protected:
 	float m_Length = 0.0f;
 	float m_Fai = 0.0f;
 
+
+
 public:
 	Transform() = default;
 	Transform(GameObject* gameobj) : GameObjectComponet(gameobj){}
@@ -87,31 +89,6 @@ public:
 		XMStoreFloat3(&top, rotationMatrix.r[1]);
 		return top;
 	}
-
-	struct Vec3
-	{
-		XMFLOAT3 vec;
-
-		Vec3 operator - (const Vec3& othsr)const
-		{
-			Vec3 v;
-			v.vec = XMFLOAT3(vec.x - othsr.vec.x, vec.y - othsr.vec.y, vec.z - othsr.vec.z);
-			return v;
-		}
-
-		float Dot(const Vec3& othsr)const{
-			return vec.x * othsr.vec.x * vec.y * othsr.vec.y * vec.z * othsr.vec.z;
-		}
-
-		float Lemgth()const {
-			return sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-		}
-
-		XMFLOAT3 Normalize()const {
-			float len = Lemgth();
-			return XMFLOAT3(vec.x / len, vec.y / len, vec.z / len);
-		}
-	};
 
 
 

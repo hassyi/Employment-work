@@ -1,7 +1,7 @@
 #pragma once
 #include "gameObject.h"
 
-#define FIELDHIGHT_NUM (23)
+#define FIELDHIGHT_NUM (46)
 
 class MeshField : public GameObject
 {

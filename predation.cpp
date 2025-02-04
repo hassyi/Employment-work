@@ -7,11 +7,17 @@
 #include "transform3DComponent.h"
 #include "game.h"
 #include "boxColiderComponent.h"
+#include "capsuleColiderComponent.h"
+#include "player.h"
 
 void Predation::Init()
 {
 	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\player.obj");
-	AddComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(0.6f, 1.0f, 0.6f));
+	//AddComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(0.6f, 1.0f, 0.6f));
+	AddComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
+	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
+
+	m_ObjType = PREDATION;
 }
 
 void Predation::Uninit()
@@ -26,32 +32,27 @@ void Predation::Uninit()
 
 void Predation::Update()
 {
-	if (m_use) {
-		m_frame++;
-		GetColider()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
-		PredationCollision();
-		for (auto component : m_ComponentList)
-		{
-			component->Update();
-		}
-		if (m_frame >= 30) {
-			m_use = false;
-			m_isHit = false;
-			m_frame = 0;
-		}
-	}		
+	m_frame++;
+	GetColider()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
+	PredationCollision();
+	for (auto component : m_ComponentList)
+	{
+		component->Update();
+	}
+	if (m_frame >= 30) {
+		m_isHit = false;
+		m_frame = 0;
+		SetDestroy();
+	}
 
 }
 
 void Predation::Draw()
 {
-	if (m_use)
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	for (auto component : m_ComponentList)
 	{
-		XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
-		for (auto component : m_ComponentList)
-		{
-			component->Draw();
-		}
+		component->Draw();
 	}
 }
 
@@ -70,7 +71,7 @@ void Predation::PredationCollision()
 			{
 				if (!m_isHit)
 				{
-					SetBuff(true);
+					Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->SetIsBuff(true);
 					onCollisionObject->SetLife(onCollisionObject->GetLife() - 1);
 					m_isHit = true;
 				}

@@ -103,7 +103,8 @@ public:
 
 	static ID3D11Device* GetDevice( void ){ return m_Device; }
 	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_DeviceContext; }
-
+	static ID3D11RenderTargetView* GetRendererTargetView( void ) { return m_RenderTargetView; }
+	static IDXGISwapChain* GetSwapChain( void ) { return m_SwapChain; }
 
 	static ID3D11ShaderResourceView* GetShadowDepthTexture() { return m_ShadowDepthShaderResourceView; }
 

@@ -16,6 +16,11 @@ protected:
 	bool m_ShouldDelete = false;
 
 	int m_TextureNum = 0;
+	XMFLOAT2 m_Pos = { 0.0f,0.0f };
+	XMFLOAT2 m_Size = { 0.0f,0.0f };
+	XMFLOAT2 m_UV = { 1.0f,1.0f };
+
+	float m_ChangeSize = 0.0f;
 
 public:
 	UI() {}

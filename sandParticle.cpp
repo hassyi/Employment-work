@@ -34,7 +34,7 @@ void SandParticle::Init()
 	for (int i = 0; i < PARTICLE_MAX; i++)
 	{
 		m_Particle[i].Vel = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		m_Particle[i].Life = 300.0f;
+		m_Particle[i].Life = 300;
 		m_Particle[i].Pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 

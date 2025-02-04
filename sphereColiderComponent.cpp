@@ -1,4 +1,5 @@
 #include "sphereColiderComponent.h"
+#include "gameObject.h"
 #include "transform3DComponent.h"
 #include "game.h"
 #include "scene.h"
@@ -17,6 +18,8 @@ void SphereColiderComponent::Init()
 
 	Renderer::CreatePixelShader(&m_PixelShader,
 		"shader\\wireFramePS.cso");
+
+	m_ColiderType = SPHERE_COLIDER;
 }
 
 void SphereColiderComponent::Uninit()
@@ -32,6 +35,8 @@ void SphereColiderComponent::Update()
 
 void SphereColiderComponent::Draw()
 {
+	if (!m_isDraw) return;
+
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
@@ -111,5 +116,9 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> SphereColiderComponent::Ge
 		OnCollisionObject = std::make_tuple(false, nullptr, objectList);
 		return OnCollisionObject;
 	}
+}
+
+void SphereColiderComponent::MoveCollision()
+{
 }
 

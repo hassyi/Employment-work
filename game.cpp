@@ -31,40 +31,31 @@
 #include "lifeGauge.h"
 #include "bulletGauge.h"
 #include "staminaGauge.h"
+#include "swordIcon.h"
+#include "gunIcon.h"
 
 void Game::Init()
 {
 	AddGameObject<Camera>(0);
 	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
-	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
-	//AddGameObject<Enemy>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, -10.0f));
-
-	//{
-	//	AddGameObject<Cylinder>(1);
-	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(10.0f, 0.0f, 10.0f));
-	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-	//	GetGameObject<Cylinder>()->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//}
 	{
 		Box* box = AddGameObject<Box>(1);
 		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, 10.0f));
 		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(1.0f, 0.0f, 0.0f));
 	}
-	{
-		Box* box = AddGameObject<Box>(1);
-		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, -10.0f));
-		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	}
+	//{
+	//	Box* box = AddGameObject<Box>(1);
+	//	box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, -10.0f));
+	//	box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	//	box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//}
 
-	AddGameObject<Player>(1);
-	AddGameObject<Enemy>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(10.0f, 0.0f, 5.0f));
+	AddGameObject<Player>(1)->GetComponent<Transform>()->SetPosY(0.5f);
+	AddGameObject<Enemy>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(30.0f, 0.0f, 5.0f));
 	AddGameObject<Polygon2D>(1);
-	//AddGameObject<Cloth>(1);
 	AddGameObject<Sky>(1);
-	//AddGameObject<PartrcleEmitter>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(5.0f, 0.0f, 5.0f));
 	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
 	//AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
 
@@ -80,14 +71,15 @@ void Game::Init()
 
 	//	tree->GetComponent<Transform2DComponent>()->SetPos(pos);
 	//}
-	AddGameObject<Predation>(1);
-	//AddGameObject<Wave>(1);
+	//AddGameObject<Predation>(1);
 	//AddUITexture<Score>();
 	AddUITexture<Time>()->SetTextureNum(0);
+	AddUITexture<Fade>()->SetTextureNum(1);
 	AddUITexture<LifeGauge>()->SetTextureNum(2);
 	AddUITexture<BulletGauge>()->SetTextureNum(3);
 	AddUITexture<StaminaGauge>()->SetTextureNum(4);
-	AddUITexture<Fade>()->SetTextureNum(1);
+	AddUITexture<SwordIcon>()->SetTextureNum(5);
+	AddUITexture<GunIcon>()->SetTextureNum(6);
 	GetUITexture<Fade>(1)->SetFade(false);
 
 	//m_BGM = new Audio(this);
@@ -95,6 +87,10 @@ void Game::Init()
 	//m_BGM->Play(true);
 
 	m_Satate = SCENE_STATE::SCENE_GAME;
+
+	m_ImGui = new ImguiManager;
+	m_ImGui->Init();
+
 }
 
 void Game::Uninit()
@@ -111,6 +107,8 @@ void Game::Uninit()
 		ui->Uninit();
 		delete ui;
 	}
+
+	m_ImGui->Uninit();
 }
 
 void Game::Update()
@@ -139,6 +137,8 @@ void Game::Draw()
 {
 	Renderer::Begin();
 
+	m_ImGui->ImGuiRendererInit();
+
 	for (int i = 0; i < LAYER_MAX; i++) {
 		//m_GameObject[i].sort();
 		for (GameObject* object : m_GameObject[i]) {
@@ -149,6 +149,22 @@ void Game::Draw()
 	{
 		ui->Draw();
 	}
+
+	DrawImGui();
+
+	m_ImGui->ImGuiRenderer();
+
 	Renderer::End();
+}
+
+void Game::DrawImGui()
+{
+	{
+		ImGui::Begin("Game");
+
+		ImGui::Checkbox("IsDrawCollision", &m_IsDrawColider);		
+
+		ImGui::End();
+	}
 }
 
