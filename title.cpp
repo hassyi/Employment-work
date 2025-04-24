@@ -9,7 +9,6 @@
 #include "field.h"
 #include "sky.h"
 #include "fieldDepthShadow.h"
-#include "cloth.h"
 #include "wave.h"
 #include "polygon2D.h"
 #include "bonFire.h"
@@ -22,6 +21,7 @@
 
 void Title::Init()
 {
+	m_Satate = SCENE_STATE::SCENE_TITLE;
 	AddGameObject<TitleCamera>(0);
 	AddGameObject<Field>(1)->SetPosZ(-45.0f);
 	AddGameObject<Polygon2D>(1);
@@ -42,10 +42,10 @@ void Title::Init()
 
 	m_BGM = new Audio();
 	m_BGM->Load("asset\\audio\\title1.wav");
+	m_BGM->SetSound(0.5f);
 	m_BGM->Play(true);
 	m_SE = new Audio();
 	m_SE->Load("asset\\audio\\start.wav");
-	m_Satate = SCENE_STATE::SCENE_TITLE;
 }
 
 void Title::Uninit()
@@ -118,45 +118,8 @@ void Title::Update()
 
 void Title::Draw()
 {
-	//LIGHT light;
-	//float length;
-	//light.Enable = true;
-	//light.Direction = XMFLOAT4(1.0f, -1.0f, 0.0f, 0.0f);
-	//length = sqrtf(light.Direction.x * light.Direction.x + light.Direction.y * light.Direction.y + light.Direction.z * light.Direction.z);
-	//light.Direction.x /= length;
-	//light.Direction.y /= length;
-	//light.Direction.z /= length;
-	//light.Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	//light.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//XMVECTOR cpos = { -10.0f, 10.0f, -10.0f, 0.0f };
-	//XMVECTOR cat = { 0.0f, 0.0f, 0.0f, 0.0f };
-	//XMVECTOR cup = { 0.0f, 1.0f, 0.0f, 0.0f };
-	//
-	//light.ViewMatrix = XMMatrixLookAtLH(cpos, cat, cup);
-
-	//light.ProjctionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / SCREEN_HEIGHT, 5.0f, 30.0f);
-	//Renderer::SetLight(light);
-
-	//Renderer::BeginDepth();
-	//Renderer::SetViewMatrix(light.ViewMatrix);
-	//Renderer::SetProjectionMatrix(light.ProjctionMatrix);
-
-	//GetGameObject<FieldDepthShadow>()->Draw();
-	//GetGameObject<PlayerShadow>()->Draw();
 
 	Renderer::Begin();
-
-	//GetGameObject<TitleCamera>()->Draw();
-	//GetGameObject<FieldDepthShadow>()->Draw();
-	//GetGameObject<PlayerShadow>()->Draw();
-
-	//light.Enable = false;
-	//Renderer::SetLight(light);
-
-	//GetGameObject<Cloth>()->Draw();
-	//GetGameObject<Wave>()->Draw();
-	//GetGameObject<Sky>()->Draw();
 
 	for (int i = 0; i < LAYER_MAX; i++) {
 		//m_GameObject[i].sort();

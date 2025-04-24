@@ -16,6 +16,7 @@
 #include "cylinder.h"
 #include "box.h"
 #include "result.h"
+#include "failureResult.h"
 #include "particleEmitter.h"
 #include "tree.h"
 #include "predation.h"
@@ -25,7 +26,6 @@
 #include "transform3DComponent.h"
 #include "transform2DComponent.h"
 #include "buffParticle.h"
-#include "cloth.h"
 #include "wave.h"
 #include "fade.h"
 #include "lifeGauge.h"
@@ -33,46 +33,26 @@
 #include "staminaGauge.h"
 #include "swordIcon.h"
 #include "gunIcon.h"
+#include "map.h"
+#include "grass.h"
+#include "building.h"
+#include "aimIcon.h"
 
 void Game::Init()
 {
+
 	AddGameObject<Camera>(0);
 	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
-	{
-		Box* box = AddGameObject<Box>(1);
-		box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, 10.0f));
-		box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-		box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(1.0f, 0.0f, 0.0f));
-	}
-	//{
-	//	Box* box = AddGameObject<Box>(1);
-	//	box->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 2.0f, -10.0f));
-	//	box->GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
-	//	box->GetComponent<Transform3DComponent>()->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//}
-
-	AddGameObject<Player>(1)->GetComponent<Transform>()->SetPosY(0.5f);
+	AddGameObject<Map>(1);
+	AddGameObject<Building>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(20.0f, 0.0f,-30.0f));
+	AddGameObject<Player>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(0.0f, 0.5f, -50.0f));
 	AddGameObject<Enemy>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(30.0f, 0.0f, 5.0f));
 	AddGameObject<Polygon2D>(1);
 	AddGameObject<Sky>(1);
 	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
-	//AddGameObject<Tree>(1)->GetComponent<Transform2DComponent>()->SetPos(XMFLOAT3(-10.0f, 0.0f, 0.0f));
+	AddGameObject<Grass>(1)->SetPos(XMFLOAT3(50.0f,0.0f,-50.0f));
 
-	//MeshField* meshField = GetGameObject<MeshField>();
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	Tree* tree = AddGameObject<Tree>(1);
-
-	//	XMFLOAT3 pos;
-	//	pos.x = (float)rand() / RAND_MAX * 100.0f - 50.0f;
-	//	pos.z = (float)rand() / RAND_MAX * 100.0f - 50.0f;
-	//	pos.y = meshField->GetHeight(pos);
-
-	//	tree->GetComponent<Transform2DComponent>()->SetPos(pos);
-	//}
-	//AddGameObject<Predation>(1);
-	//AddUITexture<Score>();
 	AddUITexture<Time>()->SetTextureNum(0);
 	AddUITexture<Fade>()->SetTextureNum(1);
 	AddUITexture<LifeGauge>()->SetTextureNum(2);
@@ -80,21 +60,26 @@ void Game::Init()
 	AddUITexture<StaminaGauge>()->SetTextureNum(4);
 	AddUITexture<SwordIcon>()->SetTextureNum(5);
 	AddUITexture<GunIcon>()->SetTextureNum(6);
+	AddUITexture<AimIcon>()->SetTextureNum(7);
 	GetUITexture<Fade>(1)->SetFade(false);
 
-	//m_BGM = new Audio(this);
-	//m_BGM->Load("asset\\audio\\gameBGM.wav");
-	//m_BGM->Play(true);
+	m_BGM = new Audio();
+	m_BGM->Load("asset\\audio\\gameBGM.wav");
+	m_BGM->SetSound(0.0f);
+	m_BGM->Play(true);
 
 	m_Satate = SCENE_STATE::SCENE_GAME;
 
 	m_ImGui = new ImguiManager;
 	m_ImGui->Init();
-
 }
 
 void Game::Uninit()
 {
+
+	m_BGM->Uninit();
+	delete m_BGM;
+
 	for (int i = 0; i < LAYER_MAX; i++) {
 		for (GameObject* object : m_GameObject[i]) {
 			object->Uninit();
@@ -127,10 +112,85 @@ void Game::Update()
 	if (Input::GetKeyTrigger(VK_RETURN)) {
 		Scene::GetInstance()->ChangeScene(new Result);
 	}
-	//std::vector<Enemy*> enemyList = GetGameObjects<Enemy>();
-	//if (enemyList.size() == 0) {
-	//Scene::GetInstance()->ChangeScene(new Result);
-	//}
+	if (Input::GetKeyTrigger('I')) {
+		if (!m_IsDrawNodeEditor) {
+			m_IsDrawNodeEditor = true;
+		}
+		else {
+			m_IsDrawNodeEditor = false;
+		}
+	}
+
+	//クリアリザルト
+	std::vector<Enemy*> enemyList = GetGameObjects<Enemy>();
+	if (enemyList.size() == 0) {
+		m_shoudNextScene = true;
+	}
+
+	if (m_shoudNextScene) m_TransitionCount++;
+
+	if (m_TransitionCount >= 120)
+	{
+		m_TransitionCount = 0;
+		m_shoudNextScene = false;
+		m_IsClearResult = true;
+		GetUITexture<Fade>(1)->SetFadeState(FADE_STATE::FADE_OUT);
+	}
+
+	if (m_IsClearResult)
+	{
+		m_ChageSceneFrame++;
+		if (m_ChageSceneFrame >= 60)
+		{
+			GetUITexture<Fade>(1)->SetFade(true);
+			if (GetUITexture<Fade>(1)->GetFadeState() == FADE_NONE)
+			{
+				Scene::GetInstance()->ChangeScene(new Result);
+				return;
+			}
+		}
+	}
+
+	//失敗リザルト
+	if (!m_IsFailureResult && GetGameObject<Player>()->GetPlayerDie())
+	{
+		m_IsFailureResult = true;
+		GetUITexture<Fade>(1)->SetFadeState(FADE_STATE::FADE_OUT);
+	}
+	if (m_IsFailureResult)
+	{
+		m_ChageSceneFrame++;
+		if (m_ChageSceneFrame >= 60)
+		{
+			GetUITexture<Fade>(1)->SetFade(true);
+			if (GetUITexture<Fade>(1)->GetFadeState() == FADE_NONE)
+			{
+				Scene::GetInstance()->ChangeScene(new FailureResult);
+				return;
+			}
+		}
+	}
+
+	if (Input::GetKeyTrigger('K')) {
+		if (m_IsDrawColider) {
+			m_IsDrawColider = false;
+		}
+		else {
+			m_IsDrawColider = true;
+		}
+	}
+
+	if (Input::GetKeyTrigger('O')) {
+		if (m_IsDrawImGui) {
+			m_IsDrawImGui = false;
+		}
+		else {
+			m_IsDrawImGui = true;
+		}
+	}
+
+
+
 }
 
 void Game::Draw()
@@ -139,19 +199,22 @@ void Game::Draw()
 
 	m_ImGui->ImGuiRendererInit();
 
+
+
 	for (int i = 0; i < LAYER_MAX; i++) {
 		//m_GameObject[i].sort();
 		for (GameObject* object : m_GameObject[i]) {
 			object->Draw();
 		}
 	}
-	for (auto ui : m_Texture)
-	{
+	for (auto ui : m_Texture) {
 		ui->Draw();
 	}
 
-	DrawImGui();
-
+	if (m_IsDrawImGui) {
+		DrawImGui();
+		m_ImGui->DrawNodeEditor();
+	}
 	m_ImGui->ImGuiRenderer();
 
 	Renderer::End();

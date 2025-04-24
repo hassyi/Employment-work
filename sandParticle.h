@@ -1,6 +1,12 @@
 #pragma once
 #include "gameObject.h"
 
+struct VERTEX_3D_PARTICLE
+{
+	XMFLOAT3 Position;
+	XMFLOAT3 TexCoord;
+};
+
 class SandParticle : public GameObject
 {
 private:
@@ -43,6 +49,8 @@ private:
 
 	static const int PARTICLE_MAX = 1000;
 	PARTICLE m_Particle[PARTICLE_MAX]{};			//ここに{}を入れるとstructの中身が0とかfalseに初期化される
+
+	float m_Size = 1.0f;
 
 public:
 	void Init()override;

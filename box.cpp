@@ -1,10 +1,12 @@
 #include "box.h"
 #include "modelRenderer.h"
 #include "scene.h"
-#include "manager.h"
+#include "game.h"
 #include "collision.h"
 #include "transform3DComponent.h"
 #include "boxColiderComponent.h"
+#include <random>
+#include "camera.h"
 
 void Box::Init()
 {
@@ -18,7 +20,10 @@ void Box::Init()
 		component->Init();
 	}
 
-	m_Add = GetComponent<Transform3DComponent>()->GetRot();
+	//m_Add = GetComponent<Transform3DComponent>()->GetRot();
+	m_Add.x = (rand() % 4) / XM_PI;
+	m_Add.y = (rand() % 4) / XM_PI;
+	m_Add.z = (rand() % 4) / XM_PI;
 
 }
 
@@ -54,7 +59,15 @@ void Box::Update()
 
 void Box::Draw()
 {
-	DrawImGui();
+	if (Scene::GetInstance()->GetScene<Game>()->GetIsDrawImGui()) {
+		DrawImGui();
+	}
+
+	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 scale = GetComponent<Transform3DComponent>()->GetScale();
+
+	if (camera->CheckView(pos, scale.x) == false) return;
 
 	for (auto component : m_ComponentList)
 	{
@@ -83,7 +96,7 @@ void Box::DrawImGui()
 		static float add[3] = { 0.0f,0.0f,0.0f };
 
 		ImGui::SliderFloat3("AddRot", add, 0.0f, 3.0f);
-		SetAdd(XMFLOAT3(add[0], add[1], add[2]));
+		//SetAdd(XMFLOAT3(add[0], add[1], add[2]));
 
 
 		ImGui::End();

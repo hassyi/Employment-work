@@ -6,14 +6,12 @@
 #include "collision.h"
 #include "transform3DComponent.h"
 #include "game.h"
-#include "boxColiderComponent.h"
 #include "capsuleColiderComponent.h"
 #include "player.h"
 
 void Predation::Init()
 {
 	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\player.obj");
-	//AddComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(0.6f, 1.0f, 0.6f));
 	AddComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
 
@@ -60,6 +58,8 @@ void Predation::PredationCollision()
 {
 	std::list<Enemy*> enemyList = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Enemy>();
 
+	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+
 	if (enemyList.size() == 0)return;
 
 	if (std::get<0>(GetColider()->GetCollision()) == true)
@@ -77,6 +77,9 @@ void Predation::PredationCollision()
 				}
 			}
 		}
+
+		GetComponent<Transform3DComponent>()->SetPos(pos);
+
 	}
 }
 

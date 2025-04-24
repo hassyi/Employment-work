@@ -57,9 +57,6 @@
     <ClCompile Include="input.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="moveObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -159,9 +156,6 @@
     <ClCompile Include="enemyAIStateBase.cpp">
       <Filter>AIState</Filter>
     </ClCompile>
-    <ClCompile Include="enemyIdleState.cpp">
-      <Filter>AIState</Filter>
-    </ClCompile>
     <ClCompile Include="sandParticle.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -204,12 +198,6 @@
     <ClCompile Include="staminaGauge.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="chasePlayerState.cpp">
-      <Filter>AIState</Filter>
-    </ClCompile>
-    <ClCompile Include="enemyAttackState.cpp">
-      <Filter>AIState</Filter>
-    </ClCompile>
     <ClCompile Include="enemyAIState.cpp">
       <Filter>AIState</Filter>
     </ClCompile>
@@ -239,9 +227,6 @@
     </ClCompile>
     <ClCompile Include="weaponIcon.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="enemyDodgeState.cpp">
-      <Filter>AIState</Filter>
     </ClCompile>
     <ClCompile Include="behaviorMove.cpp">
       <Filter>behavior</Filter>
@@ -276,6 +261,90 @@
     <ClCompile Include="gunIcon.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="searchState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="idleState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="battleState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="behaviorAttack.cpp">
+      <Filter>behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="attckState.cpp">
+      <Filter>AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_canvas.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_node_editor.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_node_editor_api.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_node_Manager.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="crude_json.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="builders.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="drawing.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_blueprints.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyDeathParticle.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="grass.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="building.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="aimIcon.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="sword.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="slash.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="failureResult.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="transform.cpp">
+      <Filter>Component\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="enemySlash.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="slashEffect.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="enemySlashEffect.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="modelFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -291,9 +360,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="moveObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="collision.h">
@@ -428,9 +494,6 @@
     <ClInclude Include="enemyAIStateBase.h">
       <Filter>AIState</Filter>
     </ClInclude>
-    <ClInclude Include="enemyIdleState.h">
-      <Filter>AIState</Filter>
-    </ClInclude>
     <ClInclude Include="sandParticle.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -473,12 +536,6 @@
     <ClInclude Include="staminaGauge.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="chasePlayerState.h">
-      <Filter>AIState</Filter>
-    </ClInclude>
-    <ClInclude Include="enemyAttackState.h">
-      <Filter>AIState</Filter>
-    </ClInclude>
     <ClInclude Include="calculation.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -508,9 +565,6 @@
     </ClInclude>
     <ClInclude Include="imguiManager.h">
       <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="enemyDodgeState.h">
-      <Filter>AIState</Filter>
     </ClInclude>
     <ClInclude Include="modelFactory.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -557,6 +611,87 @@
     <ClInclude Include="searchState.h">
       <Filter>AIState</Filter>
     </ClInclude>
+    <ClInclude Include="battleState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="idleState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviorAttack.h">
+      <Filter>behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="attckState.h">
+      <Filter>AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_bezier_math.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_canvas.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_extra_math.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_node_editor.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_node_editor_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_node_Manager.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="crude_json.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_blueprints.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="builders.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="widgets.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyDeathParticle.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="grass.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="building.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="aimIcon.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sword.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="slash.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="failureResult.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="enemySlash.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="slashEffect.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="enemySlashEffect.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="routeSearch.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl" />
@@ -576,5 +711,7 @@
     <FxCompile Include="shader\waveVS.hlsl" />
     <FxCompile Include="shader\wireFramePS.hlsl" />
     <FxCompile Include="shader\wireFrameVS.hlsl" />
+    <FxCompile Include="shader\grassGPUPS.hlsl" />
+    <FxCompile Include="shader\grassGPUVS.hlsl" />
   </ItemGroup>
 </Project>

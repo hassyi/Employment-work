@@ -37,3 +37,15 @@ inline XMFLOAT3 MulFloat(const XMFLOAT3 vec1, const float a) {
 inline float LengthSquared(const XMFLOAT3 vec){
 	return (vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z);
 }
+
+inline float Lerp(float vector, float target, float speed)
+{
+	return vector + (target - vector) * speed;
+}
+
+inline XMFLOAT3 Cross(XMFLOAT3 vec1, XMFLOAT3 vec2)
+{
+	return XMFLOAT3(vec1.y * vec2.z - vec1.z * vec2.y,
+					vec1.z * vec2.x - vec1.x * vec2.z,
+					vec1.x * vec2.y - vec1.y * vec2.x);
+}

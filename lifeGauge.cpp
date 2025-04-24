@@ -8,7 +8,7 @@
 void LifeGauge::Init()
 {
 	m_Pos = XMFLOAT2(10.0f, 10.0f);
-	m_Size = XMFLOAT2(250.0f, 20.0f);
+	m_Size = XMFLOAT2(400.0f, 20.0f);
 
 	AddComponent<TextureComponent>()->SetTransTexNum(m_Pos.x, m_Pos.y, m_Size.x, m_Size.y, L"asset\\texture\\statusGauge.png", 1);
 	GetComponent<TextureComponent>()->SetDisitDisplay(false);
@@ -32,6 +32,7 @@ void LifeGauge::Uninit()
 
 void LifeGauge::Update()
 {
+
 	float playerLife = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->GetLife();
 
 	float lifeCount = m_Size.x / m_LifeMax;

@@ -47,6 +47,7 @@ void Transform3DComponent::Draw()
 	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 	world = scale * rot * trans;
+	world = m_LocalMatrix * world;
 	Renderer::SetWorldMatrix(world);
 
 	//// ラスタライザステート設定

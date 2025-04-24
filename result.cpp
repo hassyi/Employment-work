@@ -6,18 +6,26 @@
 
 void Result::Init()
 {
-	AddUITexture<Texture2D>()->SetTransTexNum(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, L"asset\\texture\\result.png", 1);
+	AddUITexture<Texture2D>()->SetTransTexNum(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, L"asset\\texture\\clearresult.png", 1);
+
+	m_Satate = SCENE_STATE::SCENE_CLEAR_RESULT;
 
 	for (auto texture : m_Texture)
 	{
 		texture->Init();
 	}
+	m_BGM = new Audio();
+	m_BGM->Load("asset\\audio\\clearBGM.wav");
+	m_BGM->SetSound(0.5f);
+	m_BGM->Play(true);
 
-	m_Satate = SCENE_STATE::SCENE_RESULT;
 }
 
 void Result::Uninit()
 {
+	m_BGM->Uninit();
+	delete m_BGM;
+
 	for (auto texture : m_Texture)
 	{
 		texture->Uninit();

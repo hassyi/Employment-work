@@ -54,6 +54,8 @@ struct MODEL
 class ModelRenderer : public GameObjectComponet
 {
 private:
+	//static ModelRenderer* m_ModelRenderer;
+	//virtual ~ModelRenderer() { delete m_ModelRenderer; }
 
 	static std::unordered_map<std::string, MODEL*> m_ModelPool;
 
@@ -64,6 +66,13 @@ private:
 	MODEL* m_Model{};
 
 public:
+	//static ModelRenderer* GetInstatnce() 
+	//{
+	//	if (m_ModelRenderer == nullptr) {
+	//		m_ModelRenderer = new ModelRenderer;
+	//	}
+	//	return m_ModelRenderer;
+	//}
 
 	static void Preload( const char *FileName );
 	static void UnloadAll();

@@ -35,7 +35,7 @@ void EnemyAI::Update()
 
 void EnemyAI::Draw()
 {
-	DrawImGui();
+	//DrawImGui();
 }
 
 void EnemyAI::DrawImGui()

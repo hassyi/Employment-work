@@ -32,6 +32,7 @@ public:
 	float SegmentDistance(const XMFLOAT3 vec1start, const XMFLOAT3 vec1end, const XMFLOAT3 vec2start, const XMFLOAT3 vec2end, float& t1, float& t2);
 	bool CapsuleCollision(const CapsuleColiderComponent* colider1, const CapsuleColiderComponent* colider2);
 	bool BoxCollision(Capsule& capsule, GameObject* object);
+	bool SphereCollision(Capsule& capsule, GameObject* object);
 
 	std::tuple<bool, GameObject*, std::list<GameObject*>> GetCollision()override;
 	void MoveCollision()override;

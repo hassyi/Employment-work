@@ -146,6 +146,7 @@ void Transform2DComponent::Draw()
 			//ワールドマトリクス設定
 			XMMATRIX world, scale, rot, trans;
 			scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+			rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 			trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 			world = scale * invView * trans;
 			Renderer::SetWorldMatrix(world);
@@ -192,6 +193,7 @@ void Transform2DComponent::Draw()
 			//ワールドマトリクス設定
 			XMMATRIX world, scale, rot, trans;
 			scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+			rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 			trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 			world = scale * invView * trans;
 			Renderer::SetWorldMatrix(world);

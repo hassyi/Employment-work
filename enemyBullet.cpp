@@ -38,7 +38,7 @@ void EnemyBullet::Update()
 
 	XMFLOAT3 direction;
 	direction.x = m_PlayerPos.x - pos.x;
-	direction.y = m_PlayerPos.y - pos.y;
+	direction.y = m_PlayerPos.y - pos.y + 1.0f;
 	direction.z = m_PlayerPos.z - pos.z;
 
 	float length = Length(direction);
@@ -87,6 +87,7 @@ void EnemyBullet::EnemyBulletCollision()
 			{
 				Explosion* explosion = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Explosion>(1);
 				explosion->GetComponent<Transform2DComponent>()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
+				onCollisionObject->SetLife(onCollisionObject->GetLife() - 1.0f);
 				SetDestroy();
 			}
 		}

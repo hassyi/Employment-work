@@ -490,6 +490,29 @@ void AnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 {
 	BONE* bone = &m_Bone[node->mName.C_Str()];
 
+	//これで部位のマトリクスは取れる
+	if (strcmp(node->mName.C_Str(), "mixamorig:RightHand") == 0)
+	{
+
+		XMFLOAT4X4 mat = {};
+
+		mat._11 = 0.0f; mat._12 = 0.0f; mat._13 = 0.0f; mat._14 = 0.0f;
+		mat._21 = 0.0f; mat._22 = 0.0f; mat._23 = 0.0f; mat._24 = 0.0f;
+		mat._31 = 0.0f; mat._32 = 0.0f; mat._33 = 0.0f; mat._34 = 0.0f;
+		mat._41 = 0.0f; mat._42 = 0.0f; mat._43 = 0.0f; mat._44 = 0.0f;
+
+		aiMatrix4x4& aiMat = bone->Matrix;
+
+		mat._11 = aiMat.a1; mat._12 = aiMat.b1; mat._13 = aiMat.c1; mat._14 = aiMat.d1;
+		mat._21 = aiMat.a2; mat._22 = aiMat.b2; mat._23 = aiMat.c2; mat._24 = aiMat.d2;
+		mat._31 = aiMat.a3; mat._32 = aiMat.b3; mat._33 = aiMat.c3; mat._34 = aiMat.d3;
+		mat._41 = aiMat.a4; mat._42 = aiMat.b4; mat._43 = aiMat.c4; mat._44 = aiMat.d4;
+
+		// 転置
+		XMMATRIX matTranspose = XMLoadFloat4x4(&mat);
+		m_RightHandMatrix = matTranspose;
+	}
+	
 	//マトリクスの乗算順番に注意
 	aiMatrix4x4 worldMatrix;
 

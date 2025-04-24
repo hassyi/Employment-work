@@ -125,7 +125,9 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\jenov\program\stb-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +144,9 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\jenov\program\stb-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,10 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aimIcon.cpp" />
     <ClCompile Include="animationModel.cpp">
       <FunctionLevelLinking Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</FunctionLevelLinking>
     </ClCompile>
+    <ClCompile Include="attckState.cpp" />
     <ClCompile Include="audio.cpp" />
+    <ClCompile Include="battleState.cpp" />
+    <ClCompile Include="behaviorAttack.cpp" />
     <ClCompile Include="behaviorDodge.cpp" />
     <ClCompile Include="behaviorGun.cpp" />
     <ClCompile Include="behaviorIdle.cpp" />
@@ -169,46 +177,62 @@
     <ClCompile Include="box.cpp" />
     <ClCompile Include="boxColiderComponent.cpp" />
     <ClCompile Include="buffParticle.cpp" />
+    <ClCompile Include="builders.cpp" />
+    <ClCompile Include="building.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletGauge.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="capsuleColiderComponent.cpp" />
-    <ClCompile Include="chasePlayerState.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="crude_json.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="cylinderColiderComponent.cpp" />
+    <ClCompile Include="drawing.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyAI.cpp" />
     <ClCompile Include="enemyAIState.cpp" />
     <ClCompile Include="enemyAIStateBase.cpp" />
-    <ClCompile Include="enemyAttackState.cpp" />
     <ClCompile Include="enemyBullet.cpp" />
-    <ClCompile Include="enemyDodgeState.cpp" />
+    <ClCompile Include="enemyDeathParticle.cpp" />
+    <ClCompile Include="enemySlash.cpp" />
+    <ClCompile Include="enemySlashEffect.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="failureResult.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="fieldDepthShadow.cpp" />
     <ClCompile Include="fireParticle.cpp" />
+    <ClCompile Include="grass.cpp" />
     <ClCompile Include="gunIcon.cpp" />
+    <ClCompile Include="idleState.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imguiManager.cpp" />
+    <ClCompile Include="imgui_blueprints.cpp" />
+    <ClCompile Include="imgui_canvas.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui_node_editor.cpp" />
+    <ClCompile Include="imgui_node_editor_api.cpp" />
+    <ClCompile Include="imgui_node_Manager.cpp" />
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="lifeGauge.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="modelFactory.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="searchState.cpp" />
+    <ClCompile Include="slash.cpp" />
+    <ClCompile Include="slashEffect.cpp" />
     <ClCompile Include="sphereShadow.cpp" />
     <ClCompile Include="sandParticle.cpp" />
-    <ClCompile Include="enemyIdleState.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="meshField.cpp" />
     <ClCompile Include="modelRenderer.cpp" />
-    <ClCompile Include="moveObject.cpp" />
     <ClCompile Include="particleEmitter.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="polygon2D.cpp" />
@@ -219,6 +243,7 @@
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="sphereColiderComponent.cpp" />
     <ClCompile Include="staminaGauge.cpp" />
+    <ClCompile Include="sword.cpp" />
     <ClCompile Include="swordIcon.cpp" />
     <ClCompile Include="texture2D.cpp" />
     <ClCompile Include="textureComponent.cpp" />
@@ -227,16 +252,22 @@
     <ClCompile Include="titleCamera.cpp" />
     <ClCompile Include="TitleEffect.cpp" />
     <ClCompile Include="titleName.cpp" />
+    <ClCompile Include="transform.cpp" />
     <ClCompile Include="transform2DComponent.cpp" />
     <ClCompile Include="transform3DAnimaitonComponent.cpp" />
     <ClCompile Include="transform3DComponent.cpp" />
     <ClCompile Include="tree.cpp" />
     <ClCompile Include="wave.cpp" />
     <ClCompile Include="weaponIcon.cpp" />
+    <ClCompile Include="widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aimIcon.h" />
     <ClInclude Include="animationModel.h" />
+    <ClInclude Include="attckState.h" />
     <ClInclude Include="audio.h" />
+    <ClInclude Include="battleState.h" />
+    <ClInclude Include="behaviorAttack.h" />
     <ClInclude Include="behaviorDodge.h" />
     <ClInclude Include="behaviorGun.h" />
     <ClInclude Include="behaviorIdle.h" />
@@ -250,45 +281,62 @@
     <ClInclude Include="box.h" />
     <ClInclude Include="boxColiderComponent.h" />
     <ClInclude Include="buffParticle.h" />
+    <ClInclude Include="builders.h" />
+    <ClInclude Include="building.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletGauge.h" />
     <ClInclude Include="calculation.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="capsuleColiderComponent.h" />
-    <ClInclude Include="chasePlayerState.h" />
     <ClInclude Include="colider.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
+    <ClInclude Include="crude_json.h" />
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="cylinderColiderComponent.h" />
+    <ClInclude Include="drawing.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyAI.h" />
     <ClInclude Include="enemyAIState.h" />
     <ClInclude Include="enemyAIStateBase.h" />
-    <ClInclude Include="enemyAttackState.h" />
     <ClInclude Include="enemyBullet.h" />
-    <ClInclude Include="enemyDodgeState.h" />
+    <ClInclude Include="enemyDeathParticle.h" />
+    <ClInclude Include="enemySlash.h" />
+    <ClInclude Include="enemySlashEffect.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="failureResult.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="fieldDepthShadow.h" />
     <ClInclude Include="fireParticle.h" />
+    <ClInclude Include="grass.h" />
     <ClInclude Include="gunIcon.h" />
+    <ClInclude Include="idleState.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imguiManager.h" />
+    <ClInclude Include="imgui_bezier_math.h" />
+    <ClInclude Include="imgui_blueprints.h" />
+    <ClInclude Include="imgui_canvas.h" />
+    <ClInclude Include="imgui_extra_math.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="imgui_node_editor.h" />
+    <ClInclude Include="imgui_node_editor_internal.h" />
+    <ClInclude Include="imgui_node_Manager.h" />
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="lifeGauge.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="modelFactory.h" />
+    <ClInclude Include="routeSearch.h" />
     <ClInclude Include="searchState.h" />
+    <ClInclude Include="slash.h" />
+    <ClInclude Include="slashEffect.h" />
     <ClInclude Include="sphereShadow.h" />
     <ClInclude Include="sandParticle.h" />
-    <ClInclude Include="enemyIdleState.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="gameObjectComponent.h" />
@@ -297,7 +345,6 @@
     <ClInclude Include="manager.h" />
     <ClInclude Include="meshField.h" />
     <ClInclude Include="modelRenderer.h" />
-    <ClInclude Include="moveObject.h" />
     <ClInclude Include="particleEmitter.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon2D.h" />
@@ -310,6 +357,7 @@
     <ClInclude Include="sky.h" />
     <ClInclude Include="sphereColiderComponent.h" />
     <ClInclude Include="staminaGauge.h" />
+    <ClInclude Include="sword.h" />
     <ClInclude Include="swordIcon.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture2D.h" />
@@ -328,6 +376,7 @@
     <ClInclude Include="uiComponent.h" />
     <ClInclude Include="wave.h" />
     <ClInclude Include="weaponIcon.h" />
+    <ClInclude Include="widgets.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">
@@ -349,6 +398,22 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="shader\DepthShadowMappingVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\grassGPUPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\grassGPUVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>

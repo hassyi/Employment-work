@@ -5,6 +5,7 @@
 #include "enemy.h"
 #include "transform3DAnimaitonComponent.h"
 #include "calculation.h"
+#include "enemySlash.h"
 
 BEHAVIOR_RESULT BehaviorPunch::Update()
 {
@@ -27,20 +28,28 @@ BEHAVIOR_RESULT BehaviorPunch::Update()
 	{
 		m_Enemy->GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
 		m_isAttack = true;
-		m_AttackFrame = 80;
+		m_AttackFrame = 40;
 		m_Enemy->GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Attack");
-		player->SetLife(player->GetLife() - 1.0f);
 	}
 
-	if (m_AttackFrame <= 0.0f) 
+	if (m_AttackFrame == 20) Scene::GetInstance()->GetScene<Game>()->AddGameObject<EnemySlash>(1);
+
+	if (m_AttackFrame < 0.0f && m_isAttack) 
 	{
 		m_isAttack = false;
 		m_AttackFrame = 0.0f;
-		return BEHAVIOR_RESULT_SUCCESS;
-		
+		m_AttackCount++;
 	}
 
-	if (length > 4.0f) {
+	if (m_AttackCount >= 2) 
+	{
+		m_AttackCount = 0;
+		return BEHAVIOR_RESULT_SUCCESS;
+	}
+
+	if (length > 4.0f) 
+	{
+		m_AttackCount = 0;
 		return BEHAVIOR_RESULT_FAILURE;
 	}
 }

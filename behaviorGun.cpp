@@ -23,18 +23,18 @@ BEHAVIOR_RESULT BehaviorGun::Update()
 
 	float length = Length(direction);
 
-	if (length > 3.5f && length <= 10.0f)
+	if (length >= 2.0f)
 	{
 		m_ShotFrame++;
-		if (m_ShotFrame >= 90)
+		if (m_ShotFrame >= 20)
 		{
+			m_Enemy->SetSpeed(0.0f);
 			EnemyBullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<EnemyBullet>(1);
 			bullet->GetComponent<Transform3DComponent>()->SetPos(enemypos);
 			return BEHAVIOR_RESULT_SUCCESS;
 		}
 	}
-
-	if (length >= 10.0f) {
+	else if (length < 2.0f) {
 		return BEHAVIOR_RESULT_FAILURE;
 	}
 

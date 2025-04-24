@@ -25,7 +25,7 @@ void Time::Update()
 {
 	m_timeCount++;
 	if (m_timeCount > 60) {
-		m_Count++;
+		m_Count--;
 		m_timeCount = 0;
 	}
 	//if (m_Count > 9) {

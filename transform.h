@@ -20,7 +20,7 @@ protected:
 	float m_Length = 0.0f;
 	float m_Fai = 0.0f;
 
-
+	bool m_RotAroundDoOnce = false;
 
 public:
 	Transform() = default;
@@ -52,12 +52,15 @@ public:
 	void SetVelY(float vely) { m_Vel.y = vely; }
 	void SetVelZ(float velz) { m_Vel.z = velz; }
 
+	void SetRotateAround(XMFLOAT3 target);
+	void RotateAround(float rotx, float roty);
+
 	XMFLOAT3 GetPos() const{ return m_Pos; }
 	XMFLOAT3 GetOldPos() const{ return m_oldPos; }
 	XMFLOAT3 GetScale() const { return m_Scale; }
 	XMFLOAT3 GetRot() const { return m_Rot; }
 	XMFLOAT3 GetVel() const { return m_Vel; }
-
+	XMFLOAT3 GetRotPos(XMFLOAT3 target);
 
 	XMFLOAT3 GetForward()
 	{

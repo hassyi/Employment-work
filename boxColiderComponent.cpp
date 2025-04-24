@@ -1,5 +1,4 @@
 #include "boxColiderComponent.h"
-#include "gameObject.h"
 #include "transform3DComponent.h"
 #include "game.h"
 #include "scene.h"
@@ -33,11 +32,6 @@ void BoxColiderComponent::Uninit()
 
 void BoxColiderComponent::Update()
 {
-	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
-	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
-
-	m_Pos = Add(m_Pos, m_AddPos);
-
 	MoveCollision();
 }
 
@@ -197,9 +191,19 @@ void BoxColiderComponent::MoveCollision()
 	Angle angle;
 	angle = GetAddAngle(m_Rot, vector);
 
-	m_Box = { m_Pos,
-			 XMFLOAT3(m_Scale.x, m_Scale.y, m_Scale.z),
-			 angle.AngleX, angle.AngleY, angle.AngleZ };
+	if (GetGameObject()->GetObjectType() == OBJ_TYPE::BOX)
+	{
+		m_Box = { m_Pos,
+				 XMFLOAT3(m_Scale.x, m_Scale.y, m_Scale.z),
+				 angle.AngleX, angle.AngleY, angle.AngleZ };
+
+	}
+	else
+	{
+		m_Box = { XMFLOAT3(m_Pos.x, m_Pos.y + m_Scale.y,m_Pos.z),
+				 XMFLOAT3(m_Scale.x, m_Scale.y, m_Scale.z),
+				 angle.AngleX, angle.AngleY, angle.AngleZ };
+	}
 
 }
 

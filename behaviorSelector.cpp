@@ -13,6 +13,7 @@ BEHAVIOR_RESULT BehaviorSelector::Update()
     case BEHAVIOR_RESULT_SUCCESS:
         m_Index = 0;
         return BEHAVIOR_RESULT_SUCCESS;
+        m_IsSuccess = true;
 
     case BEHAVIOR_RESULT_FAILURE:
         m_Index++;

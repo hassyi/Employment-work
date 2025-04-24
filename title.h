@@ -13,10 +13,6 @@ private:
 	Audio* m_BGM{};
 	Audio* m_SE{};
 
-	bool m_isChageScene = false;
-
-	int m_DrawFrame = 0;
-	int m_ChageSceneFrame = 0;
 
 public:
 	void Init()override;

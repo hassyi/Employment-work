@@ -6,7 +6,8 @@ typedef enum
 	SCENE_NONE = 0,
 	SCENE_TITLE,
 	SCENE_GAME,
-	SCENE_RESULT,
+	SCENE_CLEAR_RESULT,
+	SCENE_FAILURE_RESULT,
 
 	SCENE_MAX
 }SCENE_STATE;
@@ -16,6 +17,10 @@ class SceneState
 protected:
 	SCENE_STATE m_Satate = SCENE_STATE::SCENE_NONE;
 
+	bool m_isChageScene = false;
+
+	int m_DrawFrame = 0;
+	int m_ChageSceneFrame = 0;
 public:
 	virtual~SceneState() {}
 	virtual void Init() = 0;

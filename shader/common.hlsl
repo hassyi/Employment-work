@@ -70,7 +70,7 @@ struct VS_IN
 	float4 Normal		: NORMAL0;
 	float4 Diffuse		: COLOR0;
 	float2 TexCoord		: TEXCOORD0;
-    //uint InstanceId		: SV_InstanceID; //描画する回数を取得
+    uint InstanceId		: SV_InstanceID; //描画する回数を取得
 };
 
 

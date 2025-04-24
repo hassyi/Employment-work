@@ -16,6 +16,7 @@ protected:
 
 
 	const char* m_BehaviorText = "none";
+	bool m_IsSuccess = false;
 
 public:
 	BehaviorNode() = delete;
@@ -27,4 +28,5 @@ public:
 	void Uninit() { m_Child.clear(); }
 	virtual BEHAVIOR_RESULT Update() = 0;
 	const char* GetBehaviorName() { return m_BehaviorText; }
+	bool GetIsSuccess() { return m_IsSuccess; }
 };

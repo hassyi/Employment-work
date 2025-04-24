@@ -9,5 +9,4 @@ private:
 public:
 	using BehaviorNode::BehaviorNode;
 	BEHAVIOR_RESULT Update()override;
-
 };

@@ -1,7 +1,6 @@
 #include "bonFire.h"
 #include "modelRenderer.h"
 #include "scene.h"
-#include "manager.h"
 #include "transform3DComponent.h"
 #include "transform2DComponent.h"
 #include "fireParticle.h"

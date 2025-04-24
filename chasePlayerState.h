@@ -24,6 +24,6 @@ public:
 
 	void Init()override;
 	void Uninit()override;
-	void Update(Enemy* enemy)override;
+	void Update()override;
 
 };

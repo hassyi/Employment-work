@@ -49,6 +49,8 @@
 #pragma comment(lib, "d3dcompiler") // Automatically link with d3dcompiler.lib as we are using D3DCompile() below.
 #endif
 
+struct TEXTURE;
+
 // DirectX11 data
 struct ImGui_ImplDX11_Data
 {
@@ -57,6 +59,7 @@ struct ImGui_ImplDX11_Data
     IDXGIFactory*               pFactory;
     ID3D11Buffer*               pVB;
     ID3D11Buffer*               pIB;
+    ID3D10Blob*                 g_pVertexShaderBlob;
     ID3D11VertexShader*         pVertexShader;
     ID3D11InputLayout*          pInputLayout;
     ID3D11Buffer*               pVertexConstantBuffer;
@@ -68,6 +71,7 @@ struct ImGui_ImplDX11_Data
     ID3D11DepthStencilState*    pDepthStencilState;
     int                         VertexBufferSize;
     int                         IndexBufferSize;
+    ImVector<TEXTURE*>          g_Textures;
 
     ImGui_ImplDX11_Data()       { memset((void*)this, 0, sizeof(*this)); VertexBufferSize = 5000; IndexBufferSize = 10000; }
 };
@@ -76,6 +80,25 @@ struct VERTEX_CONSTANT_BUFFER_DX11
 {
     float   mvp[4][4];
 };
+
+struct TEXTURE
+{
+    TEXTURE()
+    {
+        View = NULL;
+        Width = 0;
+        Height = 0;
+    }
+
+    ID3D11ShaderResourceView* View;
+    int                         Width;
+    int                         Height;
+    ImVector<unsigned char>     Data;
+};
+
+// Forward Declarations
+static bool ImGui_UploadTexture(TEXTURE* texture);
+static void ImGui_ReleaseTexture(TEXTURE* texture);
 
 // Backend data stored in io.BackendRendererUserData to allow support for multiple Dear ImGui contexts
 // It is STRONGLY preferred that you use docking branch with multi-viewports (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
@@ -130,6 +153,7 @@ static void ImGui_ImplDX11_SetupRenderState(ImDrawData* draw_data, ID3D11DeviceC
     device_ctx->VSSetShader(bd->pVertexShader, nullptr, 0);
     device_ctx->VSSetConstantBuffers(0, 1, &bd->pVertexConstantBuffer);
     device_ctx->PSSetShader(bd->pPixelShader, nullptr, 0);
+    device_ctx->PSGetShaderResources(0, 1, &bd->pFontTextureView);
     device_ctx->PSSetSamplers(0, 1, &bd->pFontSampler);
     device_ctx->GSSetShader(nullptr, nullptr, 0);
     device_ctx->HSSetShader(nullptr, nullptr, 0); // In theory we should backup and restore this as well.. very infrequently used..
@@ -291,9 +315,14 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
                 device->RSSetScissorRects(1, &r);
 
                 // Bind texture, Draw
+                //TEXTURE* texture = (TEXTURE*)pcmd->GetTexID();
+                //ID3D11ShaderResourceView* textureView = texture->View;
+                //device->PSSetShaderResources(0, 1, &textureView);
+                //device->DrawIndexed(pcmd->ElemCount, pcmd->IdxOffset + global_idx_offset, pcmd->VtxOffset + global_vtx_offset);
                 ID3D11ShaderResourceView* texture_srv = (ID3D11ShaderResourceView*)pcmd->GetTexID();
                 device->PSSetShaderResources(0, 1, &texture_srv);
                 device->DrawIndexed(pcmd->ElemCount, pcmd->IdxOffset + global_idx_offset, pcmd->VtxOffset + global_vtx_offset);
+                
             }
         }
         global_idx_offset += draw_list->IdxBuffer.Size;
@@ -624,6 +653,142 @@ void ImGui_ImplDX11_NewFrame()
 
     if (!bd->pFontSampler)
         ImGui_ImplDX11_CreateDeviceObjects();
+}
+
+extern "C" {
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
+#include "stb_image.h"
+}
+
+ImTextureID ImGui_LoadTexture(const char* path)
+{
+    int width = 0, height = 0, component = 0;
+    if (auto data = stbi_load(path, &width, &height, &component, 4))
+    {
+        auto texture = ImGui_CreateTexture(data, width, height);
+        stbi_image_free(data);
+        return texture;
+    }
+    else
+        return nullptr;
+}
+
+ImTextureID ImGui_CreateTexture(const void* data, int width, int height)
+{
+    ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
+
+    auto texture = IM_NEW(TEXTURE);
+    texture->Width = width;
+    texture->Height = height;
+    texture->Data.resize(width * height * 4);
+    memcpy(texture->Data.Data, data, texture->Data.Size);
+
+    if (!ImGui_UploadTexture(texture))
+    {
+        IM_DELETE(texture);
+        return nullptr;
+    }
+
+    bd->g_Textures.push_back(texture);
+
+    return (ImTextureID)texture;
+}
+
+void ImGui_DestroyTexture(ImTextureID texture)
+{
+    if (!texture)
+        return;
+
+    ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
+
+    TEXTURE* texture_object = (TEXTURE*)(texture);
+
+    ImGui_ReleaseTexture(texture_object);
+
+    for (TEXTURE** it = bd->g_Textures.begin(), **itEnd = bd->g_Textures.end(); it != itEnd; ++it)
+    {
+        if (*it == texture_object)
+        {
+            bd->g_Textures.erase(it);
+            break;
+        }
+    }
+
+    IM_DELETE(texture_object);
+}
+
+static bool ImGui_UploadTexture(TEXTURE* texture)
+{
+    ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
+
+    if (!bd->pd3dDevice || !texture)
+        return false;
+
+    if (texture->View)
+        return true;
+
+    D3D11_TEXTURE2D_DESC desc = {};
+    desc.Width = texture->Width;
+    desc.Height = texture->Height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA subResource = {};
+    subResource.pSysMem = texture->Data.Data;
+    subResource.SysMemPitch = desc.Width * 4;
+    subResource.SysMemSlicePitch = 0;
+
+    ID3D11Texture2D* pTexture = nullptr;
+    bd->pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+
+    if (!pTexture)
+        return false;
+
+    // Create texture view
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MipLevels = desc.MipLevels;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+
+    bd->pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, &texture->View);
+    pTexture->Release();
+
+    return true;
+}
+
+static void ImGui_ReleaseTexture(TEXTURE* texture)
+{
+    if (texture)
+    {
+        if (texture->View)
+        {
+            texture->View->Release();
+            texture->View = nullptr;
+        }
+    }
+}
+
+int ImGui_GetTextureWidth(ImTextureID texture)
+{
+    if (TEXTURE* tex = (TEXTURE*)(texture))
+        return tex->Width;
+    else
+        return 0;
+}
+
+int ImGui_GetTextureHeight(ImTextureID texture)
+{
+    if (TEXTURE* tex = (TEXTURE*)(texture))
+        return tex->Height;
+    else
+        return 0;
 }
 
 //-----------------------------------------------------------------------------

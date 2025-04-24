@@ -44,6 +44,7 @@ private:
 	std::vector<DEFORM_VERTEX>* m_DeformVertex;//変形後頂点データ
 	std::unordered_map<std::string, BONE> m_Bone;//ボーンデータ（名前で参照）
 
+	XMMATRIX m_RightHandMatrix = {};
 public:
 	using GameObjectComponet::GameObjectComponet;
 
@@ -55,4 +56,6 @@ public:
 	void UpdateAnimation(const char* AnimationName1, int Frame1, const char* AnimationName2, int Frame2, float BlendRatio);
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
 	std::unordered_map<std::string, BONE> GetBone() const { return m_Bone; }
+
+	XMMATRIX GetRightHandMatrix() { return m_RightHandMatrix; }
 };

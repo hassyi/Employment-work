@@ -7,7 +7,7 @@
 
 void GunIcon::Init()
 {
-	AddComponent<TextureComponent>()->SetTransTexNum(10.0f, 600.0f, 100.0f, 100.0f, L"asset\\texture\\gun.png", 1);
+	AddComponent<TextureComponent>()->SetTransTexNum(10.0f, 550.0f, 150.0f, 150.0f, L"asset\\texture\\gun.png", 1);
 	GetComponent<TextureComponent>()->SetDisitDisplay(false);
 	for (auto component : m_ComponentList)
 	{
@@ -37,7 +37,7 @@ void GunIcon::Draw()
 	{
 		for (auto component : m_ComponentList)
 		{
-			GetComponent<TextureComponent>()->SetPosSize(10.0f, 600.0f, 100.0f, 100.0f);
+			GetComponent<TextureComponent>()->SetPosSize(10.0f, 550.0f, 150.0f, 150.0f);
 			GetComponent<TextureComponent>()->SetAnimation(0.0f, 0.0f, 1.0f, 1.0f);
 			component->Draw();
 

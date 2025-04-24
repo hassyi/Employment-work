@@ -10,11 +10,11 @@ private:
 	bool m_collisionHeight = false;
 
 public:
-	bool CollisionBB(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 scl1, XMFLOAT3 scl2);	//î†
-	bool CollisionBBHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 scl1, XMFLOAT3 scl2);	//î†
-	bool CollisionBS(XMFLOAT3 pos1, XMFLOAT3 pos2, float radius);					//ãÖëÃ
-	bool CollisionCylinder(XMFLOAT3 pos1, XMFLOAT3 pos2, float radius);				//â~íå
-	bool CollisionCylinderHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, float height);				//â~íå
+	bool CollisionBB(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 scl1, XMFLOAT3 scl2);	//ÁÆ±
+	bool CollisionBBHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 scl1, XMFLOAT3 scl2);	//ÁÆ±
+	bool CollisionBS(XMFLOAT3 pos1, XMFLOAT3 pos2, float radius);					//ÁêÉ‰Ωì
+	bool CollisionCylinder(XMFLOAT3 pos1, XMFLOAT3 pos2, float radius);				//ÂÜÜÊü±
+	bool CollisionCylinderHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, float height);				//ÂÜÜÊü±
 	bool GetCylinderHeight() { return m_collisionHeight; }
 
 	std::tuple<bool, std::list<Box*>> CollisionBB(XMFLOAT3 pos, XMFLOAT3 scl);

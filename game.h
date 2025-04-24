@@ -18,6 +18,14 @@ private:
 	ImguiManager* m_ImGui = nullptr;
 
 	bool m_IsDrawColider  = false;
+	bool m_IsDrawNodeEditor = false;
+	bool m_IsDrawImGui = false;
+
+	bool m_shoudNextScene = false;
+	bool m_IsClearResult = false;
+	bool m_IsFailureResult = false;
+
+	int m_TransitionCount = 0;
 
 public:
 	void Init()override;
@@ -27,6 +35,7 @@ public:
 
 	void SetIsDrawColider(bool isDraw) { m_IsDrawColider = isDraw; }
 	bool GetIsDrawColider() { return m_IsDrawColider; }
+	bool GetIsDrawImGui() { return m_IsDrawImGui; }
 
 	//listの追加
 	template <typename T>	//テンプレート関数

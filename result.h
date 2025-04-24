@@ -2,12 +2,14 @@
 #include "sceneState.h"
 #include "gameObject.h"
 #include "UI.h"
+#include "audio.h"
 
 class Result : public SceneState
 {
 private:
 	std::list<GameObject*> m_GameObject[3];
 	std::list<UI*> m_Texture;
+	Audio* m_BGM{};
 
 
 public:

@@ -2,6 +2,7 @@
 #include "player.h"
 #include "scene.h"
 #include "title.h"
+#include "transform.h"
 
 void TitleCamera::Init()
 {
@@ -35,7 +36,7 @@ void TitleCamera::Draw()
 {
 	Player* player = Scene::GetInstance()->GetScene<Title>()->GetGameObject<Player>();
 
-	SetTarget(player->GetPos());
+	SetTarget(player->GetComponent<Transform>()->GetPos());
 
 	SetPosX((m_R * sinf(m_F) * cosf(m_S)) + GetTarget().x);
 	SetPosY((m_R * cosf(m_F)) + GetTarget().y);

@@ -85,6 +85,7 @@ public:
 	void SetRotY(float roty) { m_Rot.y = roty; }
 	void SetRotZ(float rotz) { m_Rot.z = rotz; }
 	void SetColiderDraw(bool isDraw) { m_isDraw = isDraw; }
+	void SetAddPos(XMFLOAT3 add) { m_AddPos = add; }
 
 	XMFLOAT3 GetPos() const { return m_Pos; }
 	XMFLOAT3 GetOldPos() const { return m_OldPos; }

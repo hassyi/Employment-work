@@ -10,6 +10,13 @@ private:
 
 	float m_Rotation = 0.0f;
 
+	XMMATRIX m_LocalMatrix =
+	{
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
 
 public:
 	Transform3DComponent() = default;
@@ -70,4 +77,5 @@ public:
 	}
 
 
+	void SetLocalMatrix(const XMMATRIX matrix) { m_LocalMatrix = matrix; }
 };

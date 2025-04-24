@@ -13,6 +13,7 @@ private:
 
 	int m_AnimationFrame1 = 0;
 	int m_AnimationFrame2 = 0;
+	int m_AddAnimFrame = 0;
 
 	float m_Rotation = 0.0f;
 	float m_AnimetionBlendRatio = 0.0f;
@@ -20,6 +21,8 @@ private:
 	std::string		m_AnimationName1{};
 	std::string		m_AnimationName2{};
 	std::string		m_AnimationNameState{};
+
+
 
 public:
 	Transform3DAnimationComponent() = default;
@@ -54,6 +57,7 @@ public:
 	}
 
 	void SetAnimationFrame(int frame) { m_AnimationFrame2 = frame; }
+	void SetAddAnimFrame(int add) { m_AddAnimFrame = add; }
 	
 	void SetTransform(XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rot)
 	{
@@ -62,8 +66,11 @@ public:
 		m_Rot = rot;
 	}
 
+
 	void SetOldPos(XMFLOAT3 oldpos) { m_oldPos = oldpos; }
 
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
+	AnimationModel* GetModel() { return m_Model; }
+
 
 };

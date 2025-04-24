@@ -22,7 +22,7 @@ private:
 	};
 
 	static const int PARTICLE_MAX = 1000;
-	PARTICLE m_Particle[PARTICLE_MAX]{};			//‚±‚±‚É{}‚ğ“ü‚ê‚é‚Æstruct‚Ì’†g‚ª0‚Æ‚©false‚É‰Šú‰»‚³‚ê‚é
+	PARTICLE m_Particle[PARTICLE_MAX]{};			//ã“ã“ã«{}ã‚’å…¥ã‚Œã‚‹ã¨structã®ä¸­èº«ãŒ0ã¨ã‹falseã«åˆæœŸåŒ–ã•ã‚Œã‚‹
 
 public:
 	void Init()override;

@@ -35,7 +35,7 @@ void SphereColiderComponent::Update()
 
 void SphereColiderComponent::Draw()
 {
-	if (!m_isDraw) return;
+	if (!Scene::GetInstance()->GetScene<Game>()->GetIsDrawColider()) return;
 
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);

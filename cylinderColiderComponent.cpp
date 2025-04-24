@@ -28,7 +28,6 @@ void CylinderColiderComponent::Update()
 
 void CylinderColiderComponent::Draw()
 {
-	if (!m_isDraw) return;
 
 }
 

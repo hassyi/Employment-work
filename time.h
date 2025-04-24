@@ -6,7 +6,7 @@ class Time : public UI
 {
 private:
 	int m_timeCount = 0;
-	int m_Count = 0;
+	int m_Count = 90;
 	const int SCORE_DISIT = 3;
 
 public:
