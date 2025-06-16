@@ -5,7 +5,8 @@
 #include "modelRenderer.h"
 #include <string>
 
-class SphereShadow : public GameObjectComponet {
+class SphereShadow : public GameObjectComponet 
+{
 private:
 	ModelRenderer* m_Component{};
 

@@ -2,7 +2,8 @@
 #include "gameObject.h"
 #include "component.h"
 
-class Tree : public GameObject {
+class Tree : public GameObject 
+{
 private:
 
 public:

@@ -26,8 +26,9 @@ void Player::Init()
 {
 	SCENE_STATE scene = Scene::GetInstance()->GetNowScene()->GetSceneState();
 
-	AddComponent<Transform3DAnimationComponent>()->AddModelData("asset\\model\\Vampire A Lusth.fbx", this);
-	if (scene == SCENE_STATE::SCENE_TITLE) {
+	m_TransAnim = AddComponent<Transform3DAnimationComponent>();
+	m_TransAnim->AddModelData("asset\\model\\Vampire A Lusth.fbx", this);
+	if (scene == SCENE_STATE::SCENE_TITLE) {		//タイトルシーン用の読み込み
 		GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Idle_Title.fbx", "TitleIdle");
 		GetComponent<Transform3DAnimationComponent>()->SetInitAnimationState("TitleIdle");
 		GetComponent<Transform3DAnimationComponent>()->Init();
@@ -36,16 +37,17 @@ void Player::Init()
 		GetComponent<Transform>()->Init();
 		return;
 	}
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Idle.fbx", "Idle");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Running.fbx", "Run");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Attack1.fbx", "Attack1");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Attack2.fbx", "Attack2");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\predationAttack.fbx", "PredationAttack");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Dying.fbx", "Dying");
-	GetComponent<Transform3DAnimationComponent>()->SetInitAnimationState("Idle");
+	m_TransAnim->AddAnimationData("asset\\model\\Idle.fbx", "Idle");
+	m_TransAnim->AddAnimationData("asset\\model\\Running.fbx", "Run");
+	m_TransAnim->AddAnimationData("asset\\model\\Attack1.fbx", "Attack1");
+	m_TransAnim->AddAnimationData("asset\\model\\Attack2.fbx", "Attack2");
+	m_TransAnim->AddAnimationData("asset\\model\\predationAttack.fbx", "PredationAttack");
+	m_TransAnim->AddAnimationData("asset\\model\\Dying.fbx", "Dying");
+	m_TransAnim->SetInitAnimationState("Idle");
+	m_TransAnim->SetVSName("shader\\toonVS.cso");
+	m_TransAnim->SetPSName("shader\\toonPS.cso");
 
-	AddComponent<Transform>();
-	GetComponent<Transform>()->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
+	m_TransAnim->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
 	AddComponent<CapsuleColiderComponent>();
 	AddComponent<SphereShadow>()->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
 
@@ -60,11 +62,6 @@ void Player::Init()
 	m_ObjType = OBJ_TYPE::PLAYER;
 	m_SE = new Audio(this);
 	m_SE->Load("asset\\audio\\shot.wav");
-
-	//m_ChildModel = new ModelRenderer(this);
-	//((ModelRenderer*)m_ChildModel)->Load("asset\\model\\box.obj");
-
-	//Scene::GetInstance()->GetScene<Game>()->AddGameObject<Sword>(1);
 
 	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
@@ -92,23 +89,22 @@ void Player::Update()
 	SCENE_STATE scene = Scene::GetInstance()->GetNowScene()->GetSceneState();
 	if (scene == SCENE_STATE::SCENE_TITLE)
 	{
-		GetComponent<Transform3DAnimationComponent>()->Update();
-		GetComponent<Transform>()->Update();
+		m_TransAnim->Update();
 		return;
 	}
 
-	if (m_Life <= 0.0f) 
+	if (m_Life <= 0.0f)
 	{
 		DeathAnim();
 		return;
 	}
-	
+
 	m_Predation = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Predation>();
 
 	PlayerControl();
 	PlayerCollision();
 
-	GetComponent<SphereShadow>()->SetPos(GetComponent<Transform>()->GetPos());
+	GetComponent<SphereShadow>()->SetPos(m_TransAnim->GetPos());
 	if (m_BulletPoint >= BULLET_POINT_MAX) {
 		m_BulletPoint = BULLET_POINT_MAX;
 	}
@@ -136,24 +132,9 @@ void Player::Draw()
 	if (Scene::GetInstance()->GetScene<Game>()->GetIsDrawImGui()) {
 		DrawImGui();
 	}
-	//子モデル描画
-	//std::unordered_map<std::string, BONE> bone;
-	//bone = ((AnimationModel*)m_Component)->GetBone();
-	//bone.find("mixamorig:RightHand");
-	//
-	//XMMATRIX childScale, childRot, childTrans, childWorld, boneMatrix;
-	//rot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
-	//childScale = XMMatrixScaling(1.0f / GetScale().x, 1.0f / GetScale().y, 1.0f / GetScale().z);
-	//childTrans = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
-	//childWorld = childTrans * childScale * world;
-	//子のワールド = 子のローカル * 親のワールド
-	//childWorld = childTrans * childScale  * 指定した部位のマトリクス * world;
-
-	//Renderer::SetWorldMatrix(childWorld);
-
-	//m_ChildModel->Draw();
 }
 
+//操作関連
 void Player::PlayerControl()
 {
 	Camera* camera = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Camera>();
@@ -177,16 +158,17 @@ void Player::PlayerControl()
 		m_StepSpeed = 3.0f;
 	}
 
-	if (Input::GetKeyPress('W')){
+	//移動
+	if (Input::GetKeyPress('W')) {
 		m_Rot = 0.0f;
 	}
-	if (Input::GetKeyPress('A')){
+	if (Input::GetKeyPress('A')) {
 		m_Rot = -XM_PI / 2.0f;
 	}
-	if (Input::GetKeyPress('S')){
+	if (Input::GetKeyPress('S')) {
 		m_Rot = XM_PI;
 	}
-	if (Input::GetKeyPress('D')){
+	if (Input::GetKeyPress('D')) {
 		m_Rot = XM_PI / 2.0f;
 	}
 
@@ -196,18 +178,19 @@ void Player::PlayerControl()
 		{
 			rot = XMFLOAT3(rot.x, m_Rot + camerarot.y, rot.z);
 			vel = XMFLOAT3(sinf(rot.y) * m_move, vel.y, cosf(rot.y) * m_move);
-			GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Run");
+			m_TransAnim->SetAnimationState("Run");
 		}
 		else {
-			GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Idle");
+			m_TransAnim->SetAnimationState("Idle");
 		}
 	}
 
+	//バフ中のアニメーションの加速
 	if (m_IsBuff) {
-		GetComponent<Transform3DAnimationComponent>()->SetAddAnimFrame(2);
+		m_TransAnim->SetAddAnimFrame(2);
 	}
 	else {
-		GetComponent<Transform3DAnimationComponent>()->SetAddAnimFrame(1);
+		m_TransAnim->SetAddAnimFrame(1);
 	}
 
 	//ステップ
@@ -238,7 +221,7 @@ void Player::PlayerControl()
 	//武器切り替え
 	if (Input::GetKeyTrigger('C'))
 	{
-		if (m_Weapon == SWORD){
+		if (m_Weapon == SWORD) {
 			m_Weapon = GUN;
 		}
 		else {
@@ -248,6 +231,7 @@ void Player::PlayerControl()
 
 	PlayerAttack();
 
+	//重力判定
 	if (m_IsGravity) {
 		m_Gravity -= 1.0f;
 		m_JampFlag = true;
@@ -272,36 +256,36 @@ void Player::PlayerControl()
 		}
 	}
 
-	GetComponent<Transform>()->SetVel(vel);
-	GetComponent<Transform>()->SetRot(rot);
-	GetComponent<Transform>()->SetPos(XMFLOAT3(pos.x + vel.x * dt, pos.y + vel.y * dt1, pos.z + vel.z * dt));
+	m_TransAnim->SetVel(vel);
+	m_TransAnim->SetRot(rot);
+	m_TransAnim->SetPos(XMFLOAT3(pos.x + vel.x * dt, pos.y + vel.y * dt1, pos.z + vel.z * dt));
 	GetColider()->SetPos(pos);
 }
 
+//当たり判定
 void Player::PlayerCollision()
 {
-	Transform* transform = GetComponent<Transform>();
 	Colider* colider = GetComponent<Colider>();
 
-	XMFLOAT3 pos = transform->GetPos();
-	XMFLOAT3 scale = transform->GetScale();
-	XMFLOAT3 vel = transform->GetVel();
-	XMFLOAT3 coliderPos = colider-> GetPos();
+	XMFLOAT3 pos = m_TransAnim->GetPos();
+	XMFLOAT3 scale = m_TransAnim->GetScale();
+	XMFLOAT3 vel = m_TransAnim->GetVel();
+	XMFLOAT3 coliderPos = colider->GetPos();
 	XMFLOAT3 coliderScale = colider->GetScale();
-	
+
 	std::tuple<bool, GameObject*, std::list<GameObject*>> objectList = colider->GetCollision();
 
 	if (std::get<0>(objectList))
 	{
-		
+
 		if (pos.y <= m_GroundHeight)
 		{
 			pos.y = m_GroundHeight;
 			m_IsGravity = false;
 			m_JampFlag = false;
-			transform->SetPosY(pos.y);
+			m_TransAnim->SetPosY(pos.y);
 		}
-		if(m_JampFlag){
+		if (m_JampFlag) {
 			m_IsGravity = true;
 		}
 	}
@@ -320,8 +304,8 @@ void Player::PlayerCollision()
 			pos.y = m_GroundHeight;
 			m_IsGravity = false;
 		}
-		
-		transform->SetPos(pos);
+
+		m_TransAnim->SetPos(pos);
 		colider->SetPos(pos);
 
 	}
@@ -330,8 +314,8 @@ void Player::PlayerCollision()
 //捕食攻撃
 void Player::PredationAttack()
 {
-	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
-	XMFLOAT3 rot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 pos = m_TransAnim->GetPos();
+	XMFLOAT3 rot = m_TransAnim->GetRot();
 
 	XMFLOAT3 predationPos;
 	predationPos.x = pos.x + 2.0f * cosf(rot.y - (XM_PI / 2));
@@ -340,7 +324,7 @@ void Player::PredationAttack()
 
 	m_Predation = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Predation>(1);
 	m_Predation->GetComponent<Transform3DComponent>()->SetPos(predationPos);
-	GetComponent<Transform>()->SetVel(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	m_TransAnim->SetVel(XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
 
 //バフのパーティクル
@@ -349,7 +333,7 @@ void Player::PlayerBuff()
 	m_BuffParticle = Scene::GetInstance()->GetScene<Game>()->GetGameObject<BuffParticle>();
 	if (m_BuffParticle == nullptr) return;
 
-	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
+	XMFLOAT3 pos = m_TransAnim->GetPos();
 
 	m_BuffParticle->SetPlayerBuff(m_IsBuff);
 	m_BuffParticle->GetComponent<Transform2DComponent>()->SetPos(pos);
@@ -363,14 +347,15 @@ void Player::PlayerAttack()
 	//剣モード
 	if (m_Weapon == SWORD)
 	{
+		//1回目の攻撃処理
 		if (m_isAttack) m_AttackFrame--;
 		if (!m_isAttack && !m_isSecondAttack)
 		{
 			if (Input::GetKeyTrigger('F') || Input::GetKeyTrigger(MOUSEEVENTF_MOVE))		//MOUSEEVENTF_MOVE←これがなぜか左クリック
 			{
-				GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
+				m_TransAnim->SetAnimationFrame(0);
 				m_isAttack = true;
-				GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Attack1");
+				m_TransAnim->SetAnimationState("Attack1");
 				if (!m_IsBuff) {
 					m_AttackFrame = 72;
 				}
@@ -407,7 +392,9 @@ void Player::PlayerAttack()
 			}
 		}
 
+		//２回目の攻撃処理
 		if (m_isSecondAttack) m_SecondAttackFrame--;
+
 		if (m_SecondAttackFrame == 30) {
 			Scene::GetInstance()->GetScene<Game>()->AddGameObject<Slash>(1)->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		}
@@ -416,12 +403,12 @@ void Player::PlayerAttack()
 		{
 			if (m_isNextOnAttack)
 			{
-				GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
+				m_TransAnim->SetAnimationFrame(0);
 				m_isNextOnAttack = false;
 				m_isSecondAttack = true;
 				m_isAttack = false;
 				m_AttackFrame = 0;
-				GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Attack2");
+				m_TransAnim->SetAnimationState("Attack2");
 				if (!m_IsBuff) {
 					m_SecondAttackFrame = 68;
 				}
@@ -442,13 +429,13 @@ void Player::PlayerAttack()
 		//	m_isNextOnAttack = false;
 		//}
 
-
+		//捕食攻撃の処理
 		if (m_isPredation) m_PredationFrame--;
 		if (!m_isPredation && Input::GetKeyTrigger('R'))
 		{
-			GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
+			m_TransAnim->SetAnimationFrame(0);
 			m_isPredation = true;
-			GetComponent<Transform3DAnimationComponent>()->SetAnimationState("PredationAttack");
+			m_TransAnim->SetAnimationState("PredationAttack");
 			if (!m_IsBuff) {
 				m_PredationFrame = 50;
 			}
@@ -470,8 +457,8 @@ void Player::PlayerAttack()
 		{
 			if (m_BulletPoint > 0.0f)
 			{
-				XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
-				XMFLOAT3 rot = GetComponent<Transform>()->GetRot();
+				XMFLOAT3 pos = m_TransAnim->GetPos();
+				XMFLOAT3 rot = m_TransAnim->GetRot();
 				m_dir.x = cosf(rot.y - (XM_PI / 2));
 				m_dir.y = 0.0f;
 				m_dir.z = sinf(rot.y + (XM_PI / 2));
@@ -484,14 +471,15 @@ void Player::PlayerAttack()
 	}
 }
 
+//死亡時のアニメーション
 void Player::DeathAnim()
 {
 	ResetFlag();
 	if (m_IsDethAnim) m_DyingFrame--;
 	if (!m_IsDethAnim && !m_IsDie)
 	{
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Dying");
+		m_TransAnim->SetAnimationFrame(0);
+		m_TransAnim->SetAnimationState("Dying");
 		m_IsDethAnim = true;
 		m_DyingFrame = 104;
 	}
@@ -501,8 +489,8 @@ void Player::DeathAnim()
 		m_IsDie = true;
 		m_IsDethAnim = false;
 		m_DyingFrame = 0;
-		GetComponent<Transform3DAnimationComponent>()->SetAddAnimFrame(0);
-		XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
+		m_TransAnim->SetAddAnimFrame(0);
+		XMFLOAT3 pos = m_TransAnim->GetPos();
 	}
 
 	if (m_IsDie) m_DieFrame++;
@@ -513,10 +501,11 @@ void Player::DeathAnim()
 
 }
 
+//デバッグ用ImGui
 void Player::DrawImGui()
 {
-	XMFLOAT3 transPos = GetComponent<Transform>()->GetPos();
-	XMFLOAT3 transRot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 transPos = m_TransAnim->GetPos();
+	XMFLOAT3 transRot = m_TransAnim->GetRot();
 	XMFLOAT3 coliderPos = GetColider()->GetPos();
 	XMFLOAT3 coliderRot = GetColider()->GetRot();
 

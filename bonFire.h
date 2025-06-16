@@ -2,7 +2,8 @@
 #include "gameObject.h"
 #include "component.h"
 
-class BonFire : public GameObject {
+class BonFire : public GameObject 
+{
 private:
 	Component* m_Component{};
 

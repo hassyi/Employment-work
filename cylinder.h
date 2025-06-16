@@ -2,7 +2,8 @@
 #include "gameObject.h"
 #include "component.h"
 
-class Cylinder : public GameObject {
+class Cylinder : public GameObject 
+{
 private:
 	Component* m_Component{};
 

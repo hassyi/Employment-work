@@ -37,7 +37,6 @@ BEHAVIOR_RESULT BehaviorPunch::Update()
 	if (m_AttackFrame < 0.0f && m_isAttack) 
 	{
 		m_isAttack = false;
-		m_AttackFrame = 0.0f;
 		m_AttackCount++;
 	}
 

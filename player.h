@@ -20,9 +20,11 @@ enum PLAYER_STATE
 
 };
 
-class Player : public GameObject {
+class Player : public GameObject 
+{
 private:
 	AnimationModel* m_Component{};
+	class Transform3DAnimationComponent* m_TransAnim = nullptr;
 
 	class Predation* m_Predation{};
 	class BuffParticle* m_BuffParticle{};

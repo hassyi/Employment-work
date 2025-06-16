@@ -6,13 +6,13 @@ void Transform3DComponent::Init()
 	m_Model = new ModelRenderer;
 
 	if (m_ModelData != "none")	m_Model->Load(m_ModelData);
-		
+
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		"shader\\unlitTextureVS.cso");
+		m_VSName);
 
 	Renderer::CreatePixelShader(&m_PixelShader,
-		"shader\\unlitTexturePS.cso");
+		m_PSName);
 }
 
 void Transform3DComponent::Uninit()

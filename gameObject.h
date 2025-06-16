@@ -25,7 +25,8 @@ typedef enum
 
 class Component;
 
-class GameObject {
+class GameObject
+{
 private:
 	XMFLOAT3 m_Pos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 m_oldPos = { 0.0f,0.0f,0.0f };
@@ -49,17 +50,17 @@ protected:
 	XMFLOAT3 m_Add = { 0.0f,0.0f,0.0f };
 
 public:
-	GameObject(){}
+	GameObject() {}
 	~GameObject() {};
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
-	void SetPos(XMFLOAT3 pos) {	m_Pos = pos;}
-	void SetPosX(float posx) {	m_Pos.x = posx;	}
-	void SetPosY(float posy) {	m_Pos.y = posy;	}
-	void SetPosZ(float posz) {	m_Pos.z = posz;	}
+	void SetPos(XMFLOAT3 pos) { m_Pos = pos; }
+	void SetPosX(float posx) { m_Pos.x = posx; }
+	void SetPosY(float posy) { m_Pos.y = posy; }
+	void SetPosZ(float posz) { m_Pos.z = posz; }
 	void SetOldPos(XMFLOAT3 oldpos) { m_oldPos = oldpos; }
 	void SetOldPosX(float oldposx) { m_oldPos.x = oldposx; }
 	void SetOldPosY(float oldposy) { m_oldPos.y = oldposy; }
@@ -84,11 +85,11 @@ public:
 	void SetAdd(XMFLOAT3 add) { m_Add = add; }
 	void SetGuroundHeiht(float height) { m_GroundHeight = height; }
 
-	XMFLOAT3 GetPos() const{	return m_Pos;	}
+	XMFLOAT3 GetPos() const { return m_Pos; }
 	XMFLOAT3 GetOldPos() const { return m_oldPos; }
-	XMFLOAT3 GetScale() const{	return m_Scale;	}
-	XMFLOAT3 GetRot() const{	return m_Rot;	}
-	XMFLOAT3 GetVel() const{ return m_Vel; }
+	XMFLOAT3 GetScale() const { return m_Scale; }
+	XMFLOAT3 GetRot() const { return m_Rot; }
+	XMFLOAT3 GetVel() const { return m_Vel; }
 	float GetLife()const { return m_Life; }
 	SceneState* GetScene() { return m_SceneState; }
 	std::list<Component*> GetComponentList() { return m_ComponentList; }

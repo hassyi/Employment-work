@@ -29,6 +29,8 @@ struct Node2
 class Enemy : public GameObject 
 {
 private:
+	class Transform3DAnimationComponent* m_TransAnim = nullptr;
+
 	int m_Life = 0;
 	int m_CreateBulletFrame = 0;
 	float m_GroundHeight = 0.0f;

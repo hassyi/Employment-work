@@ -8,10 +8,7 @@
 BEHAVIOR_RESULT BehaviorDodge::Update()
 {
 	m_BehaviorText = "Dodge";
-	m_Enemy->GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Idle");
 
-	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-	XMFLOAT3 playerPos = player->GetComponent<Transform>()->GetPos();
 	XMFLOAT3 enemyPos = m_Enemy->GetComponent<Transform>()->GetPos();
 	XMFLOAT3 enemyRot = m_Enemy->GetComponent<Transform>()->GetRot();
 	XMFLOAT3 dodgeVel{};
@@ -19,18 +16,23 @@ BEHAVIOR_RESULT BehaviorDodge::Update()
 
 	if (!m_isDodge)
 	{
+		m_Enemy->GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
 		m_isDodge = true;
-		m_DodgeFrame = 60;
+		m_DodgeFrame = 80.0f;
+		m_Enemy->GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Jump");
 	}
 	else
 	{
-		m_DodgeFrame--;
+		m_DodgeFrame -= 1.0f;
+	}
+
+	if (m_DodgeFrame <= 50.0f)
+	{
 		dodgeVel = XMFLOAT3(sinf(enemyRot.y) * dodgeSpeed, dodgeVel.y, cosf(enemyRot.y) * dodgeSpeed);
 	}
 
 	if (m_DodgeFrame <= 0)
 	{
-		m_DodgeFrame = 0;
 		m_isDodge = false;
 		return BEHAVIOR_RESULT_SUCCESS;
 	}

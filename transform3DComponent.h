@@ -7,6 +7,8 @@ class Transform3DComponent : public Transform
 private:
 	ModelRenderer* m_Model = nullptr;
 	const char* m_ModelData = "none";
+	const char* m_VSName = "shader\\unlitTextureVS.cso";
+	const char* m_PSName = "shader\\unlitTexturePS.cso";
 
 	float m_Rotation = 0.0f;
 
@@ -20,8 +22,8 @@ private:
 
 public:
 	Transform3DComponent() = default;
-	Transform3DComponent(GameObject* gameobj) : Transform(gameobj){}
-	Transform3DComponent(GameObject* gameobj, const char* data) : Transform(gameobj), m_ModelData(data){}
+	Transform3DComponent(GameObject* gameobj) : Transform(gameobj) {}
+	Transform3DComponent(GameObject* gameobj, const char* data) : Transform(gameobj), m_ModelData(data) {}
 
 	void Init()override;
 	void Uninit()override;
@@ -33,6 +35,9 @@ public:
 		m_ModelData = data;
 		m_Model->Load(m_ModelData);
 	}
+
+	void SetVSName(const char* name) { m_VSName = name; }
+	void SetPSName(const char* name) { m_PSName = name; }
 
 	void SetTransform(XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rot)
 	{

@@ -42,16 +42,15 @@ void Game::Init()
 {
 
 	AddGameObject<Camera>(0);
-	//AddGameObject<Field>(1);
 	AddGameObject<MeshField>(1);
 	AddGameObject<Map>(1);
-	AddGameObject<Building>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(20.0f, 0.0f,-30.0f));
+	AddGameObject<Building>(1)->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(20.0f, 0.0f, -30.0f));
 	AddGameObject<Player>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(0.0f, 0.5f, -50.0f));
 	AddGameObject<Enemy>(1)->GetComponent<Transform>()->SetPos(XMFLOAT3(30.0f, 0.0f, 5.0f));
 	AddGameObject<Polygon2D>(1);
 	AddGameObject<Sky>(1);
 	AddGameObject<BuffParticle>(1)->SetPlayerBuff(false);
-	AddGameObject<Grass>(1)->SetPos(XMFLOAT3(50.0f,0.0f,-50.0f));
+	AddGameObject<Grass>(1)->SetPos(XMFLOAT3(50.0f, 0.0f, -50.0f));
 
 	AddUITexture<Time>()->SetTextureNum(0);
 	AddUITexture<Fade>()->SetTextureNum(1);
@@ -65,8 +64,8 @@ void Game::Init()
 
 	m_BGM = new Audio();
 	m_BGM->Load("asset\\audio\\gameBGM.wav");
-	m_BGM->SetSound(0.0f);
-	m_BGM->Play(true);
+	m_BGM->SetSound(0.5f);
+	//m_BGM->Play(true);
 
 	m_Satate = SCENE_STATE::SCENE_GAME;
 
@@ -102,7 +101,7 @@ void Game::Update()
 		for (GameObject* object : m_GameObject[i]) {
 			object->Update();
 		}
-		m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });	
+		m_GameObject[i].remove_if([](GameObject* object) {return object->Destroy(); });
 	}
 	for (auto ui : m_Texture)
 	{
@@ -111,6 +110,7 @@ void Game::Update()
 
 	if (Input::GetKeyTrigger(VK_RETURN)) {
 		Scene::GetInstance()->ChangeScene(new Result);
+		return;
 	}
 	if (Input::GetKeyTrigger('I')) {
 		if (!m_IsDrawNodeEditor) {
@@ -225,7 +225,7 @@ void Game::DrawImGui()
 	{
 		ImGui::Begin("Game");
 
-		ImGui::Checkbox("IsDrawCollision", &m_IsDrawColider);		
+		ImGui::Checkbox("IsDrawCollision", &m_IsDrawColider);
 
 		ImGui::End();
 	}

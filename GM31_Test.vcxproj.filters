@@ -713,5 +713,7 @@
     <FxCompile Include="shader\wireFrameVS.hlsl" />
     <FxCompile Include="shader\grassGPUPS.hlsl" />
     <FxCompile Include="shader\grassGPUVS.hlsl" />
+    <FxCompile Include="shader\toonPS.hlsl" />
+    <FxCompile Include="shader\toonVS.hlsl" />
   </ItemGroup>
 </Project>

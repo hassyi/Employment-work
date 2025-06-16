@@ -21,18 +21,20 @@
 
 void Enemy::Init()
 {
-	AddComponent<Transform3DAnimationComponent>()->AddModelData("asset\\model\\Maw J Laygo.fbx", this);
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\EnemyIdle.fbx", "Idle");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\EnemyWalking.fbx", "Walk");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\EnemyAttack.fbx", "Attack");
-	GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Dying.fbx", "Dying");
-	GetComponent<Transform3DAnimationComponent>()->SetInitAnimationState("Idle");
+	m_TransAnim = AddComponent<Transform3DAnimationComponent>();
+	m_TransAnim->AddModelData("asset\\model\\Maw J Laygo.fbx", this);
+	m_TransAnim->AddAnimationData("asset\\model\\EnemyIdle.fbx", "Idle");
+	m_TransAnim->AddAnimationData("asset\\model\\EnemyWalking.fbx", "Walk");
+	m_TransAnim->AddAnimationData("asset\\model\\EnemyAttack.fbx", "Attack");
+	m_TransAnim->AddAnimationData("asset\\model\\Dying.fbx", "Dying");
+	m_TransAnim->AddAnimationData("asset\\model\\Jump.fbx", "Jump");
+	m_TransAnim->SetVSName("shader\\toonVS.cso");
+	m_TransAnim->SetPSName("shader\\toonPS.cso");
+	m_TransAnim->SetInitAnimationState("Idle");
 
-	AddComponent<Transform>();
 	AddComponent<CapsuleColiderComponent>();
-	//AddComponent<EnemyAIState>()->SetEnemy(this);
-	//AddComponent<EnemyAI>()->SetNode(this);
-	GetComponent<Transform>()->SetScale(XMFLOAT3(0.02f, 0.02f, 0.02f));
+	AddComponent<EnemyAIState>()->SetEnemy(this);
+	m_TransAnim->SetScale(XMFLOAT3(0.02f, 0.02f, 0.02f));
 	AddComponent<SphereShadow>()->SetScale(XMFLOAT3(1.5f, 1.5f, 1.5f));
 
 	SetLife(30.0f);
@@ -44,7 +46,6 @@ void Enemy::Init()
 		component->Init();
 	}
 
-	//GetComponent<BoxColiderComponent>()->SetScale(XMFLOAT3(1.0f, 2.0f, 1.0f));
 	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
 	GetComponent<Colider>()->SetAddPos(XMFLOAT3(0.0f, 2.0f, 0.0f));
@@ -54,7 +55,6 @@ void Enemy::Init()
 
 void Enemy::Uninit()
 {
-	//GetComponent<EnemyAIState>()->Uninit();
 
 	for (auto component : m_ComponentList)
 	{
@@ -79,12 +79,11 @@ void Enemy::Update()
 
 	EnemyCollision();
 
-	//GetComponent<EnemyAIState>()->SetEnemy(this);
-	//GetComponent<EnemyAI>()->Update();
+	GetComponent<EnemyAIState>()->SetEnemy(this);
 
-	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
+	XMFLOAT3 pos = m_TransAnim->GetPos();
 
-	if (m_IsGravity) 
+	if (m_IsGravity)
 	{
 		m_Gravity = -10.0f;
 		pos.y += m_Gravity;
@@ -100,11 +99,10 @@ void Enemy::Update()
 	}
 
 	std::vector<int> path = AStar(waypoints, 0, 2);
-	MoveAI(pos, waypoints, path, m_Speed);
 
-	GetComponent<Transform>()->SetPos(pos);
+	m_TransAnim->SetPos(pos);
 	GetComponent<SphereShadow>()->SetPos(pos);
-		
+
 	for (auto component : m_ComponentList)
 	{
 		component->Update();
@@ -124,6 +122,7 @@ void Enemy::Draw()
 	}
 }
 
+//当たり判定
 void Enemy::EnemyCollision()
 {
 
@@ -131,14 +130,13 @@ void Enemy::EnemyCollision()
 	//地面の高さ
 	m_GroundHeight = meshField->GetHeight(GetComponent<Transform>()->GetPos());
 
-	XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
-	XMFLOAT3 scale = GetComponent<Transform>()->GetScale();
-	XMFLOAT3 vel = GetComponent<Transform>()->GetVel();
-	//GetColider()->SetPos(pos);
+	XMFLOAT3 pos = m_TransAnim->GetPos();
+	XMFLOAT3 scale = m_TransAnim->GetScale();
+	XMFLOAT3 vel = m_TransAnim->GetVel();
 	XMFLOAT3 coliderPos = GetColider()->GetPos();
 	XMFLOAT3 coliderScale = GetColider()->GetScale();
 
-	std::tuple<bool, GameObject*, std::list<GameObject*>> objectList = GetComponent<Colider>()->GetCollision();
+	std::tuple<bool, GameObject*, std::list<GameObject*>> objectList = GetColider()->GetCollision();
 
 
 	if (std::get<0>(objectList))
@@ -166,20 +164,21 @@ void Enemy::EnemyCollision()
 		else {
 			m_Gravity = true;
 		}
-		GetComponent<Transform>()->SetPos(pos);
+		m_TransAnim->SetPos(pos);
 		GetColider()->SetPos(pos);
 	}
 
 
 }
 
+//死亡時のアニメーション
 void Enemy::DeathAnim()
 {
 	if (m_IsDethAnim) m_DyingFrame--;
 	if (!m_IsDethAnim && !m_IsDie)
 	{
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
-		GetComponent<Transform3DAnimationComponent>()->SetAnimationState("Dying");
+		m_TransAnim->SetAnimationFrame(0);
+		m_TransAnim->SetAnimationState("Dying");
 		m_IsDethAnim = true;
 		m_DyingFrame = 104;
 	}
@@ -189,8 +188,8 @@ void Enemy::DeathAnim()
 		m_IsDie = true;
 		m_IsDethAnim = false;
 		m_DyingFrame = 0;
-		GetComponent<Transform3DAnimationComponent>()->SetAddAnimFrame(0);
-		XMFLOAT3 pos = GetComponent<Transform>()->GetPos();
+		m_TransAnim->SetAddAnimFrame(0);
+		XMFLOAT3 pos = m_TransAnim->GetPos();
 		EnemyDeathParticle* particle = Scene::GetInstance()->GetScene<Game>()->AddGameObject<EnemyDeathParticle>(1);
 		particle->GetComponent<Transform2DComponent>()->SetPos(pos);
 	}
@@ -223,6 +222,7 @@ void Enemy::MoveAI(XMFLOAT3& pos, const std::vector<WayPoint>& waypoints, const 
 	}
 }
 
+//Astarのエネミーの移動
 std::vector<int> Enemy::AStar(const std::vector<WayPoint>& waypoints, int startID, int goalID)
 {
 	std::priority_queue < Node, std::vector<Node>, std::greater<Node> > openList;
@@ -268,6 +268,7 @@ std::vector<int> Enemy::AStar(const std::vector<WayPoint>& waypoints, int startI
 	return{};
 }
 
+//Astarのエネミーの移動
 std::vector<Node2*> Enemy::AStar(Node2* start, Node2* goal, const std::vector<std::vector<bool>>& grid)
 {
 	std::vector<Node2*> openSet, closedSet;
@@ -327,7 +328,7 @@ std::vector<Node2*> Enemy::AStar(Node2* start, Node2* goal, const std::vector<st
 
 				//移動コスト計算(斜め：1.4f, 縦横：1.0f)
 				float tentativeG = current->gCost + ((dx == 0 || dy == 0) ? 1.0f : 1.4f);
-				
+
 				bool inOpen = false;
 				for (auto& n : openSet)
 				{
@@ -366,6 +367,7 @@ void Enemy::DrawImGui()
 {
 	XMFLOAT3 transPos = GetComponent<Transform>()->GetPos();
 	XMFLOAT3 transRot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 transScale = GetComponent<Transform>()->GetScale();
 	XMFLOAT3 coliderPos = GetColider()->GetPos();
 	XMFLOAT3 coliderRot = GetColider()->GetRot();
 
@@ -375,6 +377,7 @@ void Enemy::DrawImGui()
 		ImGui::Text("This is some useful text.");
 		ImGui::Text("EnemyPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
 		ImGui::Text("EnemyRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
+		ImGui::Text("EnemyScale : x = %.1f, y = %.1f, z = %.1f", transScale.x, transScale.y, transScale.z);
 		ImGui::Text("Life : %f", GetLife());
 
 		ImGui::End();

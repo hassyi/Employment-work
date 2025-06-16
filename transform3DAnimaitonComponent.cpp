@@ -6,10 +6,10 @@ void Transform3DAnimationComponent::Init()
 	if (m_ModelData == "none") return;
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		"shader\\unlitTextureVS.cso");
+		m_VSName);
 
 	Renderer::CreatePixelShader(&m_PixelShader,
-		"shader\\unlitTexturePS.cso");
+		m_PSName);
 
 	m_AddAnimFrame = 1;
 }

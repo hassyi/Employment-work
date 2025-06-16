@@ -8,6 +8,8 @@ private:
 
 	AnimationModel* m_Model = nullptr;
 	const char* m_ModelData = "none";
+	const char* m_VSName = "shader\\unlitTextureVS.cso";
+	const char* m_PSName = "shader\\unlitTexturePS.cso";
 	const char* m_AnimationData = "none";
 	const char* m_AnimationName = "none";
 
@@ -58,7 +60,10 @@ public:
 
 	void SetAnimationFrame(int frame) { m_AnimationFrame2 = frame; }
 	void SetAddAnimFrame(int add) { m_AddAnimFrame = add; }
-	
+
+	void SetVSName(const char* name) { m_VSName = name; }
+	void SetPSName(const char* name) { m_PSName = name; }
+
 	void SetTransform(XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rot)
 	{
 		m_Pos = pos;

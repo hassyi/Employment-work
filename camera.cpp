@@ -64,8 +64,9 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	DrawImGui();
-
+	if (Scene::GetInstance()->GetScene<Game>()->GetIsDrawImGui()) {
+		DrawImGui();
+	}
 	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 	XMFLOAT3 playerpos = player->GetComponent<Transform>()->GetPos();
 
