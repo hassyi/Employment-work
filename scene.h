@@ -9,7 +9,7 @@ private:
 	static Scene* m_Scene;
 	explicit Scene(SceneState* state) : m_State(state){}
 	virtual ~Scene() { delete m_State; }
-	SceneState* m_State;
+	SceneState* m_State = nullptr;
 
 
 public:

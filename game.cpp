@@ -202,7 +202,6 @@ void Game::Draw()
 
 
 	for (int i = 0; i < LAYER_MAX; i++) {
-		//m_GameObject[i].sort();
 		for (GameObject* object : m_GameObject[i]) {
 			object->Draw();
 		}

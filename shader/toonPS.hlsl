@@ -9,7 +9,7 @@ SamplerState	g_SamplerState : register(s0);
 void main(in PS_IN In, out float4 outDiffuse : SV_Target)
 {
     float3 normal = normalize(In.Normal);
-    float light = 0.5f - 0.5f * dot(normal.xyz, Light.Direction.xyz);
+    float light = saturate(dot(normal.xyz, Light.Direction.xyz));
     
     if(light >= 0.7f)
     {

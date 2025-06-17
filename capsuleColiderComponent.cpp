@@ -383,7 +383,6 @@ bool CapsuleColiderComponent::SphereCollision(Capsule& capsule, GameObject* obje
 
 std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::GetCollision()
 {
-	int objSize = 0;
 	std::list<GameObject*> objectList;
 	std::tuple<bool, GameObject*, std::list<GameObject*>> OnCollisionObject;
 
@@ -406,7 +405,6 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::G
 			if (CapsuleCollision(this, otherCapsule))
 			{
 				objectList.push_back(object);
-				objSize = objectList.size();
 			}
 		}
 
@@ -416,13 +414,12 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::G
 			if (BoxCollision(m_Capsule, object))
 			{
 				objectList.push_back(object);
-				objSize = objectList.size();
 			}
 			
 		}
 	}
 
-	if (objSize != 0)
+	if (objectList.size() != 0)
 	{
 		auto itr = objectList.begin();
 		GameObject* gameObject = (*itr);
@@ -430,7 +427,7 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::G
 		OnCollisionObject = std::make_tuple(true, gameObject, objectList);
 		return OnCollisionObject;
 	}
-	else if (objSize == 0)
+	else if (objectList.size() == 0)
 	{
 		OnCollisionObject = std::make_tuple(false, nullptr, objectList);
 		return OnCollisionObject;

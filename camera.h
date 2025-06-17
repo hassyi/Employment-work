@@ -17,8 +17,8 @@ class Camera : public GameObject
 	XMFLOAT2 m_MousePos = { 0.0f,0.0f };
 	XMFLOAT2 m_OldmousePos = { 0.0f,0.0f };
 
-	int m_ScreenWidthCamera = GetWindowSize().x;
-	int m_ScreenHeightCamera = GetWindowSize().y;
+	LONG m_ScreenWidthCamera = (LONG)GetWindowSize().x;
+	LONG m_ScreenHeightCamera = (LONG)GetWindowSize().y;
 
 	POINT m_ClientCenter;
 

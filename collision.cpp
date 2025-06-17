@@ -120,7 +120,6 @@ bool Collision::CollisionCylinderHeight(XMFLOAT3 pos1, XMFLOAT3 pos2, float heig
 //回転を考慮しないボックスの当たり判定
 std::tuple<bool, std::list<Box*>> Collision::CollisionBB(XMFLOAT3 pos, XMFLOAT3 scl)
 {
-	int objSize = 0;
 	std::tuple <bool, std::list<Box*>> collision;		//tuple後で調べる
 
 	std::list <Box*> gameobjectlist = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Box>();
@@ -140,17 +139,16 @@ std::tuple<bool, std::list<Box*>> Collision::CollisionBB(XMFLOAT3 pos, XMFLOAT3 
 			)
 		{
 			objectlist.push_back(obj);
-			objSize = objectlist.size();
 		}
 
 	}
 
-	if (objSize != 0)
+	if (objectlist.size() != 0)
 	{
 		collision = std::make_tuple(true, objectlist);
 		return collision;
 	}
-	else if (objSize == 0)
+	else if (objectlist.size() == 0)
 	{
 		collision = std::make_tuple(false, objectlist);
 		return collision;
@@ -160,7 +158,6 @@ std::tuple<bool, std::list<Box*>> Collision::CollisionBB(XMFLOAT3 pos, XMFLOAT3 
 //回転を考慮したボックスの当たり判定
 std::tuple<bool, std::list<Box*>> Collision::CollisionOBB(XMFLOAT3 pos, XMFLOAT3 scl)
 {
-	int objSize = 0;
 	std::tuple<bool, std::list<Box*>> collision;
 
 	std::list<Box*> gameObjectList = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Box>();
@@ -193,16 +190,15 @@ std::tuple<bool, std::list<Box*>> Collision::CollisionOBB(XMFLOAT3 pos, XMFLOAT3
 			-(scale.y * 2) < dotY && dotY < (scale.y * 2))
 		{
 			objectList.push_back(obj);
-			objSize = objectList.size();
 		}
 	}
 
-	if (objSize != 0)
+	if (objectList.size() != 0)
 	{
 		collision = std::make_tuple(true, objectList);
 		return collision;
 	}
-	else if (objSize == 0)
+	else if (objectList.size() == 0)
 	{
 		collision = std::make_tuple(false, objectList);
 		return collision;

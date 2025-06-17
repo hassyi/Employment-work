@@ -126,7 +126,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 
 	m_OldmousePos = m_MousePos;
 
-	m_MousePos = XMFLOAT2(GetMousePosX(), GetMousePosY());
+	m_MousePos = XMFLOAT2((float)GetMousePosX(), (float)GetMousePosY());
 
 	//中央から右にいる場合
 	if (m_OldmousePos.x > m_CenterCamX)
@@ -343,7 +343,7 @@ void Camera::AimCameraControl()
 	{
 		m_OldmousePos = m_MousePos;
 
-		m_MousePos = XMFLOAT2(GetMousePosX(), GetMousePosY());
+		m_MousePos = XMFLOAT2((float)GetMousePosX(), (float)GetMousePosY());
 
 		//中央から右にいる場合
 		if (m_OldmousePos.x > m_CenterCamX)

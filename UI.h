@@ -11,7 +11,7 @@ class UI
 {
 protected:
 	std::list<UIComponent* > m_ComponentList;
-	SceneState* m_Scene;
+	SceneState* m_Scene = nullptr;
 	
 	bool m_ShouldDelete = false;
 

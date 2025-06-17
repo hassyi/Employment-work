@@ -28,13 +28,12 @@ void Player::Init()
 
 	m_TransAnim = AddComponent<Transform3DAnimationComponent>();
 	m_TransAnim->AddModelData("asset\\model\\Vampire A Lusth.fbx", this);
-	if (scene == SCENE_STATE::SCENE_TITLE) {		//タイトルシーン用の読み込み
-		GetComponent<Transform3DAnimationComponent>()->AddAnimationData("asset\\model\\Idle_Title.fbx", "TitleIdle");
-		GetComponent<Transform3DAnimationComponent>()->SetInitAnimationState("TitleIdle");
-		GetComponent<Transform3DAnimationComponent>()->Init();
-		AddComponent<Transform>();
-		GetComponent<Transform>()->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
-		GetComponent<Transform>()->Init();
+	if (scene == SCENE_STATE::SCENE_TITLE) 
+	{	//タイトルシーン用の読み込み
+		m_TransAnim->AddAnimationData("asset\\model\\Idle_Title.fbx", "TitleIdle");
+		m_TransAnim->SetInitAnimationState("TitleIdle");
+		m_TransAnim->Init();
+		m_TransAnim->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
 		return;
 	}
 	m_TransAnim->AddAnimationData("asset\\model\\Idle.fbx", "Idle");

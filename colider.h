@@ -49,7 +49,7 @@ protected:
 
 	COLIDER_TYPE m_ColiderType = BOX_COLIDER;
 
-	bool m_isDraw;
+	bool m_isDraw = false;
 
 public:
 	Colider(){}

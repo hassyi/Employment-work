@@ -84,7 +84,6 @@ void BoxColiderComponent::Draw()
 
 std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCollision()
 {
-	int objSize = 0;
 	std::list<GameObject*> objectList;
 	std::tuple<bool, GameObject*, std::list<GameObject*>> OnCollisionObject;
 
@@ -108,10 +107,10 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 			)
 		{
 			objectList.push_back(object);
-			objSize = objectList.size();
 		}
 	}
-	if (objSize != 0)
+
+	if (objectList.size() != 0)
 	{
 		auto itr = objectList.begin();
 		GameObject* gameObject = (*itr);
@@ -119,7 +118,7 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 		OnCollisionObject = std::make_tuple(true, gameObject, objectList);
 		return OnCollisionObject;
 	}
-	else if (objSize == 0)
+	else if (objectList.size() == 0)
 	{
 		OnCollisionObject = std::make_tuple(false, nullptr, objectList);
 		return OnCollisionObject;
@@ -128,7 +127,6 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 
 std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCollisionOBB()
 {
-	int objSize = 0;
 	std::list<GameObject*> objectList;
 	std::tuple<bool, GameObject*, std::list<GameObject*>> OnCollisionObject;
 
@@ -165,10 +163,9 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 			-scale.y < dotY && dotY < scale.y * 2.0f)
 		{
 			objectList.push_back(object);
-			objSize = objectList.size();
 		}
 
-		if (objSize != 0)
+		if (objectList.size() != 0)
 		{
 			auto itr = objectList.begin();
 			GameObject* gameObject = (*itr);
@@ -176,7 +173,7 @@ std::tuple<bool, GameObject*, std::list<GameObject*>> BoxColiderComponent::GetCo
 			OnCollisionObject = std::make_tuple(true, gameObject, objectList);
 			return OnCollisionObject;
 		}
-		else
+		else if (objectList.size() == 0)
 		{
 			OnCollisionObject = std::make_tuple(false, nullptr, objectList);
 			return OnCollisionObject;

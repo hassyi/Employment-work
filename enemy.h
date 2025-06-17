@@ -76,7 +76,7 @@ public:
 	void MoveAI(XMFLOAT3& pos, const std::vector<WayPoint>& waypoints, const std::vector<int> path, float speed);
 
 	float Heuristic(const XMFLOAT3& a, const XMFLOAT3& b) {
-		return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2));
+		return sqrtf(powf(b.x - a.x, 2) + powf(b.y - a.y, 2) + powf(b.z - a.z, 2));
 	}
 
 

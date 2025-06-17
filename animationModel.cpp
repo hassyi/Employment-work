@@ -189,7 +189,7 @@ void AnimationModel::Load( const char *FileName )
 
 
 	//テクスチャ読み込み
-	for(int i = 0; i < m_AiScene->mNumTextures; i++)
+	for(unsigned int i = 0; i < m_AiScene->mNumTextures; i++)
 	{
 		aiTexture* aitexture = m_AiScene->mTextures[i];
 

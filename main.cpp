@@ -167,7 +167,7 @@ XMFLOAT2 GetWindowSize()
 	GetWindowRect(g_Window, &rect);
 	//GetClientRect(g_Window, &rect);
 
-	return XMFLOAT2(rect.right - rect.left, rect.bottom - rect.top);
+	return XMFLOAT2((float)rect.right - (float)rect.left, (float)rect.bottom - (float)rect.top);
 }
 
 long GetMousePosX()
