@@ -3,11 +3,12 @@
 void Transform3DAnimationComponent::Init()
 {
 
-	if (m_ModelData == "none") return;
+	//if (m_ModelData == "none") return;
+	m_Model = new AnimationModel(m_GameObject);
+	//m_ModelCPU = new AnimationModelCPU(m_GameObject);
 
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout,
-		m_VSName);
-
+	Renderer::CreateVertexShader(&m_VertexShader, 
+		&m_VertexLayout, m_VSName);
 	Renderer::CreatePixelShader(&m_PixelShader,
 		m_PSName);
 
@@ -20,6 +21,7 @@ void Transform3DAnimationComponent::Uninit()
 	m_VertexShader->Release();
 	m_PixelShader->Release();
 
+	m_Model->Uninit();
 	delete m_Model;
 }
 

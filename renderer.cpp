@@ -18,6 +18,8 @@ ID3D11Buffer* Renderer::m_ProjectionBuffer{};
 ID3D11Buffer* Renderer::m_MaterialBuffer{};
 ID3D11Buffer* Renderer::m_LightBuffer{};
 
+//ボーン処理用
+ID3D11Buffer* Renderer::m_MatrixBuffer{};
 
 ID3D11DepthStencilState* Renderer::m_DepthStateEnable{};
 ID3D11DepthStencilState* Renderer::m_DepthStateDisable{};
@@ -41,11 +43,11 @@ void Renderer::Init()
 	HRESULT hr = S_OK;
 
 
-	IDXGIAdapter* pAdapter;
-	IDXGIFactory* pFactory;
+	//IDXGIAdapter* pAdapter;
+	//IDXGIFactory* pFactory;
 
-	CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
-	pFactory->EnumAdapters(0, &pAdapter);
+	//CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
+	//pFactory->EnumAdapters(0, &pAdapter);
 
 	// デバイス、スワップチェーン作成
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{};
@@ -61,8 +63,8 @@ void Renderer::Init()
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.Windowed = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain(pAdapter,
-		D3D_DRIVER_TYPE_UNKNOWN,
+	hr = D3D11CreateDeviceAndSwapChain(NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		0,
 		NULL,
@@ -272,7 +274,13 @@ void Renderer::Init()
 	m_DeviceContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
 
+	D3D11_BUFFER_DESC BoneBufferDesc = {};
+	BoneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	BoneBufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
+	BoneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	BoneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
+	m_Device->CreateBuffer(&BoneBufferDesc, nullptr, &m_MatrixBuffer);
 
 
 	// ライト初期化
@@ -541,6 +549,24 @@ void Renderer::CreatePixelShader(ID3D11PixelShader** PixelShader, const char* Fi
 	fclose(file);
 
 	m_Device->CreatePixelShader(buffer, fsize, NULL, PixelShader);
+
+	delete[] buffer;
+}
+
+void Renderer::CreateComputeShader(ID3D11ComputeShader** ComputeShader, const char* FileName)
+{
+	FILE* file;
+	long int fsize;
+
+	file = fopen(FileName, "rb");
+	assert(file);
+
+	fsize = _filelength(_fileno(file));
+	unsigned char* buffer = new unsigned char[fsize];
+	fread(buffer, fsize, 1, file);
+	fclose(file);
+
+	m_Device->CreateComputeShader(buffer, fsize, NULL, ComputeShader);
 
 	delete[] buffer;
 }

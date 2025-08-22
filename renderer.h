@@ -65,6 +65,8 @@ private:
 	static ID3D11Buffer*			m_MaterialBuffer;
 	static ID3D11Buffer*			m_LightBuffer;
 
+	//ビュー射影行列の定数バッファ
+	static ID3D11Buffer* m_MatrixBuffer;
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;
@@ -117,6 +119,7 @@ public:
 
 	static void CreateVertexShader(ID3D11VertexShader** VertexShader, ID3D11InputLayout** VertexLayout, const char* FileName);
 	static void CreatePixelShader(ID3D11PixelShader** PixelShader, const char* FileName);
+	static void CreateComputeShader(ID3D11ComputeShader** ComputeShader, const char* FileName);
 
 
 };

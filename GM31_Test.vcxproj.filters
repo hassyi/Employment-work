@@ -40,6 +40,9 @@
     <Filter Include="behavior">
       <UniqueIdentifier>{c9f0871f-5936-43c3-bb0f-3380b953d447}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{2a9cbb65-4108-46d9-8f5e-c4c7e19068ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -343,6 +346,9 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="modelFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="animationModelCPU.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -692,28 +698,79 @@
     <ClInclude Include="routeSearch.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="animationModelCPU.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shader\common.hlsl" />
-    <FxCompile Include="shader\unlitTexturePS.hlsl" />
-    <FxCompile Include="shader\unlitTextureVS.hlsl" />
-    <FxCompile Include="shader\vertexDirectionalLightingPS.hlsl" />
-    <FxCompile Include="shader\vertexDirectionalLightingVS.hlsl" />
-    <FxCompile Include="shader\pixelLightingPS.hlsl" />
-    <FxCompile Include="shader\pixelLightingVS.hlsl" />
-    <FxCompile Include="shader\LimLightingPS.hlsl" />
-    <FxCompile Include="shader\LimLightingVS.hlsl" />
-    <FxCompile Include="shader\vertexLightingPS.hlsl" />
-    <FxCompile Include="shader\vertexLightingVS.hlsl" />
-    <FxCompile Include="shader\DepthShadowMappingPS.hlsl" />
-    <FxCompile Include="shader\DepthShadowMappingVS.hlsl" />
-    <FxCompile Include="shader\wavePS.hlsl" />
-    <FxCompile Include="shader\waveVS.hlsl" />
-    <FxCompile Include="shader\wireFramePS.hlsl" />
-    <FxCompile Include="shader\wireFrameVS.hlsl" />
-    <FxCompile Include="shader\grassGPUPS.hlsl" />
-    <FxCompile Include="shader\grassGPUVS.hlsl" />
-    <FxCompile Include="shader\toonPS.hlsl" />
-    <FxCompile Include="shader\toonVS.hlsl" />
+    <FxCompile Include="shader\common.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowMappingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowMappingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\grassGPUPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\grassGPUVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\LimLightingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\LimLightingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\pixelLightingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\pixelLightingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\toonPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\toonVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\unlitTexturePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\unlitTextureVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexDirectionalLightingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexDirectionalLightingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexLightingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexLightingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\wavePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\waveVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\wireFramePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\wireFrameVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\skinningVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\skinningCS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

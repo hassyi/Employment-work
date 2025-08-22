@@ -1,12 +1,14 @@
 #pragma once
 #include "transform.h"
 #include "animationModel.h"
+#include "animationModelCPU.h"
 
 class Transform3DAnimationComponent : public Transform
 {
 private:
 
 	AnimationModel* m_Model = nullptr;
+	//AnimationModelCPU* m_ModelCPU = nullptr;
 	const char* m_ModelData = "none";
 	const char* m_VSName = "shader\\unlitTextureVS.cso";
 	const char* m_PSName = "shader\\unlitTexturePS.cso";
@@ -38,7 +40,7 @@ public:
 
 	void AddModelData(const char* data, GameObject* gameobj)
 	{
-		m_Model = new AnimationModel(gameobj);
+		//m_Model = new AnimationModel(gameobj);
 		m_ModelData = data;
 		m_Model->Load(m_ModelData);
 	}

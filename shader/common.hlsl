@@ -73,6 +73,13 @@ struct VS_IN
     uint InstanceId		: SV_InstanceID; //描画する回数を取得
 };
 
+struct SKVS_IN
+{
+    float4 Position : POSITION0;
+    float4 Normal : NORMAL0;
+    float4 Diffuse : COLOR0;
+    float2 TexCoord : TEXCOORD0;
+};
 
 struct PS_IN
 {
