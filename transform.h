@@ -31,29 +31,30 @@ public:
 	virtual void Update()override {};
 	virtual void Draw()override {};
 
-	void SetPos(XMFLOAT3 pos) { m_Pos = pos; }
-	void SetPosX(float posx) { m_Pos.x = posx; }
-	void SetPosY(float posy) { m_Pos.y = posy; }
-	void SetPosZ(float posz) { m_Pos.z = posz; }
-	void SetOldPos(XMFLOAT3 oldpos) { m_oldPos = oldpos; }
-	void SetOldPosX(float oldposx) { m_oldPos.x = oldposx; }
-	void SetOldPosY(float oldposy) { m_oldPos.y = oldposy; }
-	void SetOldPosZ(float oldposz) { m_oldPos.z = oldposz; }
-	void SetScale(XMFLOAT3 scale) { m_Scale = scale; }
-	void SetScaleX(float scalex) { m_Scale.x = scalex; }
-	void SetScaleY(float scaley) { m_Scale.y = scaley; }
-	void SetScaleZ(float scalez) { m_Scale.z = scalez; }
-	void SetRot(XMFLOAT3 rot) { m_Rot = rot; }
-	void SetRotX(float rotx) { m_Rot.x = rotx; }
-	void SetRotY(float roty) { m_Rot.y = roty; }
-	void SetRotZ(float rotz) { m_Rot.z = rotz; }
-	void SetVel(XMFLOAT3 vel) { m_Vel = vel; }
-	void SetVelX(float velx) { m_Vel.x = velx; }
-	void SetVelY(float vely) { m_Vel.y = vely; }
-	void SetVelZ(float velz) { m_Vel.z = velz; }
+	void SetPos(const XMFLOAT3 pos) { m_Pos = pos; }
+	void SetPosX(const float posx) { m_Pos.x = posx; }
+	void SetPosY(const float posy) { m_Pos.y = posy; }
+	void SetPosZ(const float posz) { m_Pos.z = posz; }
+	void SetOldPos(const XMFLOAT3 oldpos) { m_oldPos = oldpos; }
+	void SetOldPosX(const float oldposx) { m_oldPos.x = oldposx; }
+	void SetOldPosY(const float oldposy) { m_oldPos.y = oldposy; }
+	void SetOldPosZ(const float oldposz) { m_oldPos.z = oldposz; }
+	void SetScale(const XMFLOAT3 scale) { m_Scale = scale; }
+	void SetScaleX(const float scalex) { m_Scale.x = scalex; }
+	void SetScaleY(const float scaley) { m_Scale.y = scaley; }
+	void SetScaleZ(const float scalez) { m_Scale.z = scalez; }
+	void SetRot(const XMFLOAT3 rot) { m_Rot = rot; }
+	void SetRotX(const float rotx) { m_Rot.x = rotx; }
+	void SetRotY(const float roty) { m_Rot.y = roty; }
+	void SetRotZ(const float rotz) { m_Rot.z = rotz; }
+	void SetVel(const XMFLOAT3 vel) { m_Vel = vel; }
+	void SetVelX(const float velx) { m_Vel.x = velx; }
+	void SetVelY(const float vely) { m_Vel.y = vely; }
+	void SetVelZ(const float velz) { m_Vel.z = velz; }
 
 	void SetRotateAround(XMFLOAT3 target);
 	void RotateAround(float rotx, float roty);
+	void SetLength(float len) { m_Length = len; }
 
 	XMFLOAT3 GetPos() const{ return m_Pos; }
 	XMFLOAT3 GetOldPos() const{ return m_oldPos; }
@@ -61,6 +62,7 @@ public:
 	XMFLOAT3 GetRot() const { return m_Rot; }
 	XMFLOAT3 GetVel() const { return m_Vel; }
 	XMFLOAT3 GetRotPos(XMFLOAT3 target);
+	float GetLength() { return m_Length; }
 
 	XMFLOAT3 GetForward()
 	{

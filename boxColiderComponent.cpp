@@ -75,7 +75,6 @@ void BoxColiderComponent::Draw()
 	m_Model->Draw();
 
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
 
 	Renderer::GetDevice()->CreateRasterizerState(&rasterDesc, &wireframeState);
 	Renderer::GetDeviceContext()->RSSetState(wireframeState);

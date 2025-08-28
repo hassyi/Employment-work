@@ -8,13 +8,18 @@
 #include "transform2DComponent.h"
 #include "game.h"
 #include "enemy.h"
-#include "sphereColiderComponent.h"
+#include "capsuleColiderComponent.h"
 
 void Bullet::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\bullet.obj");
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\bullet2.obj");
 	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
-	AddComponent<SphereColiderComponent>();
+	AddComponent<CapsuleColiderComponent>();
+
+	XMFLOAT3 rot = GetComponent<Transform3DComponent>()->GetRot();
+	GetComponent<CapsuleColiderComponent>()->SetRot(XMFLOAT3(rot.x + XM_PI / 2, rot.y, rot.z));
+	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
 
 	m_ObjType = OBJ_TYPE::BULLET;
 
@@ -22,6 +27,7 @@ void Bullet::Init()
 	{
 		component->Init();
 	}
+
 }
 
 void Bullet::Uninit()
@@ -57,6 +63,8 @@ void Bullet::Update()
 	}
 
 	GetComponent<Transform3DComponent>()->SetPos(pos);
+	GetComponent<CapsuleColiderComponent>()->SetPos(pos);
+
 
 	for (auto component : m_ComponentList)
 	{

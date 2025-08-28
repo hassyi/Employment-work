@@ -473,8 +473,6 @@ void AnimationModel::UpdateAnimation(const char* AnimationName1, int Frame1,
 	aiMatrix4x4 rootMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), aiQuaternion((float)AI_MATH_PI, 0.0f, 0.0f), aiVector3D(0.0f, 0.0f, 0.0f));
 	UpdateBoneMatrix(m_AiScene->mRootNode, rootMatrix);
 
-	if(m_AiScene->mRootNode)
-
 	return;
 }
 
@@ -488,7 +486,7 @@ void AnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 	worldMatrix *= matrix;
 	worldMatrix *= bone->AnimationMatrix;
 
-	bone->WorldMatrix = worldMatrix;
+	//bone->WorldMatrix = worldMatrix;
 	bone->Matrix = worldMatrix;
 
 	//これで部位のマトリクスは取れる

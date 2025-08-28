@@ -35,9 +35,11 @@ private:
 	float m_move = 0.0f;
 	float m_BulletPoint = 0.0f;
 	const float BULLET_POINT_MAX = 100.0f;
+	float m_StaminaPoint = 0.0f;
+	const float STAMINA_POINT_MAX = 100.0f;
 
 	bool m_IsBuff = false;
-	
+	bool m_IsDash = false;
 
 	//攻撃のフレーム
 	int m_AttackFrame = 0;
@@ -89,6 +91,8 @@ private:
 	WEAPON_TYPE m_Weapon = SWORD;
 	PLAYER_STATE m_State = IDLE;
 
+	XMFLOAT3 m_StopPosition = { 35.0f, 0.0f, 120.0f };
+
 public:
 	void Init()override;
 	void Uninit()override;
@@ -118,10 +122,12 @@ public:
 
 	void SetIsBuff(bool isbuff) { m_IsBuff = isbuff; }
 	void SetBulletPoint(float point) { m_BulletPoint = point; }
+	void SetStaminaPoint(float point) { m_StaminaPoint = point; }
 
 	bool GetIsBuff() { return m_IsBuff; }
 	XMFLOAT3 GetDir() const { return m_dir; }
 	float GetBulletPoint() { return m_BulletPoint; }
+	float GetStaminaPoint() { return m_StaminaPoint; }
 	WEAPON_TYPE GetWeaponType() { return m_Weapon; }
 	bool GetIsDie() { return m_IsDie; }
 	bool GetPlayerDie() { return m_shoudNextScene; }

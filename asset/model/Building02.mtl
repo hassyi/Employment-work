@@ -1,0 +1,37 @@
+# Blender 4.5.1 LTS MTL File: 'Building01.blend'
+# www.blender.org
+
+newmtl Concrete
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd white_plaster_rough_02_diff_2k.png
+map_Ns white_plaster_rough_02_Rough_2k.png
+map_Bump -bm 1.000000 white_plaster_rough_02_NOR_2k.png
+
+newmtl Metal
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Metal025_2K_Color.png
+map_Ns Metal025_2K_Roughness.png
+map_refl Metal025_2K_Metalness.png
+map_Bump -bm 1.200000 Metal025_2K_Normal.png
+
+newmtl windows
+Ns 722.500000
+Ka 0.090909 0.090909 0.090909
+Kd 0.635814 0.587185 0.501066
+Ks 0.450000 0.450000 0.450000
+Ke 0.000000 0.000000 0.000000
+Ni 1.300000
+d 1.000000
+illum 3

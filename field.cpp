@@ -71,24 +71,25 @@ void Field::Update()
 
 void Field::Draw()
 {
-	//LIGHT light;
-	//light.Enable = true;
-	//light.Direction = XMFLOAT4(0.0f, 0.0f, -1.0f, 0.0f);
-	//XMVECTOR lightDirection = XMLoadFloat4(&light.Direction);
-	////XMVector4Normalize(XMLoadFloat4(&light.Direction));
-	//lightDirection = XMQuaternionNormalize(lightDirection);
-	//light.Ambient = XMFLOAT4(0.2f, 0.1f, 0.1f, 1.0f);
-	//light.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//light.SkyColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);					//空の色は黒(無色)
-	//light.GroundColor = XMFLOAT4(0.4f, 0.0f, 0.0f, 1.0f);				//地面色は赤
-	//light.GroundNormal = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);			//地面真上向き
-	//XMVECTOR GroundNormal = XMLoadFloat4(&light.GroundNormal);
-	//GroundNormal = XMQuaternionNormalize(GroundNormal);
+	LIGHT light;
+	light.Enable = true;
+	light.Direction = XMFLOAT4(0.0f, -1.0f, 0.0f, 0.0f);
+	XMVECTOR lightDirection = XMLoadFloat4(&light.Direction);
+	//XMVector4Normalize(XMLoadFloat4(&light.Direction));
+	lightDirection = XMQuaternionNormalize(lightDirection);
+	light.Ambient = XMFLOAT4(0.2f, 0.1f, 0.1f, 1.0f);
+	light.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	light.SkyColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);					//空の色は黒(無色)
+	light.GroundColor = XMFLOAT4(0.4f, 0.0f, 0.0f, 1.0f);				//地面色は赤
+	light.GroundNormal = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);			//地面真上向き
+	XMVECTOR GroundNormal = XMLoadFloat4(&light.GroundNormal);
+	GroundNormal = XMQuaternionNormalize(GroundNormal);
 
-	//light.Position = XMFLOAT4(0.0f, 3.0f, -1.0f, 0.0f);
-	//light.PointLightParam = XMFLOAT4(10.0f, 0.0f, 0.0f, 0.0f);
+	light.Position = XMFLOAT4(0.0f, 30.0f, -1.0f, 0.0f);
+	light.PointLightParam = XMFLOAT4(1000.0f, 0.0f, 0.0f, 0.0f);
 
-	//Renderer::SetLight(light);
+	Renderer::SetLight(light);
+
 
 	//入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);

@@ -40,5 +40,7 @@ public:
 	Capsule GetCapsule()const { return m_Capsule; }
 	void SetSegmentLength(float length) { m_CenterLength = length; }
 
+	float RaySegmentDistance(const XMFLOAT3& p1, const XMFLOAT3& q1, const XMFLOAT3& p2, const XMFLOAT3& q2, float& s, float& t);
+	bool RayCollision(const XMFLOAT3 rayOrigin, const XMFLOAT3 rayDir, const XMFLOAT3 capsuleStart, const XMFLOAT3 capsuleEnd, float capsuleRadius);
 
 };

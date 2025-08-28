@@ -135,6 +135,6 @@ public:
 
 	void SetBoneMatrices(const BONE_MATRICES* matrices);
 
-	std::unordered_map<std::string, BONE> GetBone() const { return m_Bone; }
-	XMMATRIX GetRightHandMatrix() { return m_RightHandMatrix; }
+	std::unordered_map<std::string, BONE> GetBone()  { return m_Bone; }
+	XMMATRIX GetRightHandMatrix() const { return m_RightHandMatrix; }
 };

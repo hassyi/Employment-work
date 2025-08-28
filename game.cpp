@@ -65,7 +65,7 @@ void Game::Init()
 	m_BGM = new Audio();
 	m_BGM->Load("asset\\audio\\gameBGM.wav");
 	m_BGM->SetSound(0.5f);
-	//m_BGM->Play(true);
+	m_BGM->Play(true);
 
 	m_Satate = SCENE_STATE::SCENE_GAME;
 
@@ -171,6 +171,7 @@ void Game::Update()
 		}
 	}
 
+	//コライダーの表示・非表示
 	if (Input::GetKeyTrigger('K')) {
 		if (m_IsDrawColider) {
 			m_IsDrawColider = false;
@@ -180,6 +181,7 @@ void Game::Update()
 		}
 	}
 
+	//ImGuiの表示・非表示
 	if (Input::GetKeyTrigger('O')) {
 		if (m_IsDrawImGui) {
 			m_IsDrawImGui = false;
@@ -212,7 +214,8 @@ void Game::Draw()
 
 	if (m_IsDrawImGui) {
 		DrawImGui();
-		m_ImGui->DrawNodeEditor();
+		GetGameObject<Camera>()->DrawImGui();
+		//m_ImGui->DrawNodeEditor();
 	}
 	m_ImGui->ImGuiRenderer();
 

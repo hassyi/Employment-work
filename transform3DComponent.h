@@ -82,5 +82,6 @@ public:
 	}
 
 
-	void SetLocalMatrix(const XMMATRIX matrix) { m_LocalMatrix = matrix; }
+	void SetLocalMatrix(const XMMATRIX& matrix) { m_LocalMatrix = matrix; }
+	XMMATRIX GetLocalMatrix() const { return m_LocalMatrix; }
 };

@@ -35,7 +35,7 @@ void CapsuleColiderComponent::Uninit()
 
 void CapsuleColiderComponent::Update()
 {
-	//m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
+	m_Pos = GetGameObject()->GetComponent<Transform>()->GetPos();
 	m_Rot = GetGameObject()->GetComponent<Transform>()->GetRot();
 
 	MoveCollision();
@@ -74,7 +74,6 @@ void CapsuleColiderComponent::Draw()
 	m_Model->Draw();
 
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
 
 	Renderer::GetDevice()->CreateRasterizerState(&rasterDesc, &wireframeState);
 	Renderer::GetDeviceContext()->RSSetState(wireframeState);
@@ -178,10 +177,14 @@ bool CapsuleColiderComponent::CapsuleCollision(const CapsuleColiderComponent* co
 
 	if (distanceSquared <= radiusSum * radiusSum)
 	{
-		if (colider1->m_GameObject->GetObjectType() == OBJ_TYPE::ENEMY && colider2->m_GameObject->GetObjectType() == OBJ_TYPE::PREDATION) {
+		//当たった際にずれが生じるため当たった瞬間に返す
+		if (colider1->m_GameObject->GetObjectType() == OBJ_TYPE::PREDATION || colider2->m_GameObject->GetObjectType() == OBJ_TYPE::PREDATION) {
 			return true;
 		}
 		if (colider1->m_GameObject->GetObjectType() == OBJ_TYPE::SLASH || colider2->m_GameObject->GetObjectType() == OBJ_TYPE::SLASH) {
+			return true;
+		}
+		if (colider1->m_GameObject->GetObjectType() == OBJ_TYPE::BULLET || colider2->m_GameObject->GetObjectType() == OBJ_TYPE::BULLET) {
 			return true;
 		}
 
@@ -379,6 +382,77 @@ bool CapsuleColiderComponent::BoxCollision(Capsule& capsule,  GameObject* object
 bool CapsuleColiderComponent::SphereCollision(Capsule& capsule, GameObject* object)
 {
 	return false;
+}
+
+float CapsuleColiderComponent::RaySegmentDistance(const XMFLOAT3& p1, const XMFLOAT3& q1, const XMFLOAT3& p2, const XMFLOAT3& q2, float& s, float& t)
+{
+	XMFLOAT3 d1 = Sub(q1, p1);
+	XMFLOAT3 d2 = Sub(q2, p2);
+	XMFLOAT3 r = Sub(p1, p2);
+
+	float a = Dot(d1, d1);
+	float e = Dot(d2, d2);
+	float f = Dot(d2, r);
+
+	if (a <= 1e-6f && e <= 1e-6f)
+	{
+		s = t = 0.0f;
+		return Length(r);
+	}
+	if (a <= 1e-6f)
+	{
+		s = 0.0f;
+		t = f / e;
+		t = std::clamp(t, 0.0f, 1.0f);
+	}
+	else
+	{
+		float c = Dot(d1, r);
+		if (e <= 1e-6f)
+		{
+			t = 0.0f;
+			s = std::clamp(-c / s, 0.0f, 1.0f);
+		}
+		else
+		{
+			float b = Dot(d1, d2);
+			float denom = a * e - b * b;
+
+			if (denom != 0.0f) {
+				s = std::clamp((b * f - c * e) / denom, 0.0f, 1.0f);
+			}
+			else {
+				s = 0.0f;
+			}
+
+			t = (b * s + f) / e;
+
+			if (t < 0.0f) 
+			{
+				t = 0.0f;
+				s = std::clamp(-c / a, 0.0f, 1.0f);
+			}
+			else if (t > 1.0f)
+			{
+				t = 1.0f;
+				s = std::clamp((b - c) / a, 0.0f, 1.0f);
+			}
+		}
+	}
+
+	XMFLOAT3 c1 = Add(p1, MulFloat(d1, s));
+	XMFLOAT3 c2 = Add(p2, MulFloat(d2, t));
+	return Length(Sub(c1, c2));
+}
+
+bool CapsuleColiderComponent::RayCollision(const XMFLOAT3 rayOrigin, const XMFLOAT3 rayDir, const XMFLOAT3 capsuleStart, const XMFLOAT3 capsuleEnd, float capsuleRadius)
+{
+	float s, t;
+
+	XMFLOAT3 rayEnd = Add(rayOrigin, MulFloat(rayDir, 1000.0f));
+	float distSq = RaySegmentDistance(rayOrigin, rayEnd, capsuleStart, capsuleEnd, s, t);
+
+	return distSq <= capsuleRadius * capsuleRadius;
 }
 
 std::tuple<bool, GameObject*, std::list<GameObject*>> CapsuleColiderComponent::GetCollision()

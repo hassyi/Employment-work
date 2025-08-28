@@ -21,6 +21,7 @@ void Transform3DComponent::Uninit()
 	m_VertexShader->Release();
 	m_PixelShader->Release();
 
+	m_Model->Uninit();
 	delete m_Model;
 }
 
@@ -44,25 +45,15 @@ void Transform3DComponent::Draw()
 	//ワールドマトリクス設定
 	XMMATRIX world, scale, rot, trans;
 	scale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
 	trans = XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
+	rot = XMMatrixRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+
+	//XMVECTOR v = XMQuaternionRotationRollPitchYaw(m_Rot.x, m_Rot.y, m_Rot.z);
+	//rot = XMMatrixRotationQuaternion(v);
+
 	world = scale * rot * trans;
 	world = m_LocalMatrix * world;
 	Renderer::SetWorldMatrix(world);
-
-	//// ラスタライザステート設定
-	//D3D11_RASTERIZER_DESC rasterizerDesc{};
-	//rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	//rasterizerDesc.CullMode = D3D11_CULL_BACK;
-	//rasterizerDesc.DepthClipEnable = TRUE;
-	//rasterizerDesc.MultisampleEnable = FALSE;
-	//rasterizerDesc.DepthBias = 1;
-	//rasterizerDesc.SlopeScaledDepthBias = 1.0f;
-
-	//ID3D11RasterizerState* rs;
-	//Renderer::GetDevice()->CreateRasterizerState(&rasterizerDesc, &rs);
-
-	//Renderer::GetDeviceContext()->RSSetState(rs);
 
 	m_Model->Draw();
 

@@ -9,20 +9,18 @@
 #include "transform3DAnimaitonComponent.h"
 #include "game.h"
 #include "enemy.h"
-#include "sphereColiderComponent.h"
+#include "capsuleColiderComponent.h"
 
 void Sword::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\box.obj");
-	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1.0f / 0.5f, 1.0f / 0.5f, 1.0f / 0.5f));
-	//AddComponent<SphereColiderComponent>();
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\sword3.obj");
+	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	AddComponent<CapsuleColiderComponent>();
+	GetColider()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
 
-	//m_ObjType = OBJ_TYPE::BULLET;
-
-	for (auto component : m_ComponentList)
-	{
-		component->Init();
-	}
+	//Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
+	//Transform3DAnimationComponent* playerTrans = player->GetComponent<Transform3DAnimationComponent>();
+	//GetComponent<Transform3DComponent>()->SetPos(playerTrans->GetPos());
 }
 
 void Sword::Uninit()
@@ -36,19 +34,11 @@ void Sword::Uninit()
 
 void Sword::Update()
 {
-	for (auto component : m_ComponentList)
-	{
-		component->Update();
-	}
-}
-
-void Sword::Draw()
-{
 	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-	Transform* playerTrans = player->GetComponent<Transform>();
+	Transform3DAnimationComponent* playerTrans = player->GetComponent<Transform3DAnimationComponent>();
 	XMFLOAT3 playerrot = playerTrans->GetRot();
 
-	XMMATRIX rightHand = player->GetComponent<Transform3DAnimationComponent>()->GetModel()->GetRightHandMatrix();
+	XMMATRIX rightHand = playerTrans->GetModel()->GetRightHandMatrix();
 	Transform3DComponent* trans = GetComponent<Transform3DComponent>();
 
 	XMFLOAT3 rot = { playerrot.x, playerrot.y ,playerrot.z };
@@ -59,7 +49,19 @@ void Sword::Draw()
 
 	for (auto component : m_ComponentList)
 	{
+		component->Update();
+	}
+}
+
+void Sword::Draw()
+{
+	for (auto component : m_ComponentList)
+	{
 		component->Draw();
+	}
+
+	if (Scene::GetInstance()->GetScene<Game>()->GetIsDrawImGui()) {
+		DrawImGui();
 	}
 }
 
@@ -82,5 +84,23 @@ void Sword::SwordCollision()
 				}
 			}
 		}
+	}
+}
+
+void Sword::DrawImGui()
+{
+	XMFLOAT3 transPos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 transRot = GetComponent<Transform3DComponent>()->GetRot();
+	XMFLOAT3 coliderPos = GetColider()->GetPos();
+	XMFLOAT3 coliderRot = GetColider()->GetRot();
+
+	{
+		ImGui::Begin("Sword");
+
+		ImGui::Text("SwordPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
+		ImGui::Text("SwordRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
+		ImGui::Text("ColiderPos : x = %.1f, y = %.1f, z = %.1f", coliderPos.x, coliderPos.y, coliderPos.z);
+
+		ImGui::End();
 	}
 }

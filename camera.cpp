@@ -9,7 +9,7 @@
 void Camera::Init()
 {
 	AddComponent<Transform3DComponent>();
-	GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(0.0f, 5.0f, -10.0f));
+	GetComponent<Transform3DComponent>()->SetPos(m_StartPos);
 
 	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
 
@@ -23,11 +23,8 @@ void Camera::Init()
 	m_S = atanf(vz / vx);
 	m_F = atanf(sqrtf(vx * vx + vz * vz) / vy);
 
-	m_len = m_R;
+	m_Len = m_R;
 	
-	m_AimOffset = XMFLOAT3(0.5f, 1.8f, -3.0f);
-	m_AimLookAt = XMFLOAT3(0.5f, 1.5f, 1.0f);
-
 	m_ClientCenter = { m_ScreenWidthCamera / 2 , m_ScreenHeightCamera / 2 };
 	ClientToScreen(GetWindow(), &m_ClientCenter);
 
@@ -40,18 +37,18 @@ void Camera::Uninit()
 
 void Camera::Update()
 {
-
 	m_CameraCount++;
 	m_Radian = XM_PI * 0.01f;
+
 
 	//カメラ切り替え(0:キー回転 1:マウス回転)
 	if (Input::GetKeyTrigger(VK_TAB))
 	{
-		if (mouse == 0) {
-			mouse = 1;
+		if (m_Mouse == 1)	{
+			m_Mouse = 0;
 		}
-		else if (mouse == 1) {
-			mouse = 0;
+		else {
+			m_Mouse = 1;
 		}
 	}
 
@@ -60,30 +57,30 @@ void Camera::Update()
 		m_IsAim = Input::GetKeyPress(MOUSEEVENTF_LEFTDOWN);			//LEFTDOWNだけど右クリック
 	}
 
+	//CameraControl();
+
 }
 
 void Camera::Draw()
 {
-	if (Scene::GetInstance()->GetScene<Game>()->GetIsDrawImGui()) {
-		DrawImGui();
-	}
-	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-	XMFLOAT3 playerpos = player->GetComponent<Transform>()->GetPos();
 
-	m_Target = Add(playerpos, m_AddTarget);
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
+	XMFLOAT3 playerPos = player->GetComponent<Transform>()->GetPos();
+
+	m_Target = Add(playerPos, m_AddTarget);
 
 	if (!m_IsAim)
 	{
 		Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetIsDraw(false);
 		m_AddTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		m_R = m_len;
+		m_R = m_Len;
 		m_Target.y += 1.0f;
 
-		switch (mouse)
+		switch (m_Mouse)
 		{
 		case 0:
 			SetKeyCamera();
-			SetTarget(playerpos);
+			SetTarget(playerPos);
 
 			GetComponent<Transform3DComponent>()->SetPosX((m_R * sinf(m_F) * cosf(m_S)) + m_Target.x);
 			GetComponent<Transform3DComponent>()->SetPosY((m_R * cosf(m_F)) + m_Target.y);
@@ -92,8 +89,6 @@ void Camera::Draw()
 			break;
 		case 1:
 			SetMouseCamera(player->GetComponent<Transform>()->GetPos());
-			break;
-		default:
 			break;
 		}
 
@@ -131,7 +126,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	//中央から右にいる場合
 	if (m_OldmousePos.x > m_CenterCamX)
 	{
-		if (m_MousePos.x > m_OldmousePos.x + 15.0f)
+		if (m_MousePos.x > m_OldmousePos.x + 8.0f)
 		{
 			m_S -= m_Radian;
 			GetComponent<Transform3DComponent>()->SetRotY(camerarot.y + m_Radian);
@@ -149,7 +144,7 @@ void Camera::SetMouseCamera(XMFLOAT3 pos)
 	//中央から左にいる場合
 	if (m_OldmousePos.x < m_CenterCamX)
 	{
-		if (m_MousePos.x < m_OldmousePos.x - 15.0f)
+		if (m_MousePos.x < m_OldmousePos.x - 8.0f)
 		{
 			m_S += m_Radian;
 			GetComponent<Transform3DComponent>()->SetRotY(camerarot.y - m_Radian);
@@ -286,8 +281,11 @@ void Camera::SetKeyCamera()
 	}
 }
 
+//縦回転した後にエイムをすると意図しない位置と角度になるため修正が必要
 void Camera::AimCameraControl()
 {
+	Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetIsDraw(true);
+
 	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
 
 	XMFLOAT3 playerpos = player->GetComponent<Transform>()->GetPos();
@@ -296,17 +294,13 @@ void Camera::AimCameraControl()
 	XMFLOAT3 camerarot = GetComponent<Transform3DComponent>()->GetRot();
 	XMFLOAT3 cameraRight = GetComponent<Transform>()->GetRight();
 
-	Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetIsDraw(true);
 
-	//m_OldmousePos = m_MousePos;
-
-	//m_MousePos = XMFLOAT2(GetMousePosX(), GetMousePosY());
 	float mouseSensitivity = 0.002f;
 	float yaw = 0.0f, pitch = 0.0f;
 	float interpolationSpeed = 0.1f;
 
 	//カメラ回転(キーボード)
-	if(mouse ==0)
+	if(m_Mouse ==0)
 	{
 		if (Input::GetKeyPress('Q'))
 		{
@@ -348,7 +342,7 @@ void Camera::AimCameraControl()
 		//中央から右にいる場合
 		if (m_OldmousePos.x > m_CenterCamX)
 		{
-			if (m_MousePos.x > m_OldmousePos.x + 15.0f)
+			if (m_MousePos.x > m_OldmousePos.x + 8.0f)
 			{
 				m_S -= m_Radian;
 				GetComponent<Transform3DComponent>()->SetRotY(camerarot.y + m_Radian);
@@ -366,7 +360,7 @@ void Camera::AimCameraControl()
 		//中央から左にいる場合
 		if (m_OldmousePos.x < m_CenterCamX)
 		{
-			if (m_MousePos.x < m_OldmousePos.x - 15.0f)
+			if (m_MousePos.x < m_OldmousePos.x - 8.0f)
 			{
 				m_S += m_Radian;
 				GetComponent<Transform3DComponent>()->SetRotY(camerarot.y - m_Radian);
@@ -384,7 +378,7 @@ void Camera::AimCameraControl()
 
 	}
 
-	m_AddTarget = XMFLOAT3(cameraRight.x * 1.0f, cameraRight.y * -1.5f, cameraRight.z * 1.0f);
+	m_AddTarget = XMFLOAT3(cameraRight.x * 1.5f, cameraRight.y, cameraRight.z);
 
 	if (m_R >= 3.5f) {
 		m_R -= 0.2f;
@@ -396,12 +390,12 @@ void Camera::AimCameraControl()
 	XMFLOAT3 playerForward = player->GetComponent<Transform>()->GetForward();
 
 	GetComponent<Transform3DComponent>()->SetPosX((m_R * sinf(m_F) * cosf(m_S)) + m_Target.x);
-	GetComponent<Transform3DComponent>()->SetPosY((m_R * cosf(m_F)) + m_Target.y);
+	GetComponent<Transform3DComponent>()->SetPosY(playerpos.y + 1.5f);		//エイム中はプレイヤーの高さに合わせる
 	GetComponent<Transform3DComponent>()->SetPosZ((m_R * sinf(m_F) * sinf(m_S)) + m_Target.z);
 
 	XMFLOAT3 up{ 0.0f,1.0f,0.0f };
 	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
-	XMVECTOR cameratarget = XMLoadFloat3(&playerpos) + XMLoadFloat3(&playerForward) * 5.0f;
+	XMVECTOR cameratarget = XMLoadFloat3(&playerpos) + XMLoadFloat3(&playerForward) * 20.0f;
 	XMMATRIX viewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), cameratarget, XMLoadFloat3(&up));
 
 	Renderer::SetViewMatrix(viewMatrix);
@@ -413,6 +407,10 @@ void Camera::AimCameraControl()
 	projectionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f);
 
 	Renderer::SetProjectionMatrix(projectionMatrix);
+
+
+	Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetViewMatrix(viewMatrix);
+	Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetProjectionMatrix(projectionMatrix);
 
 
 	//カーソルを中心に戻す
@@ -549,13 +547,107 @@ void Camera::DrawImGui()
 {
 	XMFLOAT3 transPos = GetComponent<Transform>()->GetPos();
 	XMFLOAT3 transRot = GetComponent<Transform>()->GetRot();
+	XMFLOAT3 cameraRight = GetComponent<Transform>()->GetRight();
 
 	{
 		ImGui::Begin("Camera");
 
 		ImGui::Text("CameraPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
 		ImGui::Text("CameraRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
+		ImGui::Text("CameraRot : x = %.1f, y = %.1f, z = %.1f", cameraRight.x, cameraRight.y, cameraRight.z);
+		ImGui::Text("AddTArget : x = %.1f, y = %.1f, z = %.1f", m_AddTarget.x, m_AddTarget.y, m_AddTarget.z);
 
 		ImGui::End();
 	}
+}
+
+//調整が必要
+void Camera::CameraControl()
+{
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
+	XMFLOAT3 playerPos = player->GetComponent<Transform>()->GetPos();
+
+	XMFLOAT3 cameraPos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 cameraRot = GetComponent<Transform3DComponent>()->GetRot();
+
+	float radian = XM_PI * 0.01f;
+
+	GetComponent<Transform3DComponent>()->SetRotateAround(playerPos);
+	if (!m_SetLenDoOnce)
+	{
+		m_Len = GetComponent<Transform3DComponent>()->GetLength();
+		m_SetLenDoOnce = true;
+	}
+
+	float height = GetComponent<Transform3DComponent>()->GetRotPos(playerPos).y;
+	float lengthY = height - playerPos.y;
+	lengthY = sqrtf(lengthY * lengthY);
+
+	//マウス操作
+	if (m_Mouse)
+	{
+		XMFLOAT2 centerPos = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
+
+		GetCursorPos(&m_MousePoint);
+
+		m_MousePos = { (float)m_MousePoint.x,(float)m_MousePoint.y };
+
+		float addX = 10.0f, addY = 20.0f;
+		XMFLOAT2 difference = { m_MousePos.x - centerPos.x, m_MousePos.y - centerPos.y };
+
+		//マウスが横に動いたとき
+		if (difference.x <= -addX || difference.x >= addX)
+		{
+			difference.x = m_MousePos.x - centerPos.x;
+			GetComponent<Transform3DComponent>()->RotateAround(-difference.x * (radian * m_Sensitivity.x), 0.0f);
+			SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+		}
+		//マウスが下に動いたとき
+		if (difference.y <= -addY)
+		{
+			difference.y = m_MousePos.y - centerPos.y;
+
+			if (lengthY <= (GetComponent<Transform3DComponent>()->GetLength() - 0.2f) || cameraPos.y >= playerPos.y)
+			{
+				GetComponent<Transform3DComponent>()->RotateAround(0.0f, -difference.y * (radian * m_Sensitivity.y));
+			}
+			SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+		}
+		//マウスが上に動いたとき
+		if (difference.y >= addY)
+		{
+			difference.y = m_MousePos.y - centerPos.y;
+
+			if (lengthY <= (GetComponent<Transform3DComponent>()->GetLength() - 0.2f) || cameraPos.y <= playerPos.y)
+			{
+				GetComponent<Transform3DComponent>()->RotateAround(0.0f, -difference.y * (radian * m_Sensitivity.y));
+			}
+			SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+		}
+		cameraPos = GetComponent<Transform3DComponent>()->GetRotPos(playerPos);
+		GetComponent<Transform3DComponent>()->SetPos(cameraPos);
+
+	}
+
+	//エイム処理
+	if (m_IsAim)
+	{
+		Scene::GetInstance()->GetScene<Game>()->GetUITexture<AimIcon>(7)->SetIsDraw(true);
+
+		XMFLOAT3 cameraRight = GetComponent<Transform>()->GetRight();
+
+		m_AddTarget = XMFLOAT3(cameraRight.x * 1.5f, cameraRight.y, cameraRight.z);
+
+		float len = GetComponent<Transform3DComponent>()->GetLength();
+		if (len > 3.5f)
+		{
+			GetComponent<Transform3DComponent>()->SetLength(len - 0.05f);
+		}
+
+		XMFLOAT3 playerRot = player->GetComponent<Transform>()->GetRot();
+		playerRot = XMFLOAT3(playerRot.x, XM_PI + cameraRot.y + 0.5f, playerRot.z);
+		player->GetComponent<Transform>()->SetRot(playerRot);
+
+	}
+
 }

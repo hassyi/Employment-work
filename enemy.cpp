@@ -28,8 +28,8 @@ void Enemy::Init()
 	m_TransAnim->AddAnimationData("asset\\model\\EnemyAttack.fbx", "Attack");
 	m_TransAnim->AddAnimationData("asset\\model\\Dying.fbx", "Dying");
 	m_TransAnim->AddAnimationData("asset\\model\\Jump.fbx", "Jump");
-	m_TransAnim->SetVSName("shader\\toonVS.cso");
-	m_TransAnim->SetPSName("shader\\toonPS.cso");
+	//m_TransAnim->SetVSName("shader\\toonVS.cso");
+	//m_TransAnim->SetPSName("shader\\toonPS.cso");
 	m_TransAnim->SetInitAnimationState("Idle");
 
 	AddComponent<CapsuleColiderComponent>();
@@ -41,14 +41,10 @@ void Enemy::Init()
 
 	m_ObjType = OBJ_TYPE::ENEMY;
 
-	for (auto component : m_ComponentList)
-	{
-		component->Init();
-	}
-
 	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
 	GetComponent<Colider>()->SetAddPos(XMFLOAT3(0.0f, 2.0f, 0.0f));
+	GetComponent<EnemyAIState>()->Init();
 
 	m_Speed = 0.05f;
 }
@@ -98,7 +94,7 @@ void Enemy::Update()
 		m_IsGravity = true;
 	}
 
-	std::vector<int> path = AStar(waypoints, 0, 2);
+	//std::vector<int> path = AStar(waypoints, 0, 2);
 
 	m_TransAnim->SetPos(pos);
 	GetComponent<SphereShadow>()->SetPos(pos);

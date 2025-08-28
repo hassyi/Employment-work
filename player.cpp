@@ -28,14 +28,18 @@ void Player::Init()
 
 	m_TransAnim = AddComponent<Transform3DAnimationComponent>();
 	m_TransAnim->AddModelData("asset\\model\\Vampire A Lusth.fbx", this);
+
 	if (scene == SCENE_STATE::SCENE_TITLE) 
 	{	//タイトルシーン用の読み込み
 		m_TransAnim->AddAnimationData("asset\\model\\Idle_Title.fbx", "TitleIdle");
 		m_TransAnim->SetInitAnimationState("TitleIdle");
-		m_TransAnim->Init();
+		//m_TransAnim->Init();
 		m_TransAnim->SetScale(XMFLOAT3(0.01f, 0.01f, 0.01f));
+		m_TransAnim->SetVSName("shader\\toonVS.cso");
+		m_TransAnim->SetPSName("shader\\toonPS.cso");
 		return;
 	}
+
 	m_TransAnim->AddAnimationData("asset\\model\\Idle.fbx", "Idle");
 	m_TransAnim->AddAnimationData("asset\\model\\Running.fbx", "Run");
 	m_TransAnim->AddAnimationData("asset\\model\\Attack1.fbx", "Attack1");
@@ -50,13 +54,9 @@ void Player::Init()
 	AddComponent<CapsuleColiderComponent>();
 	AddComponent<SphereShadow>()->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
 
-	for (auto component : m_ComponentList)
-	{
-		component->Init();
-	}
-
 	m_Life = 20.0f;
 	m_BulletPoint = BULLET_POINT_MAX;
+	m_StaminaPoint = STAMINA_POINT_MAX;
 
 	m_ObjType = OBJ_TYPE::PLAYER;
 	m_SE = new Audio(this);
@@ -65,6 +65,8 @@ void Player::Init()
 	GetComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
 	GetComponent<CapsuleColiderComponent>()->SetAddPos(XMFLOAT3(0.0f, 1.0f, 0.0f));
+
+	Scene::GetInstance()->GetScene<Game>()->AddGameObject<Sword>(2);
 
 }
 
@@ -123,8 +125,7 @@ void Player::Draw()
 	}
 
 	SCENE_STATE scene = Scene::GetInstance()->GetNowScene()->GetSceneState();
-	if (scene == SCENE_STATE::SCENE_TITLE)
-	{
+	if (scene == SCENE_STATE::SCENE_TITLE) {
 		return;
 	}
 
@@ -147,17 +148,21 @@ void Player::PlayerControl()
 	float dt1 = 1.0f / 60.0f;
 
 	//ダッシュ
-	if (Input::GetKeyPress(VK_LSHIFT) || m_IsBuff) {
-		PlayerBuff();
+	m_IsDash = Input::GetKeyPress(VK_LSHIFT);
+
+
+	if (m_IsDash && m_StaminaPoint >= 0.0f)
+	{
 		m_move = 0.6f;
 		m_StepSpeed = 5.0f;
 	}
-	else {
+	else
+	{
 		m_move = 0.3f;
 		m_StepSpeed = 3.0f;
 	}
 
-	//移動
+	//移動時の向き
 	if (Input::GetKeyPress('W')) {
 		m_Rot = 0.0f;
 	}
@@ -170,7 +175,7 @@ void Player::PlayerControl()
 	if (Input::GetKeyPress('D')) {
 		m_Rot = XM_PI / 2.0f;
 	}
-
+	//移動
 	if (m_AttackFrame <= 0 && m_SecondAttackFrame <= 0 && m_PredationFrame <= 0)
 	{
 		if (Input::GetKeyPress('W') || Input::GetKeyPress('A') || Input::GetKeyPress('S') || Input::GetKeyPress('D'))
@@ -178,15 +183,25 @@ void Player::PlayerControl()
 			rot = XMFLOAT3(rot.x, m_Rot + camerarot.y, rot.z);
 			vel = XMFLOAT3(sinf(rot.y) * m_move, vel.y, cosf(rot.y) * m_move);
 			m_TransAnim->SetAnimationState("Run");
+
+			if (m_IsDash)
+				m_StaminaPoint -= 0.5f;
 		}
 		else {
 			m_TransAnim->SetAnimationState("Idle");
 		}
 	}
 
+	//スタミナの自然回復
+	if (!m_IsDash && m_StaminaPoint < STAMINA_POINT_MAX)
+	{
+		m_StaminaPoint += 0.5f;
+	}
+
 	//バフ中のアニメーションの加速
 	if (m_IsBuff) {
 		m_TransAnim->SetAddAnimFrame(2);
+		PlayerBuff();
 	}
 	else {
 		m_TransAnim->SetAddAnimFrame(1);
@@ -194,7 +209,7 @@ void Player::PlayerControl()
 
 	//ステップ
 	{
-		if (Input::GetKeyTrigger('G'))
+		if (Input::GetKeyTrigger(VK_LSHIFT))
 		{
 			if (!m_isStep && !m_JampFlag)
 			{
@@ -217,14 +232,33 @@ void Player::PlayerControl()
 		}
 	}
 
+	//メッシュフィールドの外側に行かないように応急処置
+	if (pos.x < -35.0f) {		//スタートの向きから見て左側
+		pos.x = -35.0f;
+	}
+	if (pos.x > 110.0f) {		//スタートの向きから見て右側
+		pos.x = 110.0f;
+	}
+	if (pos.z > 50.0f) {		//スタートの向きから見て前側
+		pos.z = 50.0f;
+	}
+	if (pos.z < -120.0f) {		//スタートの向きから見て後ろ側
+		pos.z = -120.0f;
+	}
+
+
+
 	//武器切り替え
-	if (Input::GetKeyTrigger('C'))
+	if (!m_isAttack && !m_isSecondAttack)
 	{
-		if (m_Weapon == SWORD) {
-			m_Weapon = GUN;
-		}
-		else {
-			m_Weapon = SWORD;
+		if (Input::GetKeyTrigger('C'))
+		{
+			if (m_Weapon == SWORD) {
+				m_Weapon = GUN;
+			}
+			else {
+				m_Weapon = SWORD;
+			}
 		}
 	}
 
@@ -232,7 +266,7 @@ void Player::PlayerControl()
 
 	//重力判定
 	if (m_IsGravity) {
-		m_Gravity -= 1.0f;
+		m_Gravity -= 2.0f;
 		m_JampFlag = true;
 	}
 	else
@@ -319,10 +353,11 @@ void Player::PredationAttack()
 	XMFLOAT3 predationPos;
 	predationPos.x = pos.x + 2.0f * cosf(rot.y - (XM_PI / 2));
 	predationPos.z = pos.z + 2.0f * sinf(rot.y + (XM_PI / 2));
-	predationPos.y = pos.y;
+	predationPos.y = pos.y + 1.0f;
 
 	m_Predation = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Predation>(1);
-	m_Predation->GetComponent<Transform3DComponent>()->SetPos(predationPos);
+	m_Predation->SetKibaPos(predationPos);
+	m_Predation->SetKibaRot(rot);
 	m_TransAnim->SetVel(XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
 
@@ -420,13 +455,14 @@ void Player::PlayerAttack()
 			}
 		}
 
-		//if (m_isAttackCancel)
-		//{
-		//	GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
-		//	m_isAttack = false;
-		//	m_isSecondAttack = false;
-		//	m_isNextOnAttack = false;
-		//}
+		if (m_isAttackCancel)
+		{
+			GetComponent<Transform3DAnimationComponent>()->SetAnimationFrame(0);
+			m_isAttack = false;
+			m_isSecondAttack = false;
+			m_isNextOnAttack = false;
+			m_isAttackCancel = false;
+		}
 
 		//捕食攻撃の処理
 		if (m_isPredation) m_PredationFrame--;
@@ -462,7 +498,8 @@ void Player::PlayerAttack()
 				m_dir.y = 0.0f;
 				m_dir.z = sinf(rot.y + (XM_PI / 2));
 				Bullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Bullet>(1);
-				bullet->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(pos.x, pos.y + 1.0f, pos.z));
+				bullet->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(pos.x + m_dir.x, pos.y + 1.0f, pos.z + m_dir.z));
+				bullet->GetComponent<Transform3DComponent>()->SetRot(rot);
 				m_SE->Play();
 				m_BulletPoint -= 10.0f;
 			}

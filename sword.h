@@ -16,4 +16,13 @@ public:
 	void Draw()override;
 
 	void SwordCollision();
+
+	XMFLOAT3 GetMatrixTranslation(const XMMATRIX& mat)
+	{
+		XMFLOAT3 result;
+		XMStoreFloat3(&result, mat.r[3]); 
+		return result;
+	}
+
+	void DrawImGui()override;
 };

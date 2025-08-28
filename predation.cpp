@@ -4,16 +4,22 @@
 #include "scene.h"
 #include "enemy.h"
 #include "collision.h"
-#include "transform3DComponent.h"
 #include "game.h"
 #include "capsuleColiderComponent.h"
 #include "player.h"
 
 void Predation::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\player.obj");
-	AddComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(0.5f, 1.0f, 0.5f));
+	m_Kiba_ue = AddComponent<Transform3DComponent>();
+	m_Kiba_ue->AddModelData("asset\\model\\kiba_ue.obj");
+	m_Kiba_sita = AddComponent<Transform3DComponent>();
+	m_Kiba_sita->AddModelData("asset\\model\\kiba_sita.obj");
+
+	AddComponent<CapsuleColiderComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	GetComponent<CapsuleColiderComponent>()->SetSegmentLength(1.0f);
+
+	m_Kiba_ue->SetRotZ(0.0f);
+	m_Kiba_sita->SetRotZ(0.0f);
 
 	m_ObjType = PREDATION;
 }
@@ -30,16 +36,29 @@ void Predation::Uninit()
 
 void Predation::Update()
 {
-	m_frame++;
-	GetColider()->SetPos(GetComponent<Transform3DComponent>()->GetPos());
+	m_Time += 0.1f;
+	float t = std::min(m_Time, 1.0f);
+
+	RotationAnim(t);
+
+	m_Frame++;
+	GetColider()->SetPos(m_Kiba_sita->GetPos());
+	XMFLOAT3 clliderPos = GetColider()->GetPos();
+	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
+
+	clliderPos.x = player->GetDir().x + 1.0f;
+	clliderPos.z = player->GetDir().z + 1.0f;
+
+	GetColider()->SetPos(clliderPos);
+
 	PredationCollision();
 	for (auto component : m_ComponentList)
 	{
 		component->Update();
 	}
-	if (m_frame >= 30) {
-		m_isHit = false;
-		m_frame = 0;
+	if (m_Frame >= 30) {
+		m_IsHit = false;
+		m_Frame = 0;
 		SetDestroy();
 	}
 
@@ -47,7 +66,6 @@ void Predation::Update()
 
 void Predation::Draw()
 {
-	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
 	for (auto component : m_ComponentList)
 	{
 		component->Draw();
@@ -58,7 +76,9 @@ void Predation::PredationCollision()
 {
 	std::list<Enemy*> enemyList = Scene::GetInstance()->GetScene<Game>()->GetGameObjectList<Enemy>();
 
-	XMFLOAT3 pos = GetComponent<Transform3DComponent>()->GetPos();
+	XMFLOAT3 pos = m_Kiba_sita->GetPos();
+	GetComponent<Transform>()->SetPos(m_Kiba_sita->GetPos());
+	
 
 	if (enemyList.size() == 0)return;
 
@@ -69,17 +89,36 @@ void Predation::PredationCollision()
 		{
 			if (onCollisionObject->GetObjectType() == OBJ_TYPE::ENEMY)
 			{
-				if (!m_isHit)
+				if (!m_IsHit)
 				{
 					Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>()->SetIsBuff(true);
 					onCollisionObject->SetLife(onCollisionObject->GetLife() - 1);
-					m_isHit = true;
+					m_IsHit = true;
 				}
 			}
 		}
 
-		GetComponent<Transform3DComponent>()->SetPos(pos);
 
 	}
+}
+
+void Predation::RotationAnim(float t)
+{
+	XMFLOAT3 rot_ue = m_Kiba_ue->GetRot();
+	XMFLOAT3 rot_sita = m_Kiba_sita->GetRot();
+
+	XMFLOAT3 startRot{};
+	
+	XMFLOAT3 ueKibaEndRot = XMFLOAT3(rot_ue.x, rot_ue.y, m_Kiba_ue_RotTarget);
+	XMFLOAT3 sitaKibaEndRot = XMFLOAT3(rot_sita.y, rot_sita.y, m_Kiba_sita_RotTarget);
+
+	XMFLOAT3 lerpRot_ue = rot_ue;
+	lerpRot_ue.z = (1.0f - t) * startRot.z + t * ueKibaEndRot.z;
+
+	XMFLOAT3 lerpRot_sita = rot_sita;
+	lerpRot_sita.z = (1.0f - t) * startRot.z + t * sitaKibaEndRot.z;
+
+	m_Kiba_ue->SetRot(lerpRot_ue);
+	m_Kiba_sita->SetRot(lerpRot_sita);
 }
 

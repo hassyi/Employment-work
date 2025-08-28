@@ -10,7 +10,7 @@
 
 void Building::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\Building01.obj");
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\Building02.obj");
 	AddComponent<BoxColiderComponent>();
 
 	m_ObjType = OBJ_TYPE::BUILDING;
@@ -19,8 +19,6 @@ void Building::Init()
 	{
 		component->Init();
 	}
-
-
 }
 
 void Building::Uninit()
