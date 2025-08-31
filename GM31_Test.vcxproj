@@ -225,6 +225,7 @@
     <ClCompile Include="lifeGauge.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="modelFactory.cpp" />
+    <ClCompile Include="rifle.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="searchState.cpp" />
     <ClCompile Include="slash.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="lifeGauge.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="modelFactory.h" />
+    <ClInclude Include="rifle.h" />
     <ClInclude Include="routeSearch.h" />
     <ClInclude Include="searchState.h" />
     <ClInclude Include="slash.h" />

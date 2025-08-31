@@ -20,6 +20,7 @@
 #include "enemy.h"
 #include "sword.h"
 #include "slash.h"
+#include "rifle.h"
 
 
 void Player::Init()
@@ -40,8 +41,12 @@ void Player::Init()
 		return;
 	}
 
+	//アニメーション読み込み
 	m_TransAnim->AddAnimationData("asset\\model\\Idle.fbx", "Idle");
+	m_TransAnim->AddAnimationData("asset\\model\\Rifle_Aiming_Idle.fbx", "RifleIdle");
 	m_TransAnim->AddAnimationData("asset\\model\\Running.fbx", "Run");
+	m_TransAnim->AddAnimationData("asset\\model\\RifleRun.fbx", "RifleRun");
+	m_TransAnim->AddAnimationData("asset\\model\\RifleRun_Aim.fbx", "Run_Aim");
 	m_TransAnim->AddAnimationData("asset\\model\\Attack1.fbx", "Attack1");
 	m_TransAnim->AddAnimationData("asset\\model\\Attack2.fbx", "Attack2");
 	m_TransAnim->AddAnimationData("asset\\model\\predationAttack.fbx", "PredationAttack");
@@ -67,6 +72,7 @@ void Player::Init()
 	GetComponent<CapsuleColiderComponent>()->SetAddPos(XMFLOAT3(0.0f, 1.0f, 0.0f));
 
 	Scene::GetInstance()->GetScene<Game>()->AddGameObject<Sword>(2);
+	Scene::GetInstance()->GetScene<Game>()->AddGameObject<Rifle>(2);
 
 }
 
@@ -154,12 +160,11 @@ void Player::PlayerControl()
 	if (m_IsDash && m_StaminaPoint >= 0.0f)
 	{
 		m_move = 0.6f;
-		m_StepSpeed = 5.0f;
+		m_StepSpeed = 3.0f;
 	}
 	else
 	{
 		m_move = 0.3f;
-		m_StepSpeed = 3.0f;
 	}
 
 	//移動時の向き
@@ -182,13 +187,37 @@ void Player::PlayerControl()
 		{
 			rot = XMFLOAT3(rot.x, m_Rot + camerarot.y, rot.z);
 			vel = XMFLOAT3(sinf(rot.y) * m_move, vel.y, cosf(rot.y) * m_move);
-			m_TransAnim->SetAnimationState("Run");
+
+			//移動アニメーションの管理
+			if (m_Weapon == WEAPON_TYPE::SWORD)
+			{
+				m_TransAnim->SetAnimationState("Run");
+			}
+			else
+			{
+				if (camera->GetIsAim())
+				{
+					m_TransAnim->SetAnimationState("Run_Aim");
+				}
+				else
+				{
+					m_TransAnim->SetAnimationState("RifleRun");
+				}
+			}
 
 			if (m_IsDash)
 				m_StaminaPoint -= 0.5f;
 		}
-		else {
-			m_TransAnim->SetAnimationState("Idle");
+		else 
+		{
+			if (m_Weapon == WEAPON_TYPE::SWORD)
+			{
+				m_TransAnim->SetAnimationState("Idle");
+			}
+			else
+			{
+				m_TransAnim->SetAnimationState("RifleIdle");
+			}
 		}
 	}
 
@@ -498,7 +527,7 @@ void Player::PlayerAttack()
 				m_dir.y = 0.0f;
 				m_dir.z = sinf(rot.y + (XM_PI / 2));
 				Bullet* bullet = Scene::GetInstance()->GetScene<Game>()->AddGameObject<Bullet>(1);
-				bullet->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(pos.x + m_dir.x, pos.y + 1.0f, pos.z + m_dir.z));
+				bullet->GetComponent<Transform3DComponent>()->SetPos(XMFLOAT3(pos.x + m_dir.x, pos.y + 2.0f, pos.z + m_dir.z));
 				bullet->GetComponent<Transform3DComponent>()->SetRot(rot);
 				m_SE->Play();
 				m_BulletPoint -= 10.0f;

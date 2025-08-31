@@ -67,7 +67,7 @@ void AimIcon::Draw()
 {
 	if (m_IsDraw)
 	{
-		GetComponent<TextureComponent>()->SetPosSize(m_CenterPosition.x - m_Radius, m_CenterPosition.y - m_Radius, m_Radius * 2, m_Radius * 2);
+		GetComponent<TextureComponent>()->SetPosSize(m_CenterPosition.x - m_Radius, m_CenterPosition.y - 70.0f - m_Radius, m_Radius * 2, m_Radius * 2);
 		GetComponent<TextureComponent>()->SetAnimation(0.0f, 0.0f, 1.0f, 1.0f);
 		for (auto component : m_ComponentList)
 		{
@@ -76,6 +76,7 @@ void AimIcon::Draw()
 	}
 }
 
+//エイムアイコン内にエネミーが入ったかの判定
 bool AimIcon::ObjectInCircle(XMFLOAT3 worldPos, int screenWidth, int screenHeight, float& screenPosX, float& screenPosY)
 {
 	worldPos.y += 0.5f;

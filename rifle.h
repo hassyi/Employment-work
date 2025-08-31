@@ -2,7 +2,7 @@
 #include "gameObject.h"
 #include "component.h"
 
-class Sword : public GameObject
+class Rifle : public GameObject
 {
 private:
 

@@ -5,6 +5,8 @@
 class Transform3DComponent : public Transform
 {
 private:
+	GameObject* m_ParentObj = nullptr;
+
 	ModelRenderer* m_Model = nullptr;
 	const char* m_ModelData = "none";
 	const char* m_VSName = "shader\\unlitTextureVS.cso";
@@ -19,6 +21,8 @@ private:
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
 	};
+
+	bool m_IsParent = false;
 
 public:
 	Transform3DComponent() = default;
@@ -84,4 +88,6 @@ public:
 
 	void SetLocalMatrix(const XMMATRIX& matrix) { m_LocalMatrix = matrix; }
 	XMMATRIX GetLocalMatrix() const { return m_LocalMatrix; }
+
+	void SetParent(GameObject* obj) { m_ParentObj = obj; }
 };

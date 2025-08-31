@@ -70,6 +70,8 @@ public:
 		return XMLoadFloat4x4(&m_ViewMatrix);
 	}
 
+	bool GetIsAim() { return m_IsAim; }
+
 	void DrawImGui() override;
 
 };

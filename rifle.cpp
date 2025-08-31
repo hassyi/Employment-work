@@ -1,17 +1,17 @@
-#include "sword.h"
+#include "rifle.h"
 #include "scene.h"
 #include "player.h"
 #include "transform3DComponent.h"
 #include "transform3DAnimaitonComponent.h"
 #include "game.h"
 
-void Sword::Init()
+void Rifle::Init()
 {
-	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\sword3.obj");
+	AddComponent<Transform3DComponent>()->AddModelData("asset\\model\\rifle.obj");
 	GetComponent<Transform3DComponent>()->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 }
 
-void Sword::Uninit()
+void Rifle::Uninit()
 {
 	for (auto component : m_ComponentList)
 	{
@@ -20,10 +20,10 @@ void Sword::Uninit()
 	}
 }
 
-void Sword::Update()
+void Rifle::Update()
 {
 	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-	if (player->GetWeaponType() == WEAPON_TYPE::SWORD)
+	if (player->GetWeaponType() == WEAPON_TYPE::GUN)
 	{
 		Transform3DAnimationComponent* playerTrans = player->GetComponent<Transform3DAnimationComponent>();
 
@@ -33,7 +33,7 @@ void Sword::Update()
 
 		trans->SetRot(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-		trans->SetPos(XMFLOAT3(-20.0f, 2.0f, 0.0f));
+		trans->SetPos(XMFLOAT3(10.0f, 35.0f, 0.0f));
 		trans->SetLocalMatrix(rightHand);
 
 
@@ -44,10 +44,10 @@ void Sword::Update()
 	}
 }
 
-void Sword::Draw()
+void Rifle::Draw()
 {
 	Player* player = Scene::GetInstance()->GetScene<Game>()->GetGameObject<Player>();
-	if (player->GetWeaponType() == WEAPON_TYPE::SWORD)
+	if (player->GetWeaponType() == WEAPON_TYPE::GUN)
 	{
 		for (auto component : m_ComponentList)
 		{
@@ -60,19 +60,16 @@ void Sword::Draw()
 	}
 }
 
-void Sword::DrawImGui()
+void Rifle::DrawImGui()
 {
 	XMFLOAT3 transPos = GetComponent<Transform3DComponent>()->GetPos();
 	XMFLOAT3 transRot = GetComponent<Transform3DComponent>()->GetRot();
-	XMFLOAT3 coliderPos = GetColider()->GetPos();
-	XMFLOAT3 coliderRot = GetColider()->GetRot();
 
 	{
-		ImGui::Begin("Sword");
+		ImGui::Begin("Rifle");
 
-		ImGui::Text("SwordPos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
-		ImGui::Text("SwordRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
-		ImGui::Text("ColiderPos : x = %.1f, y = %.1f, z = %.1f", coliderPos.x, coliderPos.y, coliderPos.z);
+		ImGui::Text("RiflePos : x = %.1f, y = %.1f, z = %.1f", transPos.x, transPos.y, transPos.z);
+		ImGui::Text("RifleRot : x = %.1f, y = %.1f, z = %.1f", transRot.x, transRot.y, transRot.z);
 
 		ImGui::End();
 	}
